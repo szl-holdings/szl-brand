@@ -1,6 +1,11 @@
 # szl-brand
 
-**SZL Holdings brand assets.** Source-of-truth for social preview images, logo monograms, and brand guidance applied across the GitHub organization. Updated 2026-05-11.
+**SZL Holdings brand assets.** Source-of-truth for social preview images, logo monograms, and brand guidance applied across the GitHub organization. Updated 2026-05-12.
+
+[![Banners](https://img.shields.io/badge/banners-14%20%C2%B7%201280×640%20PNG-2DA44E?style=flat-square)](#catalog-14-banners)
+[![Brand](https://img.shields.io/badge/accent-%23805ad5-805AD5?style=flat-square)](#design-system)
+[![License](https://img.shields.io/badge/license-CC%20BY%204.0-blue?style=flat-square)](./LICENSE)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/szl-holdings/szl-brand/badge)](https://securityscorecards.dev/viewer/?uri=github.com/szl-holdings/szl-brand)
 
 ## Social previews
 
@@ -36,10 +41,13 @@ Each banner shows three "stat cards." Every value is sourced from a real file in
 | `7 Surfaces` (a11oy, .github) | `SOURCE_OF_TRUTH.md`, `dossier/v2/APEX_v2_Operational_Briefing.md` (post-PR-145) |
 | `Λ Invariant` (a11oy, stephen) | `THESIS_PUBLICATIONS.md` — Lutar Invariant Family |
 | `≤0.59ms Λ p99` (ouroboros) | v11 paper, §"Performance" — 24,800 calls measured |
-| `28 Packages` (ouroboros) | `ls packages/ouroboros-*` in `szl-holdings/platform` |
-| `62 Guardrails` (ouroboros) | `apps/eval-runner/` |
+| `76 Packages` (ouroboros, platform) | `ls packages/` in `szl-holdings/platform` (private) — verified 2026-05-12 against full-sweep-2b.log |
+| `218 Tests` (ouroboros) | `pnpm test` in [szl-holdings/ouroboros](https://github.com/szl-holdings/ouroboros) — verified 2026-05-12 against commit `f31d749` |
+| `1,220 Tests` (platform) | full-sweep-2b.log across 76 packages (private platform) — verified 2026-05-12 |
+| `27/27 e2e` (mcp gateway, platform) | `packages/substrate-mcp-gateway/test/e2e/` (private) |
 | `11 Papers` (ouroboros-thesis, .github) | v1-v11 on Zenodo, concept DOI `10.5281/zenodo.19944926`, v11 per-version `20119582` |
-| `v11 Latest` (ouroboros-thesis) | `szl-holdings/ouroboros-thesis` tag `v11.0.0` |
+| `v11 Latest` (ouroboros-thesis) | `szl-holdings/ouroboros-thesis` tag `paper-v11-1.0.0` |
+| `v12 in review` (ouroboros-thesis) | [thesis PR #25](https://github.com/szl-holdings/ouroboros-thesis/pull/25) on branch `paper-v12-thesis` |
 | `9 Skills` (szl-cookbook) | `ls szl-cookbook/skills/` |
 | `11 Artifacts` (szl-trust) | `szl-trust/runs/E4-codex-kernel-2026-04-29/` |
 | `9 Formal Axes` (stephen) | `THESIS_PUBLICATIONS.md` |
