@@ -1,40 +1,65 @@
 # szl-brand
 
-**SZL Holdings brand assets.** Source-of-truth for social preview images, logo monograms, and brand guidance applied across the GitHub organization.
+**SZL Holdings brand assets.** Source-of-truth for social preview images, logo monograms, and brand guidance applied across the GitHub organization. Updated 2026-05-11.
 
 ## Social previews
 
-Eleven 1280×640 PNG social previews (one per public repo), generated from a deterministic Python builder. These render in link unfurls on Twitter/X, LinkedIn, Slack, iMessage, and the GitHub repo card.
+Fourteen 1280×640 PNG social previews — one per public org repo plus the founder's personal profile — generated from a single deterministic Python builder. These render in link unfurls on Twitter/X, LinkedIn, Slack, iMessage, and the GitHub repo card.
 
-### Catalog
+### Catalog (14 banners)
 
-| Repo | Preview | Bytes |
-|------|---------|-------|
-| [a11oy](https://github.com/szl-holdings/a11oy) | [`social-previews/a11oy.png`](social-previews/a11oy.png) | ~25KB |
-| [ouroboros](https://github.com/szl-holdings/ouroboros) | [`social-previews/ouroboros.png`](social-previews/ouroboros.png) | ~28KB |
-| [ouroboros-thesis](https://github.com/szl-holdings/ouroboros-thesis) | [`social-previews/ouroboros-thesis.png`](social-previews/ouroboros-thesis.png) | ~28KB |
-| [sentra](https://github.com/szl-holdings/sentra) | [`social-previews/sentra.png`](social-previews/sentra.png) | ~24KB |
-| [vessels](https://github.com/szl-holdings/vessels) | [`social-previews/vessels.png`](social-previews/vessels.png) | ~24KB |
-| [terra](https://github.com/szl-holdings/terra) | [`social-previews/terra.png`](social-previews/terra.png) | ~23KB |
-| [counsel](https://github.com/szl-holdings/counsel) | [`social-previews/counsel.png`](social-previews/counsel.png) | ~25KB |
-| [carlota-jo](https://github.com/szl-holdings/carlota-jo) | [`social-previews/carlota-jo.png`](social-previews/carlota-jo.png) | ~27KB |
-| [amaru](https://github.com/szl-holdings/amaru) | [`social-previews/amaru.png`](social-previews/amaru.png) | ~25KB |
-| [szl-cookbook](https://github.com/szl-holdings/szl-cookbook) | [`social-previews/szl-cookbook.png`](social-previews/szl-cookbook.png) | ~25KB |
-| [szl-trust](https://github.com/szl-holdings/szl-trust) | [`social-previews/szl-trust.png`](social-previews/szl-trust.png) | ~22KB |
+| # | Repo / profile | Preview | Why this asset |
+|---|----------------|---------|----------------|
+| 1 | [a11oy](https://github.com/szl-holdings/a11oy) | [`social-previews/a11oy.png`](social-previews/a11oy.png) | Orchestration + Decision Fabric + Trust Plane |
+| 2 | [sentra](https://github.com/szl-holdings/sentra) | [`social-previews/sentra.png`](social-previews/sentra.png) | Governed adversary loop |
+| 3 | [vessels](https://github.com/szl-holdings/vessels) | [`social-previews/vessels.png`](social-previews/vessels.png) | Maritime fleet intelligence |
+| 4 | [terra](https://github.com/szl-holdings/terra) | [`social-previews/terra.png`](social-previews/terra.png) | Real estate deal pipeline |
+| 5 | [counsel](https://github.com/szl-holdings/counsel) | [`social-previews/counsel.png`](social-previews/counsel.png) | Policy-gated legal workflows |
+| 6 | [carlota-jo](https://github.com/szl-holdings/carlota-jo) | [`social-previews/carlota-jo.png`](social-previews/carlota-jo.png) | Concierge advisory operations |
+| 7 | [amaru](https://github.com/szl-holdings/amaru) | [`social-previews/amaru.png`](social-previews/amaru.png) | Convergent multi-source data sync |
+| 8 | [ouroboros](https://github.com/szl-holdings/ouroboros) | [`social-previews/ouroboros.png`](social-previews/ouroboros.png) | Bounded-loop runtime — Λ invariant |
+| 9 | [ouroboros-thesis](https://github.com/szl-holdings/ouroboros-thesis) | [`social-previews/ouroboros-thesis.png`](social-previews/ouroboros-thesis.png) | Lutar Invariant Family v1→v11 (11 papers) |
+| 10 | [szl-cookbook](https://github.com/szl-holdings/szl-cookbook) | [`social-previews/szl-cookbook.png`](social-previews/szl-cookbook.png) | 9 SKILL.md, Apache 2.0 |
+| 11 | [szl-trust](https://github.com/szl-holdings/szl-trust) | [`social-previews/szl-trust.png`](social-previews/szl-trust.png) | Covenant Proof Standard reference run |
+| 12 | [szl-brand](https://github.com/szl-holdings/szl-brand) | [`social-previews/szl-brand.png`](social-previews/szl-brand.png) | This repo — deterministic banner builder |
+| 13 | [.github (org profile)](https://github.com/szl-holdings/.github) | [`social-previews/org-profile.png`](social-previews/org-profile.png) (= `.github.png`) | SZL Holdings org profile card |
+| 14 | [stephenlutar2-hash (founder profile)](https://github.com/stephenlutar2-hash) | [`social-previews/stephenlutar2-hash.png`](social-previews/stephenlutar2-hash.png) | Personal profile OG image |
+
+> Note: The `.github` banner is also published as `org-profile.png` for tools that won't accept dot-prefixed filenames in their upload widget. Both files are byte-identical.
+
+### Data sources for every stat shown on the banners (post-hallucination-sweep)
+
+Each banner shows three "stat cards." Every value is sourced from a real file in the platform monorepo, re-verified on 2026-05-11:
+
+| Banner stat | Source of truth |
+|---|---|
+| `7 Surfaces` (a11oy, .github) | `SOURCE_OF_TRUTH.md`, `dossier/v2/APEX_v2_Operational_Briefing.md` (post-PR-145) |
+| `Λ Invariant` (a11oy, stephen) | `THESIS_PUBLICATIONS.md` — Lutar Invariant Family |
+| `≤0.59ms Λ p99` (ouroboros) | v11 paper, §"Performance" — 24,800 calls measured |
+| `28 Packages` (ouroboros) | `ls packages/ouroboros-*` in `szl-holdings/platform` |
+| `62 Guardrails` (ouroboros) | `apps/eval-runner/` |
+| `11 Papers` (ouroboros-thesis, .github) | v1-v11 on Zenodo, concept DOI `10.5281/zenodo.19944926`, v11 per-version `20119582` |
+| `v11 Latest` (ouroboros-thesis) | `szl-holdings/ouroboros-thesis` tag `v11.0.0` |
+| `9 Skills` (szl-cookbook) | `ls szl-cookbook/skills/` |
+| `11 Artifacts` (szl-trust) | `szl-trust/runs/E4-codex-kernel-2026-04-29/` |
+| `9 Formal Axes` (stephen) | `THESIS_PUBLICATIONS.md` |
+| `44 Innovations` (.github) | `THESIS_PUBLICATIONS.md` count |
+
+If any of these values change in the source of truth, update `social-previews/gen.py` and regenerate.
 
 ### How to apply (one-time, ~2 min per repo)
 
-GitHub does not expose social-preview upload through the API for this organization's auth proxy — it must be set via the web UI.
+GitHub does not expose social-preview upload through its REST API. The asset must be uploaded via the web UI per repo:
 
-For each repo:
-
-1. Open `github.com/szl-holdings/<repo>/settings`
+1. Open `github.com/szl-holdings/<repo>/settings` (or `github.com/<username>/<username>/settings` for personal profile)
 2. Scroll to **Social preview**
 3. Click **Edit** → **Upload an image**
 4. Pick the matching PNG from this repo's `social-previews/` folder
 5. **Save**
 
-After save, verify by visiting `github.com/szl-holdings/<repo>` and watching the OG image render in any link preview.
+After save, verify by visiting the repo and watching the OG image render in any link preview tool (e.g. https://www.opengraph.xyz/url/https%3A%2F%2Fgithub.com%2Fszl-holdings%2F<repo>).
+
+There are 14 banners; budget ~25 minutes for the full upload pass.
 
 ### Design system
 
@@ -42,8 +67,8 @@ After save, verify by visiting `github.com/szl-holdings/<repo>` and watching the
 - **Background:** vertical gradient `#0a0a0f → #12121a`
 - **Accent:** SZL purple `#805ad5` (left 6px accent bar + bottom hairline + pill border + stat values + monogram)
 - **Type:** DejaVu Sans (system-ui fallback in the SVG variants)
-- **Layout:** kicker / title (78px bold) / subtitle (26px regular) / tag pill / three 220×100 stat cards / footer with `github.com/szl-holdings` left and `SZL` monogram right
-- **Stat cards:** translucent white fill, hairline stroke, purple stat value, muted label
+- **Layout:** kicker / title (auto-shrinking 50–82 px bold) / subtitle (26px regular) / tag pill / three 220×100 stat cards / footer with `github.com/szl-holdings` left and `SZL` monogram right
+- **Stat cards:** translucent white fill, hairline stroke, purple stat value, muted label. Value font auto-shrinks (18-34 px) to fit when the value text is long.
 
 ### Regenerating
 
@@ -51,8 +76,8 @@ After save, verify by visiting `github.com/szl-holdings/<repo>` and watching the
 python3 social-previews/gen.py
 ```
 
-Edits the `REPOS` table at the top of `gen.py` to add new repos or change any of the per-repo content (kicker, title, subtitle, tag, three stat triples).
+Edit the `REPOS` table at the top of `gen.py` to add a new repo or change any of the per-repo content (kicker, title, subtitle, tag, three stat triples). Output is deterministic — same inputs always produce the same PNG bytes.
 
 ## License
 
-Brand assets: CC BY 4.0 (attribution required if you remix the design system; the SZL wordmark and color are reserved).
+Brand assets: CC BY 4.0 (attribution required if you remix the design system). The "SZL Holdings" name, the SZL wordmark, and the SZL Holdings brand colors are trademarks of SZL Holdings and are not licensed under CC BY 4.0 — see [`NOTICE`](NOTICE).
