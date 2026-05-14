@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SZL HEART-BEAT — gold YUYAY heart pulsing, sha256 receipt dropping to YAWAR
+     Author: Lutar, Stephen P.  -  SZL Holdings  -  CC-BY-4.0
+     Doctrine: every beat = one receipt = one auditable hash.
+     d94c683e gets injected at CI time via:  sed -i "s/d94c683e/$SHA/g" heart-beat.svg
+     SZL-RECEIPT: sha256=<injected at build> -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300"
+     role="img" aria-label="SZL beating heart — one sha256 receipt per beat, dropped into YAWAR write-bus">
+  <title>SZL HEART  -  every beat produces an auditable receipt</title>
+  <desc>The gold HEART organ contracts on a 1.2s heartbeat (40% systole snap / 60% diastole gentle).
+        On each beat, a truncated sha256 receipt drops into the YAWAR append-only bus below.
+        Animation is doctrine made visible: no hallucinations, no decorative noise; the hash
+        shown is seeded from the repository's current commit at build time.</desc>
+
+  <defs>
+    <style><![CDATA[
+      :root {
+        --cream:  #F5F1E8;
+        --ink:    #1A1A1A;
+        --ink-d:  #4A4A4A;
+        --ink-f:  #8A8A8A;
+        --gold:   #B08940;
+        --gold-h: #C9A050;
+        --plum:   #5C3D5C;
+        --forest: #4A6741;
+      }
+      .bg     { fill: #F5F1E8; }
+      .ink    { fill: #1A1A1A; }
+      .ink-d  { fill: #4A4A4A; }
+      .ink-f  { fill: #8A8A8A; }
+      .gold   { fill: #B08940; }
+      .gold-s { stroke: #B08940; fill: none; }
+      .plum   { fill: #5C3D5C; }
+      .forest { fill: #4A6741; }
+      .mono   { font-family: "IBM Plex Mono", "SF Mono", Menlo, Consolas, monospace; }
+      .sans   { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+
+      .heart-organ {
+        transform-origin: 200px 130px;
+        transform-box: fill-box;
+        animation: heartbeat 1.2s cubic-bezier(0.4, 0.0, 0.2, 1.0) infinite;
+      }
+      @keyframes heartbeat {
+        0%, 100% { transform: scale(1);     fill: #B08940; }
+        38%      { transform: scale(0.94);  fill: #C9A050; }
+        50%      { transform: scale(1.03);  fill: #B08940; }
+        70%      { transform: scale(0.995); fill: #B08940; }
+      }
+
+      .heart-glow {
+        transform-origin: 200px 130px;
+        transform-box: fill-box;
+        animation: glow 1.2s cubic-bezier(0.4, 0.0, 0.2, 1.0) infinite;
+        opacity: 0;
+      }
+      @keyframes glow {
+        0%, 100% { opacity: 0;    transform: scale(1); }
+        38%      { opacity: 0.35; transform: scale(1.18); }
+        70%      { opacity: 0;    transform: scale(1.4);  }
+      }
+
+      .receipt {
+        opacity: 0;
+        animation: drop 1.2s linear infinite;
+      }
+      @keyframes drop {
+        0%   { transform: translateY(0);   opacity: 0; }
+        30%  { transform: translateY(0);   opacity: 0; }
+        38%  { transform: translateY(0);   opacity: 1; }
+        70%  { transform: translateY(35px); opacity: 1; }
+        85%  { transform: translateY(35px); opacity: 0.7; }
+        100% { transform: translateY(35px); opacity: 0; }
+      }
+
+      .yawar-flash {
+        opacity: 0;
+        animation: flash 1.2s linear infinite;
+      }
+      @keyframes flash {
+        0%, 65%   { opacity: 0; }
+        72%       { opacity: 1; }
+        100%      { opacity: 0; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .heart-organ, .heart-glow, .receipt, .yawar-flash {
+          animation: none;
+        }
+        .heart-organ  { fill: #B08940; transform: none; }
+        .heart-glow   { opacity: 0; }
+        .receipt      { opacity: 1; transform: translateY(25px); }
+        .yawar-flash  { opacity: 0.5; }
+      }
+    ]]></style>
+
+    <!-- Anatomical heart shape, hand-drawn-ish bezier.
+         A doctrine-shaped heart, not a cartoon emoji. -->
+    <path id="heart-path" d="
+      M 200 105
+      C 180 80,  140 80,  140 120
+      C 140 155, 175 175, 200 200
+      C 225 175, 260 155, 260 120
+      C 260 80,  220 80,  200 105 Z" />
+  </defs>
+
+  <!-- background -->
+  <rect class="bg" x="0" y="0" width="400" height="300"/>
+
+  <!-- title strip -->
+  <text class="sans ink" x="20" y="26" font-size="13" font-weight="700">SZL HEART  -  YUYAY v3 gate</text>
+  <text class="sans ink-d" x="20" y="40" font-size="9">every beat = one sha256 receipt  ::  audited by HUKLLA</text>
+
+  <!-- BRAIN node (top-right plum) -->
+  <circle class="bg" cx="345" cy="42" r="14" stroke="#5C3D5C" stroke-width="1.2"/>
+  <text class="sans plum" x="345" y="46" font-size="8" font-weight="700" text-anchor="middle">BRAIN</text>
+  <line x1="335" y1="50" x2="245" y2="115" stroke="#B0B0B0" stroke-width="0.8" stroke-dasharray="2 2"/>
+
+  <!-- MAKI hand (left, forest) -->
+  <rect class="bg" x="18" y="100" width="56" height="32" rx="4" stroke="#4A6741" stroke-width="1"/>
+  <text class="sans forest" x="46" y="115" font-size="8" font-weight="700" text-anchor="middle">MAKI</text>
+  <text class="sans ink-d" x="46" y="125" font-size="6" text-anchor="middle">retrieval</text>
+  <line x1="74" y1="118" x2="140" y2="135" stroke="#4A6741" stroke-width="0.9" stroke-dasharray="2 2"/>
+  <text class="sans forest" x="80" y="115" font-size="6">candidate context</text>
+
+  <!-- the heart glow (under the organ) -->
+  <use href="#heart-path" class="heart-glow" fill="#B08940"/>
+
+  <!-- the heart organ -->
+  <use href="#heart-path" class="heart-organ"/>
+
+  <!-- heart outline (always sharp) -->
+  <use href="#heart-path" fill="none" stroke="#8C6428" stroke-width="1.4"/>
+
+  <!-- heart label inside -->
+  <text class="sans" x="200" y="138" font-size="9" font-weight="700" fill="#1A1A1A" text-anchor="middle">YUYAY v3</text>
+  <text class="sans" x="200" y="150" font-size="6.5" fill="#1A1A1A" text-anchor="middle">13-axis conjunctive AND</text>
+  <text class="sans" x="200" y="160" font-size="6" fill="#4A4A4A" text-anchor="middle">moral + measure >= 0.95</text>
+
+  <!-- artery from heart to YAWAR bus -->
+  <line x1="200" y1="205" x2="200" y2="220" stroke="#B08940" stroke-width="1.2" stroke-dasharray="2 2"/>
+
+  <!-- the receipt drop (animated translate downward, lands on YAWAR at Y=240ish) -->
+  <g class="receipt">
+    <text class="mono" x="200" y="220" font-size="7.5" fill="#8C6428" text-anchor="middle" font-weight="700">sha256</text>
+    <text class="mono" x="200" y="232" font-size="10" fill="#B08940" text-anchor="middle" font-weight="700">d94c683e</text>
+  </g>
+
+  <!-- YAWAR bus (gold horizontal rail) -->
+  <rect x="40" y="245" width="320" height="22" rx="4" class="bg" stroke="#B08940" stroke-width="1.6"/>
+  <text class="sans" x="50" y="260" font-size="9" font-weight="700" fill="#B08940">YAWAR  -  append-only receipt bus</text>
+  <text class="sans" x="270" y="260" font-size="7" fill="#4A4A4A">yawar_bus.py  ::  20 SLOC</text>
+
+  <!-- YAWAR flash overlay (lights up when receipt lands) -->
+  <rect class="yawar-flash" x="40" y="245" width="320" height="22" rx="4" fill="#C9A050" opacity="0"/>
+
+  <!-- footer credit -->
+  <text class="sans ink-f" x="20" y="288" font-size="6.5">SZL Holdings  -  Lutar, Stephen P.  -  ORCID 0009-0001-0110-4173  -  CC-BY-4.0</text>
+  <text class="sans ink-f" x="380" y="288" font-size="6.5" text-anchor="end">heart-beat.svg  v1  -  2026-05-14</text>
+</svg>
