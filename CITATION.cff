@@ -1,20 +1,44 @@
 cff-version: 1.2.0
-message: "If you reference these artifacts, please cite as below."
+message: "If you use this software, please cite it using the metadata below."
+title: "szl-brand — SZL Holdings brand assets — social preview images, logo monograms, and brand guidance."
+abstract: >-
+  SZL Holdings brand assets — social preview images, logo monograms, and brand guidance. Part of the SZL Holdings governed AI decision infrastructure,
+  built on the Ouroboros Thesis (DOI 10.5281/zenodo.19944926).
 type: software
-title: "SZL Holdings Brand Assets: Social Previews and Visual Identity"
-abstract: "Source-of-truth for social preview images, logo monograms, and brand guidance applied across the SZL Holdings GitHub organization."
+version: "1.0.0"
+date-released: "2026-01-01"
+license: CC-BY-4.0
 authors:
-  - family-names: "Lutar"
-    given-names: "Stephen P."
+  - family-names: Lutar
+    given-names: Stephen
+    name-particle: "P."
     name-suffix: "Jr."
-    orcid: "https://orcid.org/0009-0001-0110-4173"
     affiliation: "SZL Holdings"
     email: "stephen@szlholdings.com"
-repository-code: "https://github.com/szl-holdings/szl-brand"
+    orcid: "https://orcid.org/0009-0001-0110-4173"
 url: "https://github.com/szl-holdings/szl-brand"
-license: "CC-BY-4.0"
+repository-code: "https://github.com/szl-holdings/szl-brand"
 keywords:
-  - "brand-assets"
-  - "social-preview"
-  - "visual-identity"
-date-released: 2026-05-13
+  - szl-holdings
+  - ai-governance
+  - ouroboros-thesis
+identifiers:
+  - description: "Ouroboros Thesis — research foundation (Zenodo concept DOI)"
+    type: doi
+    value: "10.5281/zenodo.19944926"
+  - description: "ORCID iD of the principal author"
+    type: other
+    value: "https://orcid.org/0009-0001-0110-4173"
+preferred-citation:
+  type: software
+  title: "szl-brand — SZL Holdings brand assets — social preview images, logo monograms, and brand guidance."
+  authors:
+    - family-names: Lutar
+      given-names: Stephen
+      name-particle: "P."
+      name-suffix: "Jr."
+      affiliation: "SZL Holdings"
+      email: "stephen@szlholdings.com"
+      orcid: "https://orcid.org/0009-0001-0110-4173"
+  year: 2026
+  url: "https://github.com/szl-holdings/szl-brand"
