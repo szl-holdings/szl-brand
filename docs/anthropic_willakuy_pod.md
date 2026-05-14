@@ -1,9 +1,11 @@
-# Anthropic Mythos Pod
+# WILLAKUY — Anthropic Public-Surface Witness
 **Date:** 2026-05-27  
 **Author:** Lutar, Stephen P.  
 **Organization:** SZL Holdings  
 **License:** CC-BY-4.0  
 **Source-purity declaration:** PUBLIC ONLY — no private repositories accessed, no leaked credentials used, no authenticated paywalls bypassed. Every claim is sourced from a publicly accessible URL, an arXiv preprint, or a public GitHub repository. Where a primary source could not be verified, it is marked `[unverified]`.
+
+> **Codename: WILLAKUY** (Quechua: *to recount, to bear witness, the telling*). SZL-native — we refuse to borrow language from the labs we are documenting.
 
 ---
 
@@ -877,7 +879,7 @@ Ranked by leverage: time-to-ship × magnitude of positioning effect × defensibi
 ## Citations Block
 
 ```yaml
-title: Anthropic Mythos Pod
+title: Anthropic willakuy pod
 author:
   name: "Lutar, Stephen P."
   organization: "SZL Holdings"
@@ -1497,4 +1499,4 @@ This section is necessarily speculative but reasoned from the evidence:
 ---
 
 
-<!-- End of Anthropic Mythos Pod v1.0 — compiled May 2026 — SZL Holdings — CC-BY-4.0 -->
+<!-- End of Anthropic willakuy pod v1.0 — compiled May 2026 — SZL Holdings — CC-BY-4.0 -->

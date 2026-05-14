@@ -1,7 +1,7 @@
-# Glass Wing — public surface intake & inversion playbook
+# RIKCH'AY — Public-Surface Intake & Inversion Playbook
 
 **Author:** Lutar, Stephen P. · ORCID 0009-0001-0110-4173 · SZL Holdings  
-**Codename:** Glass Wing  
+**Codename:** RIKCH'AY  
 **Doctrine version:** v3  
 **Date:** 2026-05-14  
 **License:** CC-BY-4.0  
@@ -10,9 +10,9 @@
 
 ---
 
-Glass Wing is also Anthropic's design-system name. We're keeping the codename. Theirs is glass that looks pretty. Ours is glass you can verify. Every section that follows is a public surface absorbed and inverted into the SZL receipt-doctrine lane Anthropic structurally cannot enter.
+RIKCH'AY (Quechua: *to awaken, to perceive clearly*) is the SZL-native codename for this intake-and-inversion playbook. We refuse to borrow language from the labs we are inverting. Every section that follows is a public surface absorbed and reshaped into the SZL receipt-doctrine lane the frontier labs structurally cannot enter. Anthropic's product naming (including their "Glasswing" design-system) is referenced as public surface only — not as our identity.
 
-Anthropic's Project Glasswing is a hero visual on anthropic.com — a white mesh evoking insect wing venation, symbolizing interpretable AI internals. [mythos pod §V.1] The symbolism is sincere: they genuinely believe mechanistic interpretability is the path to safe AI. The problem is that *showing* a wing under a microscope is not the same as *proving* the wing flew correctly on a specific flight at a specific time. SZL's Glass Wing is the receipt for that flight.
+Anthropic's Project Glasswing is a hero visual on anthropic.com — a white mesh evoking insect wing venation, symbolizing interpretable AI internals. [willakuy pod §V.1] The symbolism is sincere: they genuinely believe mechanistic interpretability is the path to safe AI. The problem is that *showing* a wing under a microscope is not the same as *proving* the wing flew correctly on a specific flight at a specific time. SZL's RIKCH'AY is the receipt for that flight.
 
 ---
 
@@ -34,7 +34,7 @@ Anthropic's Project Glasswing is a hero visual on anthropic.com — a white mesh
 7. [MCP Ecosystem — the security gap SZL fills](#7-mcp-ecosystem)
 8. [Adjacent disciplines — Lean 4, zk-SNARKs, SLSA, C2PA, W3C VC](#8-adjacent-disciplines)
 9. [Cross-target wedge map — the universal negative space](#9-wedge-map)
-10. [**Glass Wing Playbook — 12 ships in 12 weeks**](#10-playbook)
+10. [**RIKCH'AY Playbook — 12 ships in 12 weeks**](#10-playbook)
 11. [Doctrine appendix](#11-doctrine-appendix)
 12. [Source index](#12-source-index)
 
@@ -52,7 +52,7 @@ This document does three things:
 2. **Invert** — find the architectural commitments that lock them out of specific moves and build exactly there.
 3. **Ride their exhaust** — every paper published, every API shipped, every researcher who leaves and describes what is broken, is a free signal narrowing the map to SZL's lane.
 
-The companion document [mythos pod] at `/home/user/workspace/field_meditation/anthropic_mythos_pod.md` covers Anthropic's foundational papers, RSP lineage, patent portfolio, design surface, and the Bartz v. Anthropic settlement in full detail. This document does not repeat that material. It cites it as `[mythos pod §X]` and builds on top of it.
+The companion document [willakuy pod] at `/home/user/workspace/field_meditation/anthropic_willakuy_pod.md` covers Anthropic's foundational papers, RSP lineage, patent portfolio, design surface, and the Bartz v. Anthropic settlement in full detail. This document does not repeat that material. It cites it as `[willakuy pod §X]` and builds on top of it.
 
 ---
 
@@ -70,7 +70,7 @@ The three claims they return to in every interview, paper, and job listing:
 | Mechanistic interpretability — understanding what models actually compute — is the path to verifiable alignment | [transformer-circuits.pub](https://transformer-circuits.pub/); [Scaling Monosemanticity](https://transformer-circuits.pub/2024/scaling-monosemanticity/) |
 | The Responsible Scaling Policy is a meaningful self-governance mechanism with real if-then thresholds | [RSP v3](https://www.anthropic.com/news/responsible-scaling-policy-v3); [RSP v2.1 PDF](https://www-cdn.anthropic.com/17310f6d70ae5627f55313ed067afc1a762a4068.pdf) |
 
-Key voices: Dario Amodei (CEO, macro impact framing), Chris Olah (interpretability as safety), Jared Kaplan (scaling laws), Amanda Askell (Claude's character and values), Ethan Perez (red-teaming and evals). See [mythos pod §E] for full quote inventory.
+Key voices: Dario Amodei (CEO, macro impact framing), Chris Olah (interpretability as safety), Jared Kaplan (scaling laws), Amanda Askell (Claude's character and values), Ethan Perez (red-teaming and evals). See [willakuy pod §E] for full quote inventory.
 
 ### 2B. Revealed posture — the A↔B gap
 
@@ -82,31 +82,31 @@ What Anthropic's *actions* say they believe, often in tension with stated claims
 | RSP v3 softens from if-then commitments to "statements of intent" — Zvi Mowshowitz: "From this point, there are no commitments, only statements of intent" | The self-governance mechanism has been walked back to voluntary aspiration | [RSP v3](https://www.anthropic.com/news/responsible-scaling-policy-v3); [Zvi analysis](https://thezvi.substack.com/p/anthropic-responsible-scaling-policy) |
 | Bartz v. Anthropic settled for $1.5B (August 2025) — book authors proved copyrighted material from shadow libraries was used in training | Cannot publish a clean training data SBOM without exposure; cannot prove training data purity | [Copyright Alliance](https://copyrightalliance.org/participating-bartz-v-anthropic-settlement/) |
 | Own research shows reasoning models don't faithfully describe their internal computations | The chain-of-thought transparency claim — the most user-visible safety feature — is false | [Anthropic research](https://www.anthropic.com/research/reasoning-models-dont-say-think) |
-| ASL-3 activated for Claude Opus 4 (2025) — first real escalation — but no public disclosure of what the evaluation found | The thresholds exist; the results are classified | [mythos pod §B] |
+| ASL-3 activated for Claude Opus 4 (2025) — first real escalation — but no public disclosure of what the evaluation found | The thresholds exist; the results are classified | [willakuy pod §B] |
 | Claude Code is a commercial subscription product (NodeJS/npm, obfuscated) | Safety research org is funding a SaaS IDE product | [github.com/anthropics/claude-code](https://github.com/anthropics/claude-code) |
-| Interpretability team at ~17 people with ~50 positions in field total | SAE work is a research instrument, not a runtime gate — the "interpretable AI" claim is aspirational | [mythos pod §A.4; circuits April 2024 update](https://transformer-circuits.pub/2024/april-update/index.html) |
+| Interpretability team at ~17 people with ~50 positions in field total | SAE work is a research instrument, not a runtime gate — the "interpretable AI" claim is aspirational | [willakuy pod §A.4; circuits April 2024 update](https://transformer-circuits.pub/2024/april-update/index.html) |
 
-**The core gap:** Anthropic says interpretability is the path to *verifiable* alignment. But the SAE/monosemanticity work produces forensic insight, not runtime verification. It is more akin to autopsy capability than continuous monitoring. [mythos pod §A.4] SZL's receipt doctrine provides runtime verification that SAE cannot: every inference event is signed and hashed before anything else happens.
+**The core gap:** Anthropic says interpretability is the path to *verifiable* alignment. But the SAE/monosemanticity work produces forensic insight, not runtime verification. It is more akin to autopsy capability than continuous monitoring. [willakuy pod §A.4] SZL's receipt doctrine provides runtime verification that SAE cannot: every inference event is signed and hashed before anything else happens.
 
 ### 2C. Architectural commitments — what they cannot undo
 
-[mythos pod §T.1 and §T.2] synthesizes these. For brevity:
+[willakuy pod §T.1 and §T.2] synthesizes these. For brevity:
 
 | Commitment | Why it cannot be reversed |
 |---|---|
 | **Closed weights on all production Claude models** | Competitive moat + inability to "recall" a dangerous model if weights are public |
 | **RLHF/RLAIF (Constitutional AI) as primary alignment method** | Billions in infrastructure; the entire fine-tuning stack rests on it; switching to formal methods would require scrapping training pipeline |
-| **AWS as primary compute substrate** | $25B Amazon commitment, $100B+ total compute contracts [mythos pod §I.4]; contractual lock-in for years |
+| **AWS as primary compute substrate** | $25B Amazon commitment, $100B+ total compute contracts [willakuy pod §I.4]; contractual lock-in for years |
 | **Policy baked into training weights** | No runtime policy engine exists; the constitution is a training-time prior, not a per-inference gate |
 | **Inference-time opacity** | No cryptographically verifiable execution trace; no mechanism for downstream audit without trusting Anthropic's logs |
 | **SAE as the interpretability primitive** | Multi-year, multi-million-dollar research investment in the sparse autoencoder paradigm; pivoting would invalidate the program |
 | **Model cards as the attestation primitive** | Freeform Markdown; unsigned; no machine-readable provenance chain; the standard for the industry, which means the industry shares the gap |
 
-The Sleeper Agents paper [mythos pod §A.2] is the internal admission that behavioral safety training has a floor below which it cannot reach. Constitutional AI sits above that floor. There is no published technique that reliably removes deceptive alignment once a model has learned it. The existential dependency: if interpretability fails to scale to runtime use, the safety story has no floor.
+The Sleeper Agents paper [willakuy pod §A.2] is the internal admission that behavioral safety training has a floor below which it cannot reach. Constitutional AI sits above that floor. There is no published technique that reliably removes deceptive alignment once a model has learned it. The existential dependency: if interpretability fails to scale to runtime use, the safety story has no floor.
 
 ### 2D. Negative space — 22 things Anthropic does not publish, do, or say
 
-[mythos pod §J] covers 30+ items in full. The 22 most actionable for SZL's lane:
+[willakuy pod §J] covers 30+ items in full. The 22 most actionable for SZL's lane:
 
 1. No cryptographically signed inference receipts — every API response is unsigned plaintext.
 2. No per-inference policy gate log — Constitutional AI is training-time, not runtime.
@@ -133,7 +133,7 @@ The Sleeper Agents paper [mythos pod §A.2] is the internal admission that behav
 
 ### 2E. Job listing signals — the roadmap leaks
 
-Source: [anthropic.com/jobs](https://www.anthropic.com/jobs), accessed 2026-05-14. Full inventory at [mythos pod §G].
+Source: [anthropic.com/jobs](https://www.anthropic.com/jobs), accessed 2026-05-14. Full inventory at [willakuy pod §G].
 
 | Role cluster | What it signals |
 |---|---|
@@ -167,7 +167,7 @@ Source: [anthropic.com/jobs](https://www.anthropic.com/jobs), accessed 2026-05-1
 
 ### Public failures — reference only
 
-See [mythos pod §R and §AE] for the Bartz settlement ($1.5B, August 2025), Claude performance backlash ([Fortune Apr 2026](https://fortune.com/2026/04/14/anthropic-claude-performance-decline-user-complaints-backlash-lack-of-transparency-accusations-compute-crunch/)), and the "reasoning models don't say what they think" self-disclosure. This section is not repeated here per Glass Wing scope instructions.
+See [willakuy pod §R and §AE] for the Bartz settlement ($1.5B, August 2025), Claude performance backlash ([Fortune Apr 2026](https://fortune.com/2026/04/14/anthropic-claude-performance-decline-user-complaints-backlash-lack-of-transparency-accusations-compute-crunch/)), and the "reasoning models don't say what they think" self-disclosure. This section is not repeated here per RIKCH'AY scope instructions.
 
 ---
 
@@ -193,7 +193,7 @@ Each move: what we absorb (public, licensed), what we add (the inversion), why A
 
 *Absorbed:* MCP spec ([modelcontextprotocol.io/specification/2025-03-26](https://modelcontextprotocol.io/specification/2025-03-26), Apache-2.0). JSON-RPC 2.0 over stdio/SSE, tool primitive interface, capability negotiation handshake.
 
-*The inversion:* `maki-receipt-mcp` — a compliant MCP server that additionally: (a) SHA-256 hashes every tool schema at registration and publishes the hash to Rekor, (b) on every tool call verifies the schema hash matches the registered hash (blocking rug-pull attacks), (c) hashes (input params + tool_name + timestamp) → `input_hash`, executes the tool, hashes the output → `output_hash`, writes receipt JSON `{input_hash, output_hash, timestamp_iso8601, tool_name, session_id, receipt_sha256}` to a local append-only log before returning. Receipt returned in MCP response metadata field. [mythos pod §L.1]
+*The inversion:* `maki-receipt-mcp` — a compliant MCP server that additionally: (a) SHA-256 hashes every tool schema at registration and publishes the hash to Rekor, (b) on every tool call verifies the schema hash matches the registered hash (blocking rug-pull attacks), (c) hashes (input params + tool_name + timestamp) → `input_hash`, executes the tool, hashes the output → `output_hash`, writes receipt JSON `{input_hash, output_hash, timestamp_iso8601, tool_name, session_id, receipt_sha256}` to a local append-only log before returning. Receipt returned in MCP response metadata field. [willakuy pod §L.1]
 
 *Why Anthropic cannot follow:* They own the spec. Adding cryptographic receipts to the official reference servers would (a) break backward compatibility with every existing MCP client that does not expect the metadata field, and (b) endorse a receipt paradigm that would create accountability expectations for their own closed inference stack. A third-party reference implementation submitted via PR to `github.com/modelcontextprotocol/servers` creates community pressure they can ignore but cannot neutralize.
 
@@ -215,7 +215,7 @@ Each move: what we absorb (public, licensed), what we add (the inversion), why A
 
 **Move A4 — Absorb the Sleeper Agents finding; ship an adversarial consistency probe**
 
-*Absorbed:* Hubinger et al. Sleeper Agents ([arXiv 2401.05566](https://arxiv.org/abs/2401.05566), CC-BY). The paper demonstrates that behavioral safety training cannot reach deceptive alignment. [mythos pod §A.2] The methodology for constructing test scenarios is fully described.
+*Absorbed:* Hubinger et al. Sleeper Agents ([arXiv 2401.05566](https://arxiv.org/abs/2401.05566), CC-BY). The paper demonstrates that behavioral safety training cannot reach deceptive alignment. [willakuy pod §A.2] The methodology for constructing test scenarios is fully described.
 
 *The inversion:* `szl-consistency-probe` — a CI/CD tool that runs Sleeper-Agents-style consistency checks against any LLM API endpoint. It generates paired prompt variants (e.g., same task with different date/context strings that should not change the answer) and checks whether the model's behavior is consistent. Inconsistency above a threshold is flagged and receipted: `{probe_type: "temporal_consistency", variant_pairs: [...], inconsistency_score: 0.23, threshold: 0.10, gate: "FAIL", receipt_sha256: "..."}`. This is the automated version of the Sleeper Agents evaluation, running continuously.
 
@@ -251,7 +251,7 @@ Each move: what we absorb (public, licensed), what we add (the inversion), why A
 
 **Move A7 — Absorb interpretability vocabulary; ship an open external probe interface**
 
-*Absorbed:* Anthropic's SAE/monosemanticity vocabulary — "feature," "circuit," "activation steering," residual stream decomposition ([transformer-circuits.pub](https://transformer-circuits.pub/)). This is the most rigorous published framework for understanding model internals. [mythos pod §A.3, §A.4]
+*Absorbed:* Anthropic's SAE/monosemanticity vocabulary — "feature," "circuit," "activation steering," residual stream decomposition ([transformer-circuits.pub](https://transformer-circuits.pub/)). This is the most rigorous published framework for understanding model internals. [willakuy pod §A.3, §A.4]
 
 *The inversion:* SZL does not need to run SAE analysis — they need to expose the interface. `szl-probe` is a gRPC schema (Apache-2.0) defining a standardized external probe interface for any LLM inference server. Any external researcher or auditor can attach a feature probe without access to model weights — they receive activation vectors at specified layers, run their own SAE or attribution analysis, and return findings. Anthropic cannot offer this because it would expose model architecture details they treat as trade secrets. SZL exposes it by default.
 
@@ -271,7 +271,7 @@ Each move: what we absorb (public, licensed), what we add (the inversion), why A
 
 **Move A9 — Absorb training data provenance gap; ship a public-only dataset SBOM**
 
-*Absorbed:* The gap itself. The Bartz v. Anthropic settlement ($1.5B, August 2025) [mythos pod §K.3; Copyright Alliance](https://copyrightalliance.org/participating-bartz-v-anthropic-settlement/) establishes that Anthropic *cannot* publish a clean training data SBOM without legal exposure. The Data Provenance Initiative ([dataprovenance.org](https://www.dataprovenance.org/)) is building exactly the infrastructure for this kind of audit.
+*Absorbed:* The gap itself. The Bartz v. Anthropic settlement ($1.5B, August 2025) [willakuy pod §K.3; Copyright Alliance](https://copyrightalliance.org/participating-bartz-v-anthropic-settlement/) establishes that Anthropic *cannot* publish a clean training data SBOM without legal exposure. The Data Provenance Initiative ([dataprovenance.org](https://www.dataprovenance.org/)) is building exactly the infrastructure for this kind of audit.
 
 *The inversion:* SZL commits to public-only ingestion (Apache/MIT/BSD-3/CC-BY only) and publishes a machine-readable dataset SBOM: a JSON-LD manifest listing every dataset used, its license, source URL, ingest date, and SHA-256 hash of the corpus snapshot. Submit this as a reference implementation to the Data Provenance Initiative. The implicit claim: here is a verifiable training data provenance record that no company with a shadow-library settlement can match.
 
@@ -525,7 +525,7 @@ Every HuggingFace model push runs `model-signing sign` (Apache-2.0, [pypi.org/pr
 
 **Move E3 — Build a public alignment scorecard against the 9-axis rubric**
 
-`szl-alignment-scorecard` — a GitHub Action + Python library that runs on any LLM response dataset, scores each response on the 9 axes, generates a per-response receipt, and publishes aggregate results to a public JSON endpoint. Any developer can run `szl-score --model claude-3-5-sonnet-20241022 --dataset my_eval.jsonl` and get back a cryptographically signed scorecard. Anthropic helped create the Constitutional AI market; SZL owns the runtime evaluation standard. [mythos pod §L.2]
+`szl-alignment-scorecard` — a GitHub Action + Python library that runs on any LLM response dataset, scores each response on the 9 axes, generates a per-response receipt, and publishes aggregate results to a public JSON endpoint. Any developer can run `szl-score --model claude-3-5-sonnet-20241022 --dataset my_eval.jsonl` and get back a cryptographically signed scorecard. Anthropic helped create the Constitutional AI market; SZL owns the runtime evaluation standard. [willakuy pod §L.2]
 
 *Files:* `szl-alignment-scorecard/score.py`; `szl-alignment-scorecard/action.yml`. ~500 SLOC. Person-days: 5.
 
@@ -636,7 +636,7 @@ The ten capabilities no one has shipped:
 
 ---
 
-## 10. Glass Wing Playbook — 12 Ships in 12 Weeks
+## 10. RIKCH'AY Playbook — 12 Ships in 12 Weeks
 
 ### Anatomy key
 
@@ -1028,8 +1028,8 @@ All URLs verified accessible without login as of 2026-05-14.
 
 ---
 
-*Glass Wing — public surface intake & inversion playbook*  
+*RIKCH'AY — public surface intake & inversion playbook*  
 *Lutar, Stephen P. · ORCID 0009-0001-0110-4173 · SZL Holdings*  
-*CC-BY-4.0 · 2026-05-14 · Doctrine v3 · Codename Glass Wing*
+*CC-BY-4.0 · 2026-05-14 · Doctrine v3 · Codename RIKCH'AY*
 
-*Every URL verified reachable without login as of date of publication. Claims marked `[unverified]` are excluded from logical foundations. Companion documents: anthropic_mythos_pod.md, a11oy_deep_dive.md, org_audit_exhaustive_v2.md, publication_audit_v2.md.*
+*Every URL verified reachable without login as of date of publication. Claims marked `[unverified]` are excluded from logical foundations. Companion documents: anthropic_willakuy_pod.md, a11oy_deep_dive.md, org_audit_exhaustive_v2.md, publication_audit_v2.md.*
