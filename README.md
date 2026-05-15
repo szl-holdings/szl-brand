@@ -86,6 +86,17 @@ python3 social-previews/gen.py
 
 Edit the `REPOS` table at the top of `gen.py` to add a new repo or change any of the per-repo content (kicker, title, subtitle, tag, three stat triples). Output is deterministic — same inputs always produce the same PNG bytes.
 
+## Anatomy of the SZL Agent Body
+
+[![Heart](https://img.shields.io/badge/anatomy-heart-01696F?style=flat-square)](anatomy/heart.pdf)
+[![Brain](https://img.shields.io/badge/anatomy-brain-01696F?style=flat-square)](anatomy/brain.pdf)
+[![Wires](https://img.shields.io/badge/anatomy-wires-01696F?style=flat-square)](anatomy/wires.pdf)
+[![Full Body](https://img.shields.io/badge/anatomy-full--body-01696F?style=flat-square)](anatomy/full_body.pdf)
+
+Four anatomy PDFs documenting the canonical SZL audit-closure AI agent — Heart (yuyay_v3, 13-axis conjunctive AND), Brain (5 cortical regions + Quantum Mind), Blood (YAWAR append-only receipt bus, 20 SLOC), Immune (SENTRA inline + HUKLLA 10 tripwires). See [`anatomy/README.md`](anatomy/README.md) for the full catalog including originals.
+
+**Author:** Lutar, Stephen P. · ORCID [0009-0001-0110-4173](https://orcid.org/0009-0001-0110-4173)
+
 ## License
 
 Brand assets: CC BY 4.0 (attribution required if you remix the design system). The "SZL Holdings" name, the SZL wordmark, and the SZL Holdings brand colors are trademarks of SZL Holdings and are not licensed under CC BY 4.0 — see [`NOTICE`](NOTICE).
