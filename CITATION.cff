@@ -6,8 +6,9 @@ abstract: Source-of-truth for social preview images, logo monograms, and brand g
   applied across the SZL Holdings GitHub organization.
 authors:
 - family-names: Lutar
-  given-names: Stephen
-  name-particle: P.
+  given-names: "Stephen P."
+
+  email: stephen@szlholdings.com
   orcid: https://orcid.org/0009-0001-0110-4173
   affiliation: SZL Holdings
   email: stephen@szlholdings.com
