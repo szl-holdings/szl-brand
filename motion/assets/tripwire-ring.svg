@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SZL HUKLLA TRIPWIRE RING — 10 deterministic tripwires; each fires in sequence
+     Author: Lutar, Stephen P.  -  SZL Holdings  -  CC-BY-4.0
+     Doctrine: HUKLLA is checked before+after every hatun(); failure = freeze. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300"
+     role="img" aria-label="HUKLLA tripwire ring — 10 deterministic sentinels rotating around the DEADMAN core">
+  <title>SZL SENTRA  -  HUKLLA tripwire ring</title>
+  <desc>The HUKLLA ring shows 10 deterministic tripwires (T01..T10) around a DEADMAN core.
+        Each tripwire briefly pulses rust on a 6-second sweep — security on patrol, not noise.</desc>
+
+  <defs>
+    <style><![CDATA[
+      .bg     { fill: #F5F1E8; }
+      .ink    { fill: #1A1A1A; }
+      .ink-d  { fill: #4A4A4A; }
+      .ink-f  { fill: #8A8A8A; }
+      .rust   { fill: #8C3A2E; }
+      .slate  { fill: #3A4A5A; }
+      .sans   { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+      .mono   { font-family: "IBM Plex Mono", "SF Mono", Menlo, Consolas, monospace; }
+
+      .tripwire {
+        transform-origin: center;
+        transform-box: fill-box;
+        animation: pulse 6s linear infinite;
+      }
+      @keyframes pulse {
+        0%, 100% { fill: #8C3A2E; r: 3.2; filter: none; }
+        4%       { fill: #FF8866; r: 5.5; filter: drop-shadow(0 0 6px rgba(255,100,80,0.85)); }
+        12%      { fill: #8C3A2E; r: 3.2; filter: none; }
+      }
+      .t01 { animation-delay: 0s;   }
+      .t02 { animation-delay: 0.6s; }
+      .t03 { animation-delay: 1.2s; }
+      .t04 { animation-delay: 1.8s; }
+      .t05 { animation-delay: 2.4s; }
+      .t06 { animation-delay: 3.0s; }
+      .t07 { animation-delay: 3.6s; }
+      .t08 { animation-delay: 4.2s; }
+      .t09 { animation-delay: 4.8s; }
+      .t10 { animation-delay: 5.4s; }
+
+      .ring-sweep {
+        transform-origin: 200px 165px;
+        animation: rotate 30s linear infinite;
+      }
+      @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to   { transform: rotate(360deg); }
+      }
+
+      .deadman-pulse {
+        transform-origin: 200px 165px;
+        transform-box: fill-box;
+        animation: dpulse 6s ease-in-out infinite;
+      }
+      @keyframes dpulse {
+        0%, 100% { opacity: 0.15; transform: scale(1); }
+        50%      { opacity: 0.35; transform: scale(1.05); }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .tripwire, .ring-sweep, .deadman-pulse { animation: none; }
+        .deadman-pulse { opacity: 0.2; }
+      }
+    ]]></style>
+  </defs>
+
+  <!-- background -->
+  <rect class="bg" x="0" y="0" width="400" height="300"/>
+
+  <!-- title -->
+  <text class="sans ink" x="20" y="26" font-size="13" font-weight="700">SZL SENTRA  -  HUKLLA tripwire ring</text>
+  <text class="sans ink-d" x="20" y="40" font-size="9">10 deterministic tripwires  ::  checked before+after every hatun()</text>
+
+  <!-- ring outer (subtle rotation marker) -->
+  <g class="ring-sweep">
+    <circle cx="200" cy="165" r="76" stroke="#3A4A5A" stroke-width="0.6" stroke-dasharray="3 6" fill="none" opacity="0.5"/>
+  </g>
+
+  <!-- outer ring -->
+  <circle cx="200" cy="165" r="68" stroke="#8C3A2E" stroke-width="1.4" fill="none"/>
+  <!-- inner dashed ring -->
+  <circle cx="200" cy="165" r="56" stroke="#B0B0B0" stroke-width="0.6" stroke-dasharray="2 2" fill="none"/>
+
+  <!-- DEADMAN core pulse glow -->
+  <circle class="deadman-pulse" cx="200" cy="165" r="30" fill="#8C3A2E" opacity="0.2"/>
+  <!-- DEADMAN core ring -->
+  <circle cx="200" cy="165" r="22" stroke="#8C3A2E" stroke-width="1.2" fill="#F5F1E8"/>
+  <text class="sans" x="200" y="166" font-size="9" font-weight="700" fill="#8C3A2E" text-anchor="middle">DEADMAN</text>
+  <text class="sans" x="200" y="176" font-size="6.5" fill="#4A4A4A" text-anchor="middle">halt + freeze</text>
+
+  <!-- 10 tripwires at 36-degree increments starting from top (T01) clockwise.
+       Coords pre-computed: r=68, center=(200,165)
+       T01: ang=90,  ( 200, 97 )
+       T02: ang=54,  ( 240, 110)
+       T03: ang=18,  ( 265, 144)
+       T04: ang=-18, ( 265, 186)
+       T05: ang=-54, ( 240, 220)
+       T06: ang=-90, ( 200, 233)
+       T07: ang=-126,( 160, 220)
+       T08: ang=-162,( 135, 186)
+       T09: ang= 162,( 135, 144)
+       T10: ang= 126,( 160, 110)
+  -->
+  <circle class="tripwire t01" cx="200" cy="97"  r="3.2" fill="#8C3A2E"/>
+  <circle class="tripwire t02" cx="240" cy="110" r="3.2" fill="#8C3A2E"/>
+  <circle class="tripwire t03" cx="265" cy="144" r="3.2" fill="#8C3A2E"/>
+  <circle class="tripwire t04" cx="265" cy="186" r="3.2" fill="#8C3A2E"/>
+  <circle class="tripwire t05" cx="240" cy="220" r="3.2" fill="#8C3A2E"/>
+  <circle class="tripwire t06" cx="200" cy="233" r="3.2" fill="#8C3A2E"/>
+  <circle class="tripwire t07" cx="160" cy="220" r="3.2" fill="#8C3A2E"/>
+  <circle class="tripwire t08" cx="135" cy="186" r="3.2" fill="#8C3A2E"/>
+  <circle class="tripwire t09" cx="135" cy="144" r="3.2" fill="#8C3A2E"/>
+  <circle class="tripwire t10" cx="160" cy="110" r="3.2" fill="#8C3A2E"/>
+
+  <!-- tripwire labels (positioned outside the dots) -->
+  <text class="sans" x="200" y="89"  font-size="6.5" font-weight="700" fill="#1A1A1A" text-anchor="middle">T01</text>
+  <text class="sans" x="252" y="105" font-size="6.5" font-weight="700" fill="#1A1A1A" text-anchor="middle">T02</text>
+  <text class="sans" x="280" y="146" font-size="6.5" font-weight="700" fill="#1A1A1A" text-anchor="middle">T03</text>
+  <text class="sans" x="280" y="190" font-size="6.5" font-weight="700" fill="#1A1A1A" text-anchor="middle">T04</text>
+  <text class="sans" x="252" y="231" font-size="6.5" font-weight="700" fill="#1A1A1A" text-anchor="middle">T05</text>
+  <text class="sans" x="200" y="248" font-size="6.5" font-weight="700" fill="#1A1A1A" text-anchor="middle">T06</text>
+  <text class="sans" x="148" y="231" font-size="6.5" font-weight="700" fill="#1A1A1A" text-anchor="middle">T07</text>
+  <text class="sans" x="120" y="190" font-size="6.5" font-weight="700" fill="#1A1A1A" text-anchor="middle">T08</text>
+  <text class="sans" x="120" y="146" font-size="6.5" font-weight="700" fill="#1A1A1A" text-anchor="middle">T09</text>
+  <text class="sans" x="148" y="105" font-size="6.5" font-weight="700" fill="#1A1A1A" text-anchor="middle">T10</text>
+
+  <!-- spoke connectors from DEADMAN to each tripwire (faint) -->
+  <line x1="200" y1="165" x2="200" y2="97"  stroke="#8C3A2E" stroke-width="0.35" stroke-dasharray="1 3" opacity="0.6"/>
+  <line x1="200" y1="165" x2="240" y2="110" stroke="#8C3A2E" stroke-width="0.35" stroke-dasharray="1 3" opacity="0.6"/>
+  <line x1="200" y1="165" x2="265" y2="144" stroke="#8C3A2E" stroke-width="0.35" stroke-dasharray="1 3" opacity="0.6"/>
+  <line x1="200" y1="165" x2="265" y2="186" stroke="#8C3A2E" stroke-width="0.35" stroke-dasharray="1 3" opacity="0.6"/>
+  <line x1="200" y1="165" x2="240" y2="220" stroke="#8C3A2E" stroke-width="0.35" stroke-dasharray="1 3" opacity="0.6"/>
+  <line x1="200" y1="165" x2="200" y2="233" stroke="#8C3A2E" stroke-width="0.35" stroke-dasharray="1 3" opacity="0.6"/>
+  <line x1="200" y1="165" x2="160" y2="220" stroke="#8C3A2E" stroke-width="0.35" stroke-dasharray="1 3" opacity="0.6"/>
+  <line x1="200" y1="165" x2="135" y2="186" stroke="#8C3A2E" stroke-width="0.35" stroke-dasharray="1 3" opacity="0.6"/>
+  <line x1="200" y1="165" x2="135" y2="144" stroke="#8C3A2E" stroke-width="0.35" stroke-dasharray="1 3" opacity="0.6"/>
+  <line x1="200" y1="165" x2="160" y2="110" stroke="#8C3A2E" stroke-width="0.35" stroke-dasharray="1 3" opacity="0.6"/>
+
+  <!-- footer -->
+  <text class="sans ink-f" x="20" y="288" font-size="6.5">SZL Holdings  -  Lutar, Stephen P.  -  ORCID 0009-0001-0110-4173  -  CC-BY-4.0</text>
+  <text class="sans ink-f" x="380" y="288" font-size="6.5" text-anchor="end">tripwire-ring.svg  v1  -  2026-05-14</text>
+</svg>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SZL Holdings — motion library</title>
+<meta name="description" content="SZL Holdings motion language. Doctrine made visible. Every animation is an auditable receipt.">
+<style>
+  :root {
+    --cream:  #F5F1E8;
+    --paper:  #FAF7EE;
+    --ink:    #1A1A1A;
+    --ink-d:  #4A4A4A;
+    --ink-f:  #8A8A8A;
+    --gold:   #B08940;
+    --gold-h: #C9A050;
+    --plum:   #5C3D5C;
+    --forest: #4A6741;
+    --rust:   #8C3A2E;
+    --slate:  #3A4A5A;
+    --rule:   #E0DAC8;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--cream); color: var(--ink);
+               font-family: "Source Serif 4", "Source Serif Pro", Georgia, "Times New Roman", serif;
+               -webkit-font-smoothing: antialiased; }
+  .mono   { font-family: "IBM Plex Mono", "SF Mono", Menlo, Consolas, monospace; }
+  .sans   { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+
+  header {
+    max-width: 980px; margin: 0 auto; padding: 60px 32px 28px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .eyebrow {
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--gold); font-weight: 600;
+  }
+  h1 {
+    font-size: 44px; line-height: 1.1; font-weight: 600; margin: 14px 0 12px;
+    letter-spacing: -0.01em;
+  }
+  h1 em { color: var(--gold); font-style: normal; }
+  .lede {
+    font-size: 18px; line-height: 1.55; color: var(--ink-d); max-width: 720px;
+  }
+
+  main { max-width: 980px; margin: 0 auto; padding: 40px 32px 80px; }
+
+  .grid {
+    display: grid; grid-template-columns: 1fr; gap: 48px; margin-top: 24px;
+  }
+  @media (min-width: 760px) {
+    .grid { grid-template-columns: 1fr 1fr; }
+    .full-row { grid-column: 1 / -1; }
+  }
+
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 0;
+    overflow: hidden;
+  }
+  .card .stage {
+    background: var(--cream);
+    padding: 0;
+    border-bottom: 1px solid var(--rule);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .card .stage img,
+  .card .stage object {
+    display: block; width: 100%; height: auto; max-width: 400px;
+  }
+  .card .meta {
+    padding: 18px 22px 20px;
+  }
+  .fig {
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-f); font-weight: 600; margin-bottom: 4px;
+  }
+  .card h3 {
+    margin: 0 0 8px;
+    font-size: 21px; line-height: 1.25; font-weight: 600;
+  }
+  .card p {
+    margin: 0 0 10px; font-size: 14.5px; line-height: 1.55; color: var(--ink-d);
+  }
+  .card .stamp {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px; color: var(--gold);
+    background: rgba(176,137,64,0.08);
+    border: 1px solid rgba(176,137,64,0.25);
+    border-radius: 4px; padding: 6px 8px;
+    display: inline-block;
+  }
+
+  .doctrine {
+    margin: 64px 0 0;
+    padding: 32px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-left: 4px solid var(--gold);
+    border-radius: 6px;
+  }
+  .doctrine h2 { margin: 0 0 12px; font-size: 22px; font-weight: 600; }
+  .doctrine ul { margin: 12px 0 0; padding-left: 20px; }
+  .doctrine li { margin: 6px 0; font-size: 14.5px; color: var(--ink-d); }
+  .doctrine code {
+    font-family: "IBM Plex Mono", monospace; font-size: 12.5px;
+    background: rgba(176,137,64,0.10); padding: 1px 6px; border-radius: 3px;
+    color: var(--gold);
+  }
+
+  footer {
+    max-width: 980px; margin: 0 auto;
+    padding: 32px; border-top: 1px solid var(--rule);
+    font-size: 12.5px; color: var(--ink-f);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    font-family: "Inter", system-ui, sans-serif;
+  }
+  footer a { color: var(--ink-d); text-decoration: none; border-bottom: 1px solid var(--rule); }
+  footer a:hover { color: var(--gold); border-color: var(--gold); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">SZL Holdings · motion library v1</div>
+  <h1>Doctrine made <em>visible.</em></h1>
+  <p class="lede">
+    We built an AI agent body — brain, heart, hands, and wires — and every heartbeat
+    produces a <span class="mono">sha256</span> receipt you can verify. These animations
+    aren't decoration. Each one is a different entry point into the same audited system.
+    No hallucinations, no bandaids; the hash you see is the hash on disk.
+  </p>
+</header>
+
+<main>
+
+<div class="grid">
+
+  <article class="card">
+    <div class="stage">
+      <img src="assets/heart-beat.svg" alt="Beating heart with sha256 receipt drop"
+           width="400" height="300" loading="eager" decoding="async">
+    </div>
+    <div class="meta">
+      <div class="fig">FIG 1.1 · HEART</div>
+      <h3>Beating heart</h3>
+      <p>
+        The gold <strong>YUYAY v3</strong> heart contracts on a 1.2-second beat — 40%
+        systolic snap, 60% diastolic ease. On every beat a truncated sha256 falls
+        into the YAWAR append-only bus and the bus flashes gold. The hash is
+        injected at build time from <span class="mono">git HEAD</span>.
+      </p>
+      <p>Recommended surface: <strong>a11oy</strong>, landing pages, LinkedIn hero.</p>
+      <span class="stamp">heart-beat.svg · 7.3KB · zero deps</span>
+    </div>
+  </article>
+
+  <article class="card">
+    <div class="stage">
+      <img src="assets/receipt-rain.svg" alt="Receipt rain falling into YAWAR bus"
+           width="400" height="300" loading="eager" decoding="async">
+    </div>
+    <div class="meta">
+      <div class="fig">FIG 1.2 · OUROBOROS</div>
+      <h3>Receipt rain</h3>
+      <p>
+        A counted stream of sha256 hashes falls into the gold YAWAR bus. The bus
+        lights up where each receipt lands — the audit loop in motion. Six lanes,
+        3.2-second fall, staggered every 550&nbsp;ms. HUKLLA watches from the right.
+      </p>
+      <p>Recommended surface: <strong>ouroboros</strong>, <strong>counsel</strong>, Substack hero.</p>
+      <span class="stamp">receipt-rain.svg · 5.5KB · zero deps</span>
+    </div>
+  </article>
+
+  <article class="card full-row">
+    <div class="stage">
+      <img src="assets/tripwire-ring.svg" alt="HUKLLA tripwire ring with 10 sentinels"
+           width="400" height="300" loading="eager" decoding="async">
+    </div>
+    <div class="meta">
+      <div class="fig">FIG 1.3 · SENTRA</div>
+      <h3>HUKLLA tripwire ring</h3>
+      <p>
+        Ten deterministic tripwires (T01..T10) surround the DEADMAN core. Each tripwire
+        pulses rust in sequence on a 6-second sweep — security on patrol, not noise.
+        The outer dashed ring rotates at 30s per revolution. Failure on any tripwire
+        equals freeze.
+      </p>
+      <p>Recommended surface: <strong>sentra</strong>, security dashboards, alert states.</p>
+      <span class="stamp">tripwire-ring.svg · 7.9KB · zero deps</span>
+    </div>
+  </article>
+
+</div>
+
+<section class="doctrine">
+  <h2>Constraints these animations honor</h2>
+  <ul>
+    <li>Pure inline SVG + CSS <code>@keyframes</code> — no JavaScript, no external libraries</li>
+    <li><code>prefers-reduced-motion</code> fallback baked in: each animation has a static state</li>
+    <li>Palette locked to SZL tokens: <code>#F5F1E8</code> cream, <code>#1A1A1A</code> ink, <code>#B08940</code> gold</li>
+    <li>Fonts are system-safe — no proprietary Tiempos / Styrene / OpenAI Sans embeds</li>
+    <li>GitHub README-deployable as <code>&lt;img src=&quot;heart-beat.svg&quot;&gt;</code></li>
+    <li>The hash shown is the hash on disk — no fake particle counts, no decorative noise</li>
+    <li>License: CC-BY-4.0 — every animation is itself an auditable artifact</li>
+  </ul>
+</section>
+
+</main>
+
+<footer>
+  <div>SZL Holdings · Lutar, Stephen P. · ORCID 0009-0001-0110-4173 · CC-BY-4.0</div>
+  <div>motion library v1 · 2026-05-14</div>
+</footer>
+
+</body>
+</html>

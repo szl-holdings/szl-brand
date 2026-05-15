@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SZL RECEIPT-RAIN — sha256 hashes falling into the YAWAR bus
+     Author: Lutar, Stephen P.  -  SZL Holdings  -  CC-BY-4.0
+     Doctrine: every action produces an auditable receipt; the ouroboros eats its own tail. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300"
+     role="img" aria-label="Receipt rain — sha256 hashes falling into the YAWAR append-only bus">
+  <title>SZL OUROBOROS  -  receipt rain into YAWAR</title>
+  <desc>A steady, counted stream of truncated sha256 hashes falls onto the gold YAWAR receipt
+        bus. Each hash flashes gold on landing — this is the audit loop in motion.</desc>
+
+  <defs>
+    <style><![CDATA[
+      .bg     { fill: #F5F1E8; }
+      .ink    { fill: #1A1A1A; }
+      .ink-d  { fill: #4A4A4A; }
+      .ink-f  { fill: #8A8A8A; }
+      .gold   { fill: #B08940; }
+      .rust   { fill: #8C3A2E; }
+      .mono   { font-family: "IBM Plex Mono", "SF Mono", Menlo, Consolas, monospace; font-weight: 600; }
+      .sans   { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+
+      .drop {
+        opacity: 0;
+        animation: fall 3.2s linear infinite;
+        will-change: transform, opacity;
+      }
+      @keyframes fall {
+        0%   { transform: translateY(-30px); opacity: 0; }
+        8%   { opacity: 0.95; }
+        85%  { transform: translateY(155px); opacity: 0.95; fill: #B08940; }
+        88%  { transform: translateY(165px); opacity: 1;    fill: #C9A050; }
+        100% { transform: translateY(165px); opacity: 0;    fill: #B08940; }
+      }
+      .d1 { animation-delay: 0s;    }
+      .d2 { animation-delay: 0.55s; }
+      .d3 { animation-delay: 1.10s; }
+      .d4 { animation-delay: 1.65s; }
+      .d5 { animation-delay: 2.20s; }
+      .d6 { animation-delay: 2.75s; }
+
+      .bus-flash {
+        animation: pulse 3.2s linear infinite;
+        opacity: 0;
+      }
+      @keyframes pulse {
+        0%, 80%   { opacity: 0; }
+        88%       { opacity: 0.7; }
+        100%      { opacity: 0; }
+      }
+      .b1 { animation-delay: 0s;    }
+      .b2 { animation-delay: 0.55s; }
+      .b3 { animation-delay: 1.10s; }
+      .b4 { animation-delay: 1.65s; }
+      .b5 { animation-delay: 2.20s; }
+      .b6 { animation-delay: 2.75s; }
+
+      @media (prefers-reduced-motion: reduce) {
+        .drop      { animation: none; opacity: 0.85; transform: translateY(100px); }
+        .bus-flash { animation: none; opacity: 0; }
+      }
+    ]]></style>
+  </defs>
+
+  <!-- background -->
+  <rect class="bg" x="0" y="0" width="400" height="300"/>
+
+  <!-- title -->
+  <text class="sans ink" x="20" y="26" font-size="13" font-weight="700">SZL OUROBOROS  -  audit loop</text>
+  <text class="sans ink-d" x="20" y="40" font-size="9">every action sha256-hashed  ::  every hash auditable</text>
+
+  <!-- thin source rule near top -->
+  <line x1="40" y1="65" x2="360" y2="65" stroke="#B0B0B0" stroke-width="0.6" stroke-dasharray="2 4"/>
+  <text class="sans ink-f" x="40" y="61" font-size="6.5">action → sha256(json.dumps(packet, sort_keys=True))</text>
+
+  <!-- The falling sha256 hashes. Different x-positions and stagger via .d1..d6 -->
+  <text class="mono d1 drop" x="60"  y="80" font-size="11" fill="#B08940">a3f7c921</text>
+  <text class="mono d2 drop" x="120" y="80" font-size="11" fill="#B08940">8b1e44df</text>
+  <text class="mono d3 drop" x="180" y="80" font-size="11" fill="#B08940">df4e9741</text>
+  <text class="mono d4 drop" x="240" y="80" font-size="11" fill="#B08940">e9fac882</text>
+  <text class="mono d5 drop" x="300" y="80" font-size="11" fill="#B08940">bacf5443</text>
+  <text class="mono d6 drop" x="345" y="80" font-size="11" fill="#B08940">6381bc23</text>
+
+  <!-- YAWAR bus -->
+  <rect x="40" y="240" width="320" height="26" rx="4" class="bg" stroke="#B08940" stroke-width="1.8"/>
+  <text class="sans" x="50" y="257" font-size="9" font-weight="700" fill="#B08940">YAWAR  -  append-only receipt bus</text>
+  <text class="sans" x="240" y="257" font-size="6.5" fill="#4A4A4A">receipts immutable  ::  snapshots frozen</text>
+
+  <!-- per-column flash overlays on YAWAR aligned with the falling lanes -->
+  <rect class="bus-flash b1" x="40"  y="240" width="50" height="26" rx="4" fill="#C9A050"/>
+  <rect class="bus-flash b2" x="100" y="240" width="50" height="26" rx="4" fill="#C9A050"/>
+  <rect class="bus-flash b3" x="160" y="240" width="50" height="26" rx="4" fill="#C9A050"/>
+  <rect class="bus-flash b4" x="220" y="240" width="50" height="26" rx="4" fill="#C9A050"/>
+  <rect class="bus-flash b5" x="280" y="240" width="50" height="26" rx="4" fill="#C9A050"/>
+  <rect class="bus-flash b6" x="325" y="240" width="35" height="26" rx="4" fill="#C9A050"/>
+
+  <!-- HUKLLA tripwire ring miniature (right side, observer) -->
+  <g transform="translate(370 145)">
+    <circle r="14" stroke="#8C3A2E" stroke-width="1.2" fill="none"/>
+    <circle r="5" fill="#8C3A2E" opacity="0.15"/>
+    <circle r="5" stroke="#8C3A2E" stroke-width="0.8" fill="none"/>
+    <text class="sans" x="0" y="2" font-size="5" font-weight="700" fill="#8C3A2E" text-anchor="middle">HUKLLA</text>
+  </g>
+  <text class="sans rust" x="370" y="178" font-size="6" text-anchor="middle">audits T01..T10</text>
+
+  <!-- footer -->
+  <text class="sans ink-f" x="20" y="288" font-size="6.5">SZL Holdings  -  Lutar, Stephen P.  -  ORCID 0009-0001-0110-4173  -  CC-BY-4.0</text>
+  <text class="sans ink-f" x="380" y="288" font-size="6.5" text-anchor="end">receipt-rain.svg  v1  -  2026-05-14</text>
+</svg>
