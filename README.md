@@ -2,16 +2,16 @@
 
 > Brand assets, logos, social-preview templates, and visual doctrine for SZL Holdings
 
-[![CI](https://github.com/szl-holdings/szl-brand/actions/workflows/ci.yml/badge.svg)](https://github.com/szl-holdings/szl-brand/actions/workflows/ci.yml)
-[![CodeQL](https://github.com/szl-holdings/szl-brand/actions/workflows/codeql.yml/badge.svg)](https://github.com/szl-holdings/szl-brand/actions/workflows/codeql.yml)
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/szl-holdings/szl-brand/badge)](https://securityscorecards.dev/viewer/?uri=github.com/szl-holdings/szl-brand)
+[![CI](https://github.com/szl-holdings/szl-brand/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/szl-holdings/szl-brand/actions/workflows/ci.yml)
+[![uv-managed](https://img.shields.io/badge/uv-managed-28251D?style=flat-square)](https://github.com/szl-holdings/szl-brand)
+[![CodeQL](https://github.com/szl-holdings/szl-brand/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/szl-holdings/szl-brand/actions/workflows/codeql.yml)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/szl-holdings/szl-brand/badge)](https://scorecard.dev/viewer/?uri=github.com/szl-holdings/szl-brand)
 [![License](https://img.shields.io/badge/license-CC--BY--4.0-2DA44E?style=flat-square)](./LICENSE)
-[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
-[![uv](https://img.shields.io/badge/uv-managed-7C3AED?style=flat-square)](https://github.com/astral-sh/uv)
-[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.20434276-805AD5?style=flat-square&logo=doi&logoColor=white)](https://doi.org/10.5281/zenodo.20434276)
-[![Series-A Engineering](https://img.shields.io/badge/Series--A-Engineering-28251D?style=flat-square)](https://szlholdings.com)
-[![Doctrine v6](https://img.shields.io/badge/Doctrine-v6-01696F?style=flat-square)](https://github.com/szl-holdings/platform/blob/main/docs/doctrine/szl-doctrine.md)
-[![ORCID](https://img.shields.io/badge/ORCID-0009--0001--0110--4173-A6CE39?style=flat-square&logo=orcid&logoColor=white)](https://orcid.org/0009-0001-0110-4173)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20434276.svg)](https://doi.org/10.5281/zenodo.20434276)
+[![Concept DOI](https://img.shields.io/badge/concept%20DOI-10.5281%2Fzenodo.19944926-01696F?style=flat-square&logo=doi&logoColor=white)](https://doi.org/10.5281/zenodo.19944926)
+[![Series-A Engineering](https://img.shields.io/badge/Series--A-Engineering-success?style=flat-square)](https://github.com/szl-holdings)
+[![Brand doctrine](https://img.shields.io/badge/Frontier-Brand%20doctrine-28251D?style=flat-square)](https://doi.org/10.5281/zenodo.20434276)
+[![Doctrine v6](https://img.shields.io/badge/Doctrine--v6-passing-success?style=flat-square)](https://github.com/szl-holdings/platform/blob/main/docs/doctrine/szl-doctrine.md)
 
 > **Frontier Capability:** First brand SDK governed by Doctrine v6 with monosemantic governance feature decomposition — `szl-interp` visual-layer integration target (v18.0 Frontier 3 · [Ouroboros Thesis DOI 10.5281/zenodo.20434276](https://doi.org/10.5281/zenodo.20434276)).
 
