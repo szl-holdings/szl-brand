@@ -13,6 +13,8 @@
 [![Doctrine v6](https://img.shields.io/badge/Doctrine-v6-01696F?style=flat-square)](https://github.com/szl-holdings/platform/blob/main/docs/doctrine/szl-doctrine.md)
 [![ORCID](https://img.shields.io/badge/ORCID-0009--0001--0110--4173-A6CE39?style=flat-square&logo=orcid&logoColor=white)](https://orcid.org/0009-0001-0110-4173)
 
+> **Frontier Capability:** First brand SDK governed by Doctrine v6 with monosemantic governance feature decomposition — `szl-interp` visual-layer integration target (v18.0 Frontier 3 · [Ouroboros Thesis DOI 10.5281/zenodo.20434276](https://doi.org/10.5281/zenodo.20434276)).
+
 `szl-brand` is the authoritative source for SZL Holdings brand assets: social-preview images (1280×640 PNG), logo monograms, visual identity doctrine, and the Python SDK for programmatic brand asset generation. All brand artifacts deployed across the SZL org originate from this repository.
 
 ---
