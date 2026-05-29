@@ -20,15 +20,6 @@
 
 ---
 
-## On Hugging Face
-
-This repository's dataset mirror and org showcase live on the [SZLHOLDINGS Hugging Face org](https://huggingface.co/SZLHOLDINGS):
-
-| Surface | Hugging Face artifact |
-|---------|---------------------|
-| **Source mirror** | [szl-visual-identity](https://huggingface.co/datasets/SZLHOLDINGS/szl-visual-identity) |
-| **Org showcase** | [SZLHOLDINGS on Hugging Face](https://huggingface.co/SZLHOLDINGS) — 22 datasets · 19+ Spaces · 2 models |
-
 ## Contents
 
 | Path | Purpose |
