@@ -148,3 +148,15 @@ The 13 substrate repos cross-link reciprocally. This footer is maintained by GH 
 - [`vsp-otel`](https://github.com/szl-holdings/vsp-otel) — OpenTelemetry exporter for Λ-axis spans
 
 Org page: [github.com/szl-holdings](https://github.com/szl-holdings) · Doctrine v6 · 11 axioms · 30 GREEN modules · v18.0 DOI [`10.5281/zenodo.20434276`](https://doi.org/10.5281/zenodo.20434276)
+
+
+---
+
+## What szl-brand Is NOT
+
+Doctrine v6 honest scoping:
+
+- **Not a design system for external use.** Brand assets are SZL Holdings proprietary; no license for third-party reuse without written permission.
+- **Not a component library.** This repo ships PDFs, SVGs, and doctrine documents, not React/CSS components.
+- **Not a marketing agency brief.** Brand doctrine is founder-governed; external agencies must use approved assets only.
+- **Not complete.** Ongoing evolution tracked in ROADMAP.md; Doctrine v6 is the current baseline.
