@@ -632,7 +632,7 @@ The ten capabilities no one has shipped:
 
 **The structural thesis:** The labs are optimized for capability (benchmark scores), throughput (tokens/sec), and product velocity (features/month). None of these metrics reward cryptographic provenance, formal verification, supply chain security, reproducibility, or receipt-based audit trails. Adding these features is *in direct tension* with the labs' competitive metrics — and creates legal liability they will not accept for their existing customers. SZL builds exactly where the tension is highest.
 
-**The regulatory accelerant:** EU AI Act Articles 13-14, FTC AI enforcement, DoD C2PA recommendations, and NIST AI RMF ([NIST RMF update March 2025](https://www.nist.gov/system/files/documents/2025/03/12/NIST.AI.600-1.pdf)) are converging on mandatory AI auditability for high-risk systems. The labs helped write these standards while building infrastructure that cannot satisfy them. SZL builds the infrastructure.
+**The regulatory accelerant:** EU AI Act Articles 13-14, FTC AI enforcement, DoD C2PA recommendations, and NIST AI RMF ([NIST RMF update March 2025](https://airc.nist.gov/technical-reports/#NIST.AI.600-1)) are converging on mandatory AI auditability for high-risk systems. The labs helped write these standards while building infrastructure that cannot satisfy them. SZL builds the infrastructure.
 
 ---
 
@@ -1024,7 +1024,7 @@ All URLs verified accessible without login as of 2026-05-14.
 | EU AI Act | digital-strategy.ec.europa.eu | https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai |
 | NixOS reproducibility issue | GitHub | https://github.com/NixOS/nixpkgs/issues/9731 |
 | Data Provenance Initiative | dataprovenance.org | https://www.dataprovenance.org/ |
-| NIST AI RMF 2025 | NIST | https://www.nist.gov/system/files/documents/2025/03/12/NIST.AI.600-1.pdf |
+| NIST AI RMF 2025 | NIST | https://airc.nist.gov/technical-reports/#NIST.AI.600-1 |
 
 ---
 
