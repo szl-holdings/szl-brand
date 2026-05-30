@@ -6,7 +6,7 @@
 [![Tests](https://github.com/szl-holdings/szl-brand/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/szl-holdings/szl-brand/actions/workflows/tests.yml)
 [![CodeQL](https://github.com/szl-holdings/szl-brand/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/szl-holdings/szl-brand/actions/workflows/codeql.yml)
 [![SBOM](https://github.com/szl-holdings/szl-brand/actions/workflows/sbom.yml/badge.svg?branch=main)](https://github.com/szl-holdings/szl-brand/actions/workflows/sbom.yml)
-[![SLSA 3](https://github.com/szl-holdings/szl-brand/actions/workflows/slsa.yml/badge.svg?branch=main)](https://github.com/szl-holdings/szl-brand/actions/workflows/slsa.yml)
+[![SLSA L1 (SBOM + DCO)](https://img.shields.io/badge/SLSA-L1_(SBOM_%2B_DCO)-0B1F3A.svg?style=flat-square)](https://slsa.dev/spec/v1.0/levels)
 [![DCO](https://github.com/szl-holdings/szl-brand/actions/workflows/dco.yml/badge.svg?branch=main)](https://github.com/szl-holdings/szl-brand/actions/workflows/dco.yml)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/szl-holdings/szl-brand/badge)](https://securityscorecards.dev/viewer/?uri=github.com/szl-holdings/szl-brand)
 [![ORCID](https://img.shields.io/badge/ORCID-0009--0001--0110--4173-A6CE39.svg?style=flat-square&logo=orcid&logoColor=white)](https://orcid.org/0009-0001-0110-4173)
@@ -112,6 +112,9 @@ The SZL monogram system is defined in `anatomy/`. Three variants:
 ```
 
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.20434276-805AD5?style=flat-square&logo=doi&logoColor=white)](https://doi.org/10.5281/zenodo.20434276)
+
+
+> **NOTE:** SLSA Level 1 (source + build provenance documented). L2/L3 require Sigstore + isolated builders (roadmap).
 
 ---
 
