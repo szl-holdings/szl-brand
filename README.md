@@ -31,7 +31,7 @@
 > Brand assets, logos, social-preview templates, and visual doctrine for SZL Holdings
 
 
-> **Frontier Capability:** First brand SDK governed by Doctrine v6 with monosemantic governance feature decomposition — `szl-interp` visual-layer integration target (v18.0 Frontier 3 · [Ouroboros Thesis DOI 10.5281/zenodo.20434276](https://doi.org/10.5281/zenodo.20434276)).
+> **Frontier Capability:** First brand SDK governed by Doctrine v7 with monosemantic governance feature decomposition — `szl-interp` visual-layer integration target (v18.0 Frontier 3 · [Ouroboros Thesis DOI 10.5281/zenodo.20434276](https://doi.org/10.5281/zenodo.20434276)).
 
 `szl-brand` is the authoritative source for SZL Holdings brand assets: social-preview images (1280×640 PNG), logo monograms, visual identity doctrine, and the Python SDK for programmatic brand asset generation. All brand artifacts deployed across the SZL org originate from this repository.
 
@@ -137,7 +137,7 @@ The SZL monogram system is defined in `anatomy/`. Three variants:
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Brand asset changes require one reviewer approval. Doctrine v6 visual standards required.
+See [CONTRIBUTING.md](CONTRIBUTING.md). Brand asset changes require one reviewer approval. Doctrine v7 visual standards required.
 
 Related: [`szl-holdings/platform`](https://github.com/szl-holdings/platform) · [`szl-holdings/szl-cookbook`](https://github.com/szl-holdings/szl-cookbook)
 
@@ -167,16 +167,16 @@ The 13 substrate repos cross-link reciprocally. This footer is maintained by GH 
 - [`agi-forecast`](https://github.com/szl-holdings/agi-forecast) — PAC-Bayes + Bekenstein governance-trajectory forecasts
 - [`vsp-otel`](https://github.com/szl-holdings/vsp-otel) — OpenTelemetry exporter for Λ-axis spans
 
-Org page: [github.com/szl-holdings](https://github.com/szl-holdings) · Doctrine v6 · 11 axioms · 32 GREEN modules · v18.0 DOI [`10.5281/zenodo.20434276`](https://doi.org/10.5281/zenodo.20434276)
+Org page: [github.com/szl-holdings](https://github.com/szl-holdings) · Doctrine v7 · 11 axioms · 32 GREEN modules · v18.0 DOI [`10.5281/zenodo.20434276`](https://doi.org/10.5281/zenodo.20434276)
 
 
 ---
 
 ## What szl-brand Is NOT
 
-Doctrine v6 honest scoping:
+Doctrine v7 honest scoping:
 
 - **Not a design system for external use.** Brand assets are SZL Holdings proprietary; no license for third-party reuse without written permission.
 - **Not a component library.** This repo ships PDFs, SVGs, and doctrine documents, not React/CSS components.
 - **Not a marketing agency brief.** Brand doctrine is founder-governed; external agencies must use approved assets only.
-- **Not complete.** Ongoing evolution tracked in ROADMAP.md; Doctrine v6 is the current baseline.
+- **Not complete.** Ongoing evolution tracked in ROADMAP.md; Doctrine v7 is the current baseline.
