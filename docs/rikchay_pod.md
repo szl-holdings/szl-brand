@@ -439,7 +439,7 @@ Key outputs: Gemini 2.0 ("the agentic era," Dec 2024 [Google blog](https://blog.
 
 *Absorbed:* AlphaFold 1/2 were celebrated for open release. The community expected AlphaFold 3 to follow. DeepMind restricted it. The community's expectation is the signal — there is a market for "open release with cryptographic provenance."
 
-*The inversion:* Every SZL model release ships with: SHA-256 manifest over all weight files, Sigstore cosign signature, SLSA Level 2 provenance attestation, Rekor transparency log entry. Toolchain: `model-signing` ([pypi.org/project/model-signing](https://pypi.org/project/model-signing/), Apache-2.0). This is what the open science community wanted DeepMind to do. SZL does it by default.
+*The inversion:* Every SZL model release ships with: SHA-256 manifest over all weight files, Sigstore cosign signature, SLSA L1-honest provenance (L2 build-service attestation is roadmap via Wire D, not yet claimed), Rekor transparency log entry. Toolchain: `model-signing` ([pypi.org/project/model-signing](https://pypi.org/project/model-signing/), Apache-2.0). This is what the open science community wanted DeepMind to do. SZL does it by default.
 
 *File paths:* `.github/actions/szl-model-signer/action.yml`; `.github/actions/szl-model-signer/sign.sh`. ~200 SLOC.
 
