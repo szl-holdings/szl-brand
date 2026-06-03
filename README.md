@@ -184,3 +184,21 @@ Doctrine v11 honest scoping:
 - **Not a component library.** This repo ships PDFs, SVGs, and doctrine documents, not React/CSS components.
 - **Not a marketing agency brief.** Brand doctrine is founder-governed; external agencies must use approved assets only.
 - **Not complete.** Ongoing evolution tracked in ROADMAP.md; Doctrine v11 is the current baseline.
+
+---
+
+## `kit/` — Merged from brand-kit
+
+As of 2026-06-03, the former [`szl-holdings/brand-kit`](https://github.com/szl-holdings/brand-kit) repository has been consolidated here to reduce org sprawl. Its full contents are preserved under [`kit/`](./kit/):
+
+| Path | Contents |
+|------|----------|
+| [`kit/tokens/`](./kit/tokens/) | Design tokens (color, spacing, radius, elevation) |
+| [`kit/logos/`](./kit/logos/) | Logo suite (SVG, PNG variants) |
+| [`kit/fonts/`](./kit/fonts/) | Typography assets |
+| [`kit/TYPOGRAPHY.md`](./kit/TYPOGRAPHY.md) | Typography doctrine |
+| [`kit/COMPONENT_TOKENS.md`](./kit/COMPONENT_TOKENS.md) | Component-level token reference |
+| [`kit/brand-bible.md`](./kit/brand-bible.md) | Brand bible |
+| [`kit/examples/`](./kit/examples/) | Usage examples |
+
+> **Migration:** If you previously referenced `szl-holdings/brand-kit`, update bookmarks to `szl-holdings/szl-brand/tree/main/kit`. The original brand-kit repo is archived and points here.

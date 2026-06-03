@@ -1,0 +1,267 @@
+{
+  "$schema": "https://design-tokens.org/schema.json",
+  "name": "SZL Holdings / KANCHAY design tokens",
+  "version": "1.0.0",
+  "license": "Apache-2.0",
+  "attribution": "ORCID 0009-0001-0110-4173",
+  "color": {
+    "brand": {
+      "yawar": {
+        "50": "#fdecec",
+        "100": "#f9cfcf",
+        "200": "#f0a3a3",
+        "300": "#e57373",
+        "400": "#d65151",
+        "500": "#c0392b",
+        "600": "#a32a1f",
+        "700": "#822018",
+        "800": "#5e1712",
+        "900": "#3d0f0c"
+      },
+      "yuyay": {
+        "50": "#e6f7f6",
+        "100": "#bfeae8",
+        "200": "#8fd9d5",
+        "300": "#5cc4bf",
+        "400": "#34aaa4",
+        "500": "#168f89",
+        "600": "#0f726e",
+        "700": "#0b5957",
+        "800": "#083f3e",
+        "900": "#052827"
+      },
+      "hatun": {
+        "50": "#faf5e9",
+        "100": "#f0e3c4",
+        "200": "#e4cf99",
+        "300": "#d7b96b",
+        "400": "#cda64a",
+        "500": "#c08f2f",
+        "600": "#a3741f",
+        "700": "#825a18",
+        "800": "#5e4012",
+        "900": "#3d290b"
+      }
+    },
+    "gray": {
+      "50": "#f5f7fa",
+      "100": "#e6eaf1",
+      "200": "#c9d2df",
+      "300": "#a4b1c4",
+      "400": "#76859b",
+      "500": "#525f73",
+      "600": "#3c4757",
+      "700": "#2a3340",
+      "800": "#1b222c",
+      "900": "#10151c",
+      "950": "#0a0f1e"
+    },
+    "semantic": {
+      "success": "#1f9d57",
+      "warning": "#c08f2f",
+      "error": "#c0392b",
+      "info": "#2f7fb5"
+    },
+    "surface": {
+      "bg": "#0a0f1e",
+      "deep": "#10151c",
+      "surface": "#1b222c",
+      "overlay": "#2a3340",
+      "border": "#3c4757",
+      "text": "#f5f7fa",
+      "text-sub": "#c9d2df",
+      "text-ghost": "#76859b"
+    }
+  },
+  "_wcag_verification": [
+    {
+      "pair": "text on bg",
+      "fg": "#f5f7fa",
+      "bg": "#0a0f1e",
+      "ratio": 17.79,
+      "AA": true,
+      "AAA": true,
+      "large_text": false
+    },
+    {
+      "pair": "text on surface",
+      "fg": "#f5f7fa",
+      "bg": "#1b222c",
+      "ratio": 14.92,
+      "AA": true,
+      "AAA": true,
+      "large_text": false
+    },
+    {
+      "pair": "text-sub on bg",
+      "fg": "#c9d2df",
+      "bg": "#0a0f1e",
+      "ratio": 12.52,
+      "AA": true,
+      "AAA": true,
+      "large_text": false
+    },
+    {
+      "pair": "text-ghost on bg (lg)",
+      "fg": "#76859b",
+      "bg": "#0a0f1e",
+      "ratio": 5.09,
+      "AA": true,
+      "AAA": true,
+      "large_text": true
+    },
+    {
+      "pair": "yuyay-300 on bg",
+      "fg": "#5cc4bf",
+      "bg": "#0a0f1e",
+      "ratio": 9.19,
+      "AA": true,
+      "AAA": true,
+      "large_text": false
+    },
+    {
+      "pair": "yuyay-200 on bg",
+      "fg": "#8fd9d5",
+      "bg": "#0a0f1e",
+      "ratio": 11.87,
+      "AA": true,
+      "AAA": true,
+      "large_text": false
+    },
+    {
+      "pair": "hatun-300 on bg",
+      "fg": "#d7b96b",
+      "bg": "#0a0f1e",
+      "ratio": 10.04,
+      "AA": true,
+      "AAA": true,
+      "large_text": false
+    },
+    {
+      "pair": "hatun-200 on bg",
+      "fg": "#e4cf99",
+      "bg": "#0a0f1e",
+      "ratio": 12.44,
+      "AA": true,
+      "AAA": true,
+      "large_text": false
+    },
+    {
+      "pair": "yawar-300 on bg",
+      "fg": "#e57373",
+      "bg": "#0a0f1e",
+      "ratio": 6.39,
+      "AA": true,
+      "AAA": false,
+      "large_text": false
+    },
+    {
+      "pair": "success(light) on bg",
+      "fg": "#3fce82",
+      "bg": "#0a0f1e",
+      "ratio": 9.42,
+      "AA": true,
+      "AAA": true,
+      "large_text": false
+    },
+    {
+      "pair": "warning(light) on bg",
+      "fg": "#e4cf99",
+      "bg": "#0a0f1e",
+      "ratio": 12.44,
+      "AA": true,
+      "AAA": true,
+      "large_text": false
+    },
+    {
+      "pair": "error(light) on bg",
+      "fg": "#f0a3a3",
+      "bg": "#0a0f1e",
+      "ratio": 9.52,
+      "AA": true,
+      "AAA": true,
+      "large_text": false
+    },
+    {
+      "pair": "info(light) on bg",
+      "fg": "#7cb8e0",
+      "bg": "#0a0f1e",
+      "ratio": 8.9,
+      "AA": true,
+      "AAA": true,
+      "large_text": false
+    },
+    {
+      "pair": "gray-900 on gray-50",
+      "fg": "#10151c",
+      "bg": "#f5f7fa",
+      "ratio": 17.07,
+      "AA": true,
+      "AAA": true,
+      "large_text": false
+    },
+    {
+      "pair": "gray-700 on gray-50",
+      "fg": "#2a3340",
+      "bg": "#f5f7fa",
+      "ratio": 11.89,
+      "AA": true,
+      "AAA": true,
+      "large_text": false
+    },
+    {
+      "pair": "yuyay-700 on gray-50",
+      "fg": "#0b5957",
+      "bg": "#f5f7fa",
+      "ratio": 7.58,
+      "AA": true,
+      "AAA": true,
+      "large_text": false
+    },
+    {
+      "pair": "yawar-600 on gray-50",
+      "fg": "#a32a1f",
+      "bg": "#f5f7fa",
+      "ratio": 6.73,
+      "AA": true,
+      "AAA": false,
+      "large_text": false
+    },
+    {
+      "pair": "hatun-700 on gray-50",
+      "fg": "#825a18",
+      "bg": "#f5f7fa",
+      "ratio": 5.71,
+      "AA": true,
+      "AAA": false,
+      "large_text": false
+    },
+    {
+      "pair": "white on yuyay-600",
+      "fg": "#ffffff",
+      "bg": "#0f726e",
+      "ratio": 5.75,
+      "AA": true,
+      "AAA": false,
+      "large_text": false
+    },
+    {
+      "pair": "white on yawar-600",
+      "fg": "#ffffff",
+      "bg": "#a32a1f",
+      "ratio": 7.22,
+      "AA": true,
+      "AAA": true,
+      "large_text": false
+    },
+    {
+      "pair": "gray-950 on hatun-400",
+      "fg": "#0a0f1e",
+      "bg": "#cda64a",
+      "ratio": 8.32,
+      "AA": true,
+      "AAA": true,
+      "large_text": false
+    }
+  ]
+}

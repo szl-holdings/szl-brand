@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- KANCHAY logo ALTERNATES (3). CC BY 4.0 · ORCID 0009-0001-0110-4173 -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 340" width="900" height="340" role="img" aria-label="KANCHAY logo alternates">
+  <title>KANCHAY alternates</title>
+  <defs>
+    <linearGradient id="yg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5cc4bf"/><stop offset="1" stop-color="#168f89"/></linearGradient>
+    <linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e4cf99"/><stop offset="1" stop-color="#c08f2f"/></linearGradient>
+  </defs>
+  <rect width="900" height="340" fill="#0a0f1e"/>
+
+  <!-- ALT A: single-cord lambda — apex knot only, one continuous cord folded into Λ -->
+  <g transform="translate(60,60)">
+    <text x="0" y="-12" font-family="monospace" font-size="16" fill="#76859b">ALT A · folded cord</text>
+    <path d="M100 30 C 70 80, 55 120, 40 175" fill="none" stroke="url(#hg)" stroke-width="18" stroke-linecap="round"/>
+    <path d="M100 30 C 130 80, 145 120, 160 175" fill="none" stroke="url(#yg)" stroke-width="18" stroke-linecap="round"/>
+    <circle cx="100" cy="38" r="13" fill="#c0392b"/>
+  </g>
+
+  <!-- ALT B: khipu-disc — radial cords from a central node (DAG fan), lambda implied by top notch -->
+  <g transform="translate(360,60)">
+    <text x="0" y="-12" font-family="monospace" font-size="16" fill="#76859b">ALT B · radial DAG</text>
+    <circle cx="100" cy="100" r="68" fill="none" stroke="#3c4757" stroke-width="3"/>
+    <g stroke-width="12" stroke-linecap="round" fill="none">
+      <path d="M100 100 L100 36" stroke="url(#hg)"/>
+      <path d="M100 100 L150 142" stroke="url(#yg)"/>
+      <path d="M100 100 L50 142" stroke="url(#yg)"/>
+    </g>
+    <g fill="#c0392b"><circle cx="100" cy="36" r="9"/><circle cx="150" cy="142" r="9"/><circle cx="50" cy="142" r="9"/></g>
+    <circle cx="100" cy="100" r="11" fill="#f5f7fa"/>
+  </g>
+
+  <!-- ALT C: monoline mark — thin lambda + dotted knot cord, for small/embossed use -->
+  <g transform="translate(660,60)">
+    <text x="0" y="-12" font-family="monospace" font-size="16" fill="#76859b">ALT C · monoline</text>
+    <path d="M100 32 L52 172" fill="none" stroke="#f5f7fa" stroke-width="8" stroke-linecap="round"/>
+    <path d="M100 32 L148 172" fill="none" stroke="#f5f7fa" stroke-width="8" stroke-linecap="round"
+          stroke-dasharray="2 22"/>
+    <g fill="#f5f7fa"><circle cx="118" cy="88" r="7"/><circle cx="130" cy="128" r="7"/><circle cx="142" cy="168" r="7"/></g>
+  </g>
+</svg>

@@ -1,0 +1,21 @@
+/* SZL Holdings / KANCHAY component tokens v1.0.0 — Apache-2.0 — ORCID 0009-0001-0110-4173
+   Spacing / radii / shadows / motion / z-index. Consumed by every flagship. */
+:root {
+  --space-px:1px; --space-1:.25rem; --space-2:.5rem; --space-3:.75rem; --space-4:1rem;
+  --space-5:1.25rem; --space-6:1.5rem; --space-8:2rem; --space-10:2.5rem; --space-12:3rem;
+  --space-16:4rem; --space-20:5rem; --space-24:6rem;
+  --radius-sm:4px; --radius-md:8px; --radius-lg:12px; --radius-xl:16px; --radius-2xl:24px; --radius-full:9999px;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.40); --shadow-md:0 2px 8px rgba(0,0,0,.45);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.50); --shadow-xl:0 16px 48px rgba(0,0,0,.55);
+  --shadow-focus:0 0 0 3px color-mix(in srgb, var(--color-yuyay-400) 55%, transparent);
+  --ease-standard:cubic-bezier(.2,0,0,1); --ease-emphasized:cubic-bezier(.3,0,.1,1);
+  --ease-out:cubic-bezier(0,0,.2,1); --ease-in:cubic-bezier(.4,0,1,1);
+  --duration-instant:75ms; --duration-fast:150ms; --duration-base:250ms;
+  --duration-slow:400ms; --duration-slower:600ms;
+  --z-raised:10; --z-dropdown:1000; --z-sticky:1100; --z-overlay:1200;
+  --z-modal:1300; --z-popover:1400; --z-toast:1500;
+  --border-hairline:1px; --border-thick:2px; --border-focus:3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration:.01ms !important; transition-duration:.01ms !important; }
+}

@@ -1,0 +1,74 @@
+<!doctype html>
+<!-- KANCHAY example components (vanilla HTML/CSS). CC BY 4.0 / Apache-2.0 · ORCID 0009-0001-0110-4173 -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>KANCHAY components — HTML/CSS</title>
+  <link rel="stylesheet" href="../../tokens/COLOR_TOKENS.css"/>
+  <link rel="stylesheet" href="../../tokens/COMPONENT_TOKENS.css"/>
+  <style>
+    body{
+      background:var(--color-a11oy-bg); color:var(--color-a11oy-text);
+      font-family:"Inter",system-ui,sans-serif; margin:0; padding:var(--space-12);
+      line-height:1.6;
+    }
+    h1{font-family:"IBM Plex Sans",sans-serif;font-weight:700;letter-spacing:-.01em}
+    /* Button */
+    .btn{
+      font:inherit; font-weight:600; cursor:pointer; border:none;
+      padding:var(--space-2) var(--space-5); border-radius:var(--radius-md);
+      transition:background var(--duration-fast) var(--ease-standard),
+                 box-shadow var(--duration-fast) var(--ease-standard);
+    }
+    .btn:focus-visible{outline:none; box-shadow:var(--shadow-focus)}
+    .btn-primary{background:var(--color-yuyay-600); color:#fff}        /* 5.75:1 AA */
+    .btn-primary:hover{background:var(--color-yuyay-700)}
+    .btn-accent{background:var(--color-hatun-400); color:var(--color-gray-950)} /* 8.32:1 AAA */
+    .btn-accent:hover{background:var(--color-hatun-300)}
+    .btn-danger{background:var(--color-yawar-600); color:#fff}         /* 7.22:1 AAA */
+    /* Card */
+    .card{
+      background:var(--color-a11oy-surface); border:1px solid var(--color-a11oy-border);
+      border-radius:var(--radius-lg); padding:var(--space-6); max-width:380px;
+      box-shadow:var(--shadow-md);
+    }
+    .card h3{margin:0 0 var(--space-2); font-family:"IBM Plex Sans",sans-serif}
+    .card .hash{font-family:"JetBrains Mono",monospace; color:var(--color-yuyay-300);
+      font-size:.875rem}
+    /* Alert */
+    .alert{display:flex; gap:var(--space-3); padding:var(--space-4);
+      border-radius:var(--radius-md); border:1px solid; align-items:flex-start}
+    .alert-success{background:color-mix(in srgb,var(--color-success) 12%,transparent);
+      border-color:var(--color-success); color:#3fce82}
+    .alert-warning{background:color-mix(in srgb,var(--color-warning) 12%,transparent);
+      border-color:var(--color-warning); color:var(--color-hatun-200)}
+    .alert-error{background:color-mix(in srgb,var(--color-error) 12%,transparent);
+      border-color:var(--color-error); color:var(--color-yawar-200)}
+    .stack{display:flex; gap:var(--space-3); flex-wrap:wrap; margin-bottom:var(--space-8)}
+  </style>
+</head>
+<body>
+  <h1>KANCHAY components</h1>
+
+  <div class="stack">
+    <button class="btn btn-primary">Verify receipt</button>
+    <button class="btn btn-accent">View khipu chain</button>
+    <button class="btn btn-danger">Halt (T10)</button>
+  </div>
+
+  <div class="stack">
+    <div class="card">
+      <h3>Receipt verified</h3>
+      <p>Chain extends append-only ledger. Signature: <strong>DSSE PLACEHOLDER</strong>.</p>
+      <div class="hash">root 3f9a8c2e…b71d</div>
+    </div>
+  </div>
+
+  <div class="stack" style="flex-direction:column;max-width:520px">
+    <div class="alert alert-success"><span>OK</span><span>Yuyay gate cleared — all 13 axes above floor.</span></div>
+    <div class="alert alert-warning"><span>!</span><span>Λ-uniqueness is <strong>Conjecture 1</strong> (open), not proven.</span></div>
+    <div class="alert alert-error"><span>×</span><span>Action halted: tripwire T01 fired. No receipt written.</span></div>
+  </div>
+</body>
+</html>

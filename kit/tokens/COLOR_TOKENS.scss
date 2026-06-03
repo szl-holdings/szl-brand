@@ -1,0 +1,120 @@
+// SZL Holdings / KANCHAY color tokens v1.0.0 — Apache-2.0 — ORCID 0009-0001-0110-4173
+Generated; do not hand-edit. Source: COLOR_TOKENS.json
+// SCSS map + flat variables
+
+// brand
+$color-yawar-50: #fdecec;
+$color-yawar-100: #f9cfcf;
+$color-yawar-200: #f0a3a3;
+$color-yawar-300: #e57373;
+$color-yawar-400: #d65151;
+$color-yawar-500: #c0392b;
+$color-yawar-600: #a32a1f;
+$color-yawar-700: #822018;
+$color-yawar-800: #5e1712;
+$color-yawar-900: #3d0f0c;
+$color-yuyay-50: #e6f7f6;
+$color-yuyay-100: #bfeae8;
+$color-yuyay-200: #8fd9d5;
+$color-yuyay-300: #5cc4bf;
+$color-yuyay-400: #34aaa4;
+$color-yuyay-500: #168f89;
+$color-yuyay-600: #0f726e;
+$color-yuyay-700: #0b5957;
+$color-yuyay-800: #083f3e;
+$color-yuyay-900: #052827;
+$color-hatun-50: #faf5e9;
+$color-hatun-100: #f0e3c4;
+$color-hatun-200: #e4cf99;
+$color-hatun-300: #d7b96b;
+$color-hatun-400: #cda64a;
+$color-hatun-500: #c08f2f;
+$color-hatun-600: #a3741f;
+$color-hatun-700: #825a18;
+$color-hatun-800: #5e4012;
+$color-hatun-900: #3d290b;
+
+// gray
+$color-gray-50: #f5f7fa;
+$color-gray-100: #e6eaf1;
+$color-gray-200: #c9d2df;
+$color-gray-300: #a4b1c4;
+$color-gray-400: #76859b;
+$color-gray-500: #525f73;
+$color-gray-600: #3c4757;
+$color-gray-700: #2a3340;
+$color-gray-800: #1b222c;
+$color-gray-900: #10151c;
+$color-gray-950: #0a0f1e;
+
+// semantic
+$color-success: #1f9d57;
+$color-warning: #c08f2f;
+$color-error: #c0392b;
+$color-info: #2f7fb5;
+
+// surface
+$color-a11oy-bg: #0a0f1e;
+$color-a11oy-deep: #10151c;
+$color-a11oy-surface: #1b222c;
+$color-a11oy-overlay: #2a3340;
+$color-a11oy-border: #3c4757;
+$color-a11oy-text: #f5f7fa;
+$color-a11oy-text-sub: #c9d2df;
+$color-a11oy-text-ghost: #76859b;
+
+$szl-colors: (
+  "yawar-50": #fdecec,
+  "yawar-100": #f9cfcf,
+  "yawar-200": #f0a3a3,
+  "yawar-300": #e57373,
+  "yawar-400": #d65151,
+  "yawar-500": #c0392b,
+  "yawar-600": #a32a1f,
+  "yawar-700": #822018,
+  "yawar-800": #5e1712,
+  "yawar-900": #3d0f0c,
+  "yuyay-50": #e6f7f6,
+  "yuyay-100": #bfeae8,
+  "yuyay-200": #8fd9d5,
+  "yuyay-300": #5cc4bf,
+  "yuyay-400": #34aaa4,
+  "yuyay-500": #168f89,
+  "yuyay-600": #0f726e,
+  "yuyay-700": #0b5957,
+  "yuyay-800": #083f3e,
+  "yuyay-900": #052827,
+  "hatun-50": #faf5e9,
+  "hatun-100": #f0e3c4,
+  "hatun-200": #e4cf99,
+  "hatun-300": #d7b96b,
+  "hatun-400": #cda64a,
+  "hatun-500": #c08f2f,
+  "hatun-600": #a3741f,
+  "hatun-700": #825a18,
+  "hatun-800": #5e4012,
+  "hatun-900": #3d290b,
+  "gray-50": #f5f7fa,
+  "gray-100": #e6eaf1,
+  "gray-200": #c9d2df,
+  "gray-300": #a4b1c4,
+  "gray-400": #76859b,
+  "gray-500": #525f73,
+  "gray-600": #3c4757,
+  "gray-700": #2a3340,
+  "gray-800": #1b222c,
+  "gray-900": #10151c,
+  "gray-950": #0a0f1e,
+  "success": #1f9d57,
+  "warning": #c08f2f,
+  "error": #c0392b,
+  "info": #2f7fb5,
+  "a11oy-bg": #0a0f1e,
+  "a11oy-deep": #10151c,
+  "a11oy-surface": #1b222c,
+  "a11oy-overlay": #2a3340,
+  "a11oy-border": #3c4757,
+  "a11oy-text": #f5f7fa,
+  "a11oy-text-sub": #c9d2df,
+  "a11oy-text-ghost": #76859b,
+);
