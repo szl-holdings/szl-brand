@@ -607,7 +607,7 @@ What no AI lab does with Lean 4 in production: attach proof terms to API respons
 
 NixOS full reproducibility is not default ([NixOS issue #9731](https://github.com/NixOS/nixpkgs/issues/9731)) — it requires careful lockfile management. GPU floating-point non-determinism prevents bit-identical training reproduction for most models. **Honest position for SZL:** inference-level reproducibility (bit-identical outputs from identical inputs) is achievable for dense-architecture models at temperature=0 with fixed seed. For MoE models (Llama 4 Maverick, GPT-4 class), inference non-determinism is a known limitation — documented in signed manifests.
 
-Bazel (Apache-2.0) with remote caching enables SLSA Level 3 compliant builds. All `szl-*` library builds use Bazel.
+Bazel (Apache-2.0) with remote caching supports reproducible builds. SZL targets honest **SLSA L1** provenance today; isolated-builder L2 is roadmap and **L3 is NOT claimed** (doctrine: L3 is banned). All `szl-*` library builds use Bazel.
 
 ---
 
