@@ -185,7 +185,7 @@ Doctrine v11 honest scoping:
 
 ## `kit/` — Merged from brand-kit
 
-As of 2026-06-03, the former [`szl-holdings/brand-kit`](https://github.com/szl-holdings/brand-kit) repository has been consolidated here to reduce org sprawl. Its full contents are preserved under [`kit/`](./kit/):
+As of 2026-06-03, the former `szl-holdings/brand-kit` repository has been consolidated here to reduce org sprawl. Its full contents are preserved under [`kit/`](./kit/):
 
 | Path | Contents |
 |------|----------|
