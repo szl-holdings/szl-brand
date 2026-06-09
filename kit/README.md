@@ -11,8 +11,10 @@
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/PENDING/badge)](https://bestpractices.coreinfrastructure.org/)
 
 > The KANCHAY brand kit for SZL Holdings — design tokens, logo suite, typography, and
-> ready-to-paste component examples. Consumed by every flagship (a11oy, amaru, sentra,
-> killinchu, rosie).
+> ready-to-paste component examples. Consumed by both shipping products (`a11oy` and
+> `killinchu`) and by the roadmap roles (Provenance Anchor / Operator / Policy) that surface
+> inside them. The codenames `amaru` / `sentra` / `rosie` are retired internal names — see
+> [`brand-bible.md`](./brand-bible.md) §5; never use them as live product names.
 
 **KANCHAY** is the SZL brand organ (*kanchay* = "light / radiance" in Quechua). It is the
 calibrated output stage of a governed reasoning system: what we *show* never exceeds what the
@@ -88,4 +90,5 @@ label proof status honestly (PROVEN / SORRY / AXIOM / **Conjecture 1**); receipt
 
 ![SZL Holdings](./branding/szl-avatar-animated.gif)
 
-*Amaru — the Inca avatar of SZL Holdings. Animated mark (400×400, 16fps loop). Signed Yachay.*
+*The animated brand mark of SZL Holdings — a double-headed Andean serpent motif (400×400, 16fps loop). Signed Yachay. ("Amaru" here is the iconographic motif of the mark, not a product; the codename `amaru` is retired — see `brand-bible.md` §5.)*
+
