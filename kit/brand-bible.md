@@ -37,7 +37,7 @@ every receipt extends an append-only hash chain.
 
 | Pillar | What it means operationally |
 |---|---|
-| **Quechua-rooted** | Every organ and flagship carries a cited common-noun Quechua name. The khipu (knotted-cord record) is the literal data structure of our receipt DAG, not a metaphor. |
+| **Quechua-rooted** | Every organ carries a cited common-noun Quechua name (and `killinchu` among the products); where a name is not Quechua (e.g. `a11oy`, or the honest role names) we say so plainly rather than inventing a folk etymology. The khipu (knotted-cord record) is the literal data structure of our receipt DAG, not a metaphor. |
 | **Sovereign AI** | Open-weight LLMs unified behind one router (a11oy.code); no dependence on a single closed vendor for the reasoning backend. |
 | **Provable provenance** | Every emitted claim `a` ships only if `K(a)=𝟙[moralGrounding(a) ≥ 0.95 ∧ measurabilityHonesty(a) ≥ 0.95]` (SF-09). Receipts chain by SHA-256 (`sha256`, `sha256_inj` are canonical axioms). |
 | **Defense-grade auditability** | HUKLLA tripwires (T01–T10), 13-axis Yuyay gate, Lean obligation layer with every `sorry` tagged, never hidden. |
@@ -92,28 +92,47 @@ token, see §6). The Andean references are **engineering analogies with citation
 
 ## 5 · Naming Conventions
 
-**Rule A — Flagships are lowercase.** `a11oy`, `amaru`, `sentra`, `killinchu`, `rosie`.
+**Rule A — Product names are the honest roles; codenames are retired.** The canonical public
+product vocabulary is the *honest role name* of each surface, never an internal codename. Only
+**two products ship today: `a11oy` and `killinchu`.** Every other capability is a roadmap role,
+named by what it does — never by a retired codename.
 **Rule B — PURIQ and the organs are UPPERCASE.** `PURIQ`, `KANCHAY`, `YUYAY`, `YAWAR`,
 `HUKLLA`, `KALLPA`, `KHIPU`, `HATUN`, `SUMAQ`, `Λ-SPINE`.
-**Rule C — Every name carries a Quechua etymology + citation, every time it is formally introduced.**
+**Rule C — Every Quechua name carries a Quechua etymology + citation, every time it is formally introduced.**
 
-> Lexicon anchor: standard Quechua lexica indexed at [kaikki.org Quechua](https://kaikki.org/eswiktionary/)
-> and [Wiktionary `puriy`](https://en.wiktionary.org/wiki/puriy). Glosses below follow the
-> session canon (`PURIQ_SUBFORMULAS_v12.md`), cross-checked on Wiktionary where an entry exists.
+### Shipping products (canonical names)
 
-### Flagships (lowercase)
+| Name | Quechua gloss | Citation | What it is | Status |
+|---|---|---|---|---|
+| **a11oy** | (English "alloy" — a fusion of metals) stylized with `11` | leetspeak brand mark, not Quechua | Brand orchestration + unified open-LLM router (a11oy.code) | **Shipping** |
+| **killinchu** | kestrel (a small falcon) | session canon, kaikki.org Quechua lexicon | Physical-space / drone vertical agent (SF-12) | **Shipping** |
 
-| Name | Quechua gloss | Citation | What it is |
-|---|---|---|---|
-| **a11oy** | (English "alloy" — a fusion of metals) stylized with `11` | leetspeak brand mark, not Quechua | Brand orchestration + unified open-LLM router (a11oy.code) |
-| **amaru** | serpent / viper; double-headed serpent in Andean iconography | [Wiktionary `amaru`](https://en.wiktionary.org/wiki/amaru) | Memory cortex / high-stakes reasoning (SF-01) |
-| **sentra** | (Latin-rooted "sentry / sentinel") | English coinage, not Quechua | Inline adversarial-input screen, immune front line (SF-04 surface) |
-| **killinchu** | kestrel (a small falcon) | session canon, kaikki.org Quechua lexicon | Physical-space / drone vertical agent (SF-12) |
-| **rosie** | (English given name; the embodied/assistant face) | English coinage, not Quechua | Brain-jack mesh visualizer / embodied assistant |
+> These are the only two products presented as live. Their endpoints, receipts, and signed
+> images exist today; everything below is a roadmap *role*, not a shipping product.
 
-> **Honesty note:** `a11oy`, `sentra`, and `rosie` are **not** Quechua words; we say so plainly
-> rather than inventing folk etymologies. Only the organ tags and `amaru`/`killinchu` are
-> Quechua. This honesty is itself a brand value (voice principle 1).
+### Roadmap roles (honest product vocabulary)
+
+The canonical name of each not-yet-shipping capability is its **honest role**. We do not present
+these as live products and we do not advertise endpoints, clone URLs, or images for them.
+
+| Honest role (canonical) | What it is | Status |
+|---|---|---|
+| **Provenance Anchor** | Memory cortex / high-stakes reasoning provenance (SF-01) | Roadmap (role surfaced inside a11oy) |
+| **Policy** | Inline adversarial-input screen / policy-gate surface (SF-04 surface) | Roadmap (role surfaced inside a11oy) |
+| **Operator** | Receipt-orchestration / embodied-assistant mesh visualizer | Roadmap (role surfaced inside a11oy) |
+
+> **Retired internal codenames (do not use in public copy).** Earlier internal drafts referred
+> to these roles by the codenames `amaru` (→ Provenance Anchor), `sentra` (→ Policy), and
+> `rosie` (→ Operator). Those codenames are **retired historical names**, not flagships and not
+> shipping products. They must not appear in public-facing copy as live product names. Where they
+> survive in an immutable artifact (a published-PDF-paired source, a Rekor-logged bundle, an
+> in-repo file path), they are tolerated only as a historical identifier and never as a live
+> product claim. A "jarvis" codename, if encountered, is likewise retired and never user-visible.
+
+> **Honesty note:** `a11oy` is not a Quechua word and we say so plainly rather than inventing a
+> folk etymology; only the organ tags and `killinchu` are Quechua. The honest role names
+> (Provenance Anchor / Policy / Operator) are English descriptions of function, not Quechua.
+> This honesty is itself a brand value (voice principle 1).
 
 ### Organs (UPPERCASE)
 
@@ -133,11 +152,14 @@ token, see §6). The Andean references are **engineering analogies with citation
 ### Casing enforcement (machine-checkable)
 
 ```
-flagships  := lowercase exact match  ∈ {a11oy, amaru, sentra, killinchu, rosie}
+products   := lowercase exact match  ∈ {a11oy, killinchu}   # the only two shipping products
+roles      := honest role strings    ∈ {"Provenance Anchor", "Policy", "Operator"}
 organs     := UPPERCASE exact match  ∈ {PURIQ, KANCHAY, YUYAY, YAWAR, HUKLLA,
                                         KALLPA, KHIPU, HATUN, SUMAQ}
-violation  := any flagship rendered capitalized (e.g. "Amaru" in body copy) OR
-              any organ rendered lowercase (e.g. "kanchay" outside this gloss table)
+retired    := codenames               ∈ {amaru, sentra, rosie, jarvis}   # NEVER in public copy
+violation  := any retired codename rendered as a live product name OR
+              any organ rendered lowercase (e.g. "kanchay" outside this gloss table) OR
+              any roadmap role presented as a shipping product / live endpoint
 ```
 
 ---
@@ -209,3 +231,4 @@ Brand assets © 2026 SZL Holdings, released **CC BY 4.0**. Code/token files rele
 **Apache-2.0**. Attribution: ORCID 0009-0001-0110-4173. No proprietary fonts; open-source only.
 
 — Yachay, 2026-06-01. All claims sourced; no mystical terms; no v11 LOCKED number changed.
+
