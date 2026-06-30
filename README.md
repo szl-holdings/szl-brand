@@ -20,7 +20,7 @@
 # szl-brand
 
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC_BY_4.0-0B1F3A.svg?style=flat-square&logo=creativecommons&logoColor=00D4FF)](https://creativecommons.org/licenses/by/4.0/)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20434276.svg)](https://doi.org/10.5281/zenodo.20434276)
+[![DOI Thesis v18.0](https://zenodo.org/badge/DOI/10.5281/zenodo.20434276.svg)](https://doi.org/10.5281/zenodo.20434276) [![DOI Concept](https://zenodo.org/badge/DOI/10.5281/zenodo.19944926.svg)](https://doi.org/10.5281/zenodo.19944926)
 [![CI](https://github.com/szl-holdings/szl-brand/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/szl-holdings/szl-brand/actions/workflows/ci.yml)
 [![Tests](https://github.com/szl-holdings/szl-brand/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/szl-holdings/szl-brand/actions/workflows/tests.yml)
 [![CodeQL](https://github.com/szl-holdings/szl-brand/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/szl-holdings/szl-brand/actions/workflows/codeql.yml)
