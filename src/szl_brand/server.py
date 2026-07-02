@@ -166,8 +166,22 @@ class AssetHandler(http.server.SimpleHTTPRequestHandler):
 
     def _serve_asset(self, path: str):
         path = unquote(path)
-        file_path = Path(path)
-        if not file_path.exists() or not file_path.is_file():
+        # Path-injection guard (CWE-22): fully resolve the requested path and
+        # require it to live under one of the configured asset_dirs. Rejects
+        # traversal / absolute-path escapes (e.g. ../, /etc/passwd) with 404.
+        try:
+            resolved = Path(path).resolve(strict=True)
+        except (OSError, RuntimeError):
+            self.send_error(404)
+            return
+        allowed_bases = [d.resolve() for d in self.asset_dirs if d.exists()]
+        if not any(
+            resolved == base or base in resolved.parents for base in allowed_bases
+        ):
+            self.send_error(404)
+            return
+        file_path = resolved
+        if not file_path.is_file():
             self.send_error(404)
             return
         content_types = {
