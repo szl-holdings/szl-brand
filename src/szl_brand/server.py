@@ -23,8 +23,8 @@ GALLERY_HTML = """<!DOCTYPE html>
     --void: #0A0A0F;
     --abyss: #12121A;
     --obsidian: #1A1A24;
-    --accent: #805AD5;
-    --accent-bright: #A882FF;
+    --accent: #DF735F;
+    --accent-bright: #F0917E;
     --text-primary: #F0F0F0;
     --text-secondary: #B4B4BE;
     --text-muted: #6E6E78;
@@ -35,7 +35,7 @@ GALLERY_HTML = """<!DOCTYPE html>
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     background: var(--void);
     color: var(--text-primary);
-    min-height: 100vh;
+    min-height: 100dvh;
     padding: 2rem;
   }
   header {
@@ -45,7 +45,7 @@ GALLERY_HTML = """<!DOCTYPE html>
   }
   header h1 { font-size: 1.5rem; font-weight: 700; }
   header .tag {
-    background: rgba(128,90,213,0.15);
+    background: rgba(223,115,95,0.15);
     border: 1px solid var(--accent);
     color: var(--accent-bright);
     padding: 0.25rem 0.75rem;

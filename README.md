@@ -100,7 +100,7 @@ Upload the output to: GitHub repo Settings → Social preview.
 All SZL repo social previews conform to:
 - **Dimensions:** 1280×640 px (2:1 aspect ratio, GitHub recommended)
 - **Format:** PNG, lossless
-- **Color system:** SZL brand palette (Hydra Teal `#01696F`, Dark `#28251D`)
+- **Color system:** KANCHAY brand palette — deep-space navy ground `#030F29`, single coral accent `#DF735F` (used sparingly), gold premium `#D7B96B`, teal focus/links `#5CC4BF`. No purple (Doctrine v11). See [`kit/tokens/`](kit/tokens/) and [`docs/DESIGN_DIRECTION.md`](docs/DESIGN_DIRECTION.md).
 - **Typography:** Consistent monogram + repo name + tagline layout
 
 ### Logo Monograms
@@ -132,7 +132,7 @@ The SZL monogram system is defined in `anatomy/`. Three variants:
 }
 ```
 
-[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.20434276-805AD5?style=flat-square&logo=doi&logoColor=white)](https://doi.org/10.5281/zenodo.20434276)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.20434276-DF735F?style=flat-square&logo=doi&logoColor=white)](https://doi.org/10.5281/zenodo.20434276)
 
 
 > **NOTE:** SLSA Level 1 (source + build provenance documented). L2/L3 require Sigstore + isolated builders (roadmap).
