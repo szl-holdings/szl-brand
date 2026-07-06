@@ -16,12 +16,13 @@ from pathlib import Path
 OUT = Path("/tmp/social-previews")
 OUT.mkdir(exist_ok=True)
 
-# Brand: dark bg, purple accent
+# Brand: dark bg, coral accent (KANCHAY single-node accent).
+# Doctrine v11 bans purple as a UI fill; the previous #805ad5 accent violated it.
 BG_TOP = (10, 10, 15)
 BG_BOTTOM = (18, 18, 26)
-ACCENT = (128, 90, 213)          # #805ad5
-ACCENT_BRIGHT = (168, 130, 255)  # for edge glow
-ACCENT_DIM = (128, 90, 213, 34)  # 22 alpha
+ACCENT = (223, 115, 95)          # #df735f coral-400
+ACCENT_BRIGHT = (240, 145, 126)  # #f0917e coral-300, for edge glow
+ACCENT_DIM = (223, 115, 95, 34)  # coral @ 22 alpha
 TEXT_PRIMARY = (240, 240, 240)
 TEXT_SECONDARY = (180, 180, 190)
 TEXT_MUTED = (110, 110, 120)

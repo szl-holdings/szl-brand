@@ -105,12 +105,17 @@ ABYSS = Color.from_hex("#12121A")
 OBSIDIAN = Color.from_hex("#1A1A24")
 GRAPHITE = Color.from_hex("#2A2A3A")
 
-ACCENT = Color.from_hex("#805AD5")
-ACCENT_BRIGHT = Color.from_hex("#A882FF")
-ACCENT_DIM = Color.from_hex("#805AD522")
+# Canonical brand accent — coral (KANCHAY founder-approved single accent).
+# Doctrine v11: PURPLE is banned as a UI fill hue; the previous #805AD5 /
+# #A882FF purple accents violated it and disagreed with szl-design-system.css
+# and docs/DESIGN_DIRECTION.md, which mandate one coral node.
+ACCENT = Color.from_hex("#DF735F")
+ACCENT_BRIGHT = Color.from_hex("#F0917E")
+ACCENT_DIM = Color.from_hex("#DF735F22")
 
-HYDRA_TEAL = Color.from_hex("#01696F")
-GOLD = Color.from_hex("#B08940")
+PROOF_TEAL = Color.from_hex("#5CC4BF")  # yuyay-300 (focus/links); was HYDRA_TEAL #01696F
+HYDRA_TEAL = PROOF_TEAL  # backward-compatible alias — value re-pointed to KANCHAY teal
+GOLD = Color.from_hex("#D7B96B")  # hatun-300 (premium emphasis)
 EMBER = Color.from_hex("#E85D3A")
 FROST = Color.from_hex("#4ECDC4")
 
