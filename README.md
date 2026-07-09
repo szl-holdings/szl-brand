@@ -50,7 +50,7 @@ This repository's dataset mirror and org showcase live on the [SZLHOLDINGS Huggi
 | Surface | Hugging Face artifact |
 |---------|---------------------|
 | **Source mirror** | [szl-visual-identity](https://huggingface.co/datasets/SZLHOLDINGS/szl-visual-identity) |
-| **Org showcase** | [SZLHOLDINGS on Hugging Face](https://huggingface.co/SZLHOLDINGS) — 24 datasets · 19+ Spaces · 2 models |
+| **Org showcase** | [SZLHOLDINGS on Hugging Face](https://huggingface.co/SZLHOLDINGS) — 8 governed-kernel models · 19+ datasets · 11+ Spaces |
 
 ## Contents
 
@@ -161,7 +161,6 @@ The substrate repos cross-link reciprocally. Links below point only to live repo
 
 - [`a11oy`](https://github.com/szl-holdings/a11oy) — governed command platform (policy · measurement · knowledge · QEC-integrity)
 - [`killinchu`](https://github.com/szl-holdings/killinchu) — drones & vessels counter-UAS Λ-gate
-- [`uds-mesh`](https://github.com/szl-holdings/uds-mesh) — UDS span schemas + governance receipts
 - [`lutar-lean`](https://github.com/szl-holdings/lutar-lean) — Lean 4 + Mathlib kernel proofs (8 locked theorems · 749 decl / 14 axioms / 163 sorries · canonical @ `c7c0ba17`)
 - [`ouroboros`](https://github.com/szl-holdings/ouroboros) — bounded-recursion runtime
 - [`platform`](https://github.com/szl-holdings/platform) — composing monorepo
