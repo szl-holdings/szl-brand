@@ -29,9 +29,10 @@ from szl_brand.palette import (
 
 W, H = 1280, 640
 
-FONT_REG = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
-FONT_BOLD = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
-FONT_MONO = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf"
+
+def _font(size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
+    """Load Pillow's bundled font instead of a platform-specific filesystem font."""
+    return ImageFont.load_default(size=size)
 
 
 @dataclass
@@ -173,12 +174,12 @@ def _draw_stat_card(
     accent_color = palette.accent(0)
 
     for size in (34, 30, 26, 22, 18):
-        f_val = ImageFont.truetype(FONT_BOLD, size)
+        f_val = _font(size)
         bb = draw.textbbox((0, 0), stat.value, font=f_val)
         if bb[2] - bb[0] <= w - 24:
             break
 
-    f_lbl = ImageFont.truetype(FONT_REG, 13)
+    f_lbl = _font(13)
     bb = draw.textbbox((0, 0), stat.value, font=f_val)
     vw = bb[2] - bb[0]
     draw.text((x + w // 2 - vw // 2, y + 18), stat.value, fill=accent_color.rgb, font=f_val)
@@ -192,7 +193,7 @@ def _draw_tag_pill(
     draw: ImageDraw.ImageDraw, img: Image.Image, tag: str, palette: ProcPalette
 ) -> None:
     """Accent-colored tag pill."""
-    f_pill = ImageFont.truetype(FONT_BOLD, 13)
+    f_pill = _font(13)
     pill_w = max(100, draw.textbbox((0, 0), tag, font=f_pill)[2] + 36)
 
     accent = palette.accent(0)
@@ -227,16 +228,16 @@ def generate_preview(spec: PreviewSpec, output: Path) -> Path:
 
     draw = ImageDraw.Draw(img)
 
-    f_kick = ImageFont.truetype(FONT_REG, 16)
+    f_kick = _font(16)
     draw.text((80, 80), spec.kicker, fill=TEXT_MUTED.rgb, font=f_kick)
 
     for tsize in (78, 70, 62, 54, 48, 42):
-        f_title = ImageFont.truetype(FONT_BOLD, tsize)
+        f_title = _font(tsize)
         if draw.textbbox((0, 0), spec.title, font=f_title)[2] <= W - 180:
             break
     draw.text((80, 130), spec.title, fill=TEXT_PRIMARY.rgb, font=f_title)
 
-    f_sub = ImageFont.truetype(FONT_REG, 24)
+    f_sub = _font(24)
     draw.text((80, 240), spec.subtitle, fill=TEXT_SECONDARY.rgb, font=f_sub)
 
     _draw_tag_pill(draw, img, spec.tag, palette)
@@ -249,9 +250,9 @@ def generate_preview(spec: PreviewSpec, output: Path) -> Path:
         for i, stat in enumerate(spec.stats[:3]):
             _draw_stat_card(img, 80 + i * (card_w + gap), card_y, card_w, card_h, stat, palette)
 
-    f_foot = ImageFont.truetype(FONT_REG, 14)
+    f_foot = _font(14)
     draw.text((80, H - 48), "github.com/szl-holdings", fill=TEXT_MUTED.rgb, font=f_foot)
-    f_mono = ImageFont.truetype(FONT_MONO, 22)
+    f_mono = _font(22)
     bb_m = draw.textbbox((0, 0), "SZL", font=f_mono)
     mw = bb_m[2] - bb_m[0]
     draw.text((W - 80 - mw, H - 50), "SZL", fill=palette.accent(0).rgb, font=f_mono)

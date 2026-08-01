@@ -1,94 +1,31 @@
-# szl-holdings/brand-kit
+# KANCHAY kit
 
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-[![Doctrine v11 LOCKED](https://img.shields.io/badge/Doctrine-v11_LOCKED-d4a444.svg)](https://github.com/szl-holdings/lutar-lean)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19944926.svg)](https://doi.org/10.5281/zenodo.19944926)
+This directory is the canonical, versioned design-system source consumed by the `szl-brand` SDK.
 
-[![Security Policy](https://img.shields.io/badge/Security-Policy-red.svg)](SECURITY.md)
+| Directory | Contract |
+|---|---|
+| [`tokens`](./tokens) | Color, typography, spacing, radius, elevation, motion, components, and contrast evidence. |
+| [`contracts`](./contracts) | Fail-closed metadata conventions for truthful public surfaces. |
+| [`adapters`](./adapters) | Framework mappings generated into consumer repositories. |
+| [`logos`](./logos) | Primary, horizontal, monochrome, favicon, and glyph assets. |
+| [`fonts`](./fonts) | Font licenses and self-hosting guidance. |
+| [`examples`](./examples) | Plain HTML, React, and Vue examples. |
 
+Generate a consumer bundle from the repository root:
 
-<!-- CII-BEST-PRACTICES-BADGE: PENDING — replace 'PENDING' with the project id once founder registers this repo at https://bestpractices.coreinfrastructure.org/ -->
-[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/PENDING/badge)](https://bestpractices.coreinfrastructure.org/)
-
-> The KANCHAY brand kit for SZL Holdings — design tokens, logo suite, typography, and
-> ready-to-paste component examples. Consumed by both shipping products (`a11oy` and
-> `killinchu`) and by the roadmap roles (Provenance Anchor / Operator / Policy) that surface
-> inside them. The codenames `amaru` / `sentra` / `rosie` are retired internal names — see
-> [`brand-bible.md`](./brand-bible.md) §5; never use them as live product names.
-
-**KANCHAY** is the SZL brand organ (*kanchay* = "light / radiance" in Quechua). It is the
-calibrated output stage of a governed reasoning system: what we *show* never exceeds what the
-anatomy can *prove*. See [`brand-bible.md`](./brand-bible.md) for mission, voice, naming, and
-the lock list.
-
-- **License:** code & tokens **Apache-2.0**; brand assets (logos, type specimens) **CC BY 4.0**.
-- **Attribution:** ORCID 0009-0001-0110-4173.
-- **Fonts:** open-source only (SIL OFL 1.1) — Inter, IBM Plex Sans/Mono, JetBrains Mono.
-
-## Install / use the tokens
-
-Drop the CSS custom properties into your app once at the root:
-
-```css
-@import "tokens/COLOR_TOKENS.css";
-@import "tokens/COMPONENT_TOKENS.css";
+```bash
+python -m szl_brand export-system \
+  --source-revision "$(git rev-parse HEAD)" \
+  --output ./dist/kanchay
 ```
 
-```css
-.btn-primary { background: var(--color-yuyay-600); color: #fff; border-radius: var(--radius-md); }
-.receipt    { font-family: var(--font-mono); color: var(--color-yuyay-300); }
-```
+Consumers must pin the generated `manifest.json`, keep the four exported assets together, and
+verify their SHA-256 hashes before publication. The initial production adapter targets VitePress;
+other adapters remain outside the v1 contract until they have executable consumer tests.
 
-Tailwind:
+The exporter binds checkout bytes to the canonical repository's exact `HEAD`. Built wheels carry
+that revision plus per-asset hashes as generated build provenance, so a caller-supplied SHA cannot
+relabel either source mode.
 
-```js
-// tailwind.config.js
-const szl = require("./tokens/COLOR_TOKENS.tailwind.config.js");
-module.exports = { presets: [szl], /* ... */ };
-```
-
-SCSS map and a typed JSON source are also provided (`tokens/COLOR_TOKENS.scss`,
-`tokens/COLOR_TOKENS.json`).
-
-## Palette (brand)
-
-| Token | Hex | Meaning |
-|---|---|---|
-| `yuyay-600` (primary) | `#0f726e` | *yuyay* = thought / wisdom — teal, primary interactive |
-| `yawar-600` (alert) | `#a32a1f` | *yawar* = blood — red, alerts / circulatory |
-| `hatun-400` (accent) | `#cda64a` | *hatun* = great — gold, premium accent |
-| `gray-950` (bg) | `#0a0f1e` | navy base (dark-theme-first) |
-
-10-step neutral scale, semantic success/warning/error/info, and dark-theme surfaces are in
-[`tokens/`](./tokens). **Accessibility:** all 21 surface pairs pass WCAG AA (17 also AAA) —
-see [`tokens/COLOR_CONTRAST_REPORT.md`](./tokens/COLOR_CONTRAST_REPORT.md).
-
-## Logos
-
-[`logos/`](./logos) — primary, monochrome, favicon, and horizontal lockup, plus 3 alternates.
-The glyph is a stylized **khipu knot intertwined with a lambda (Λ)**: the Λ-SPINE aggregator
-and the khipu receipt DAG, the two halves of the SZL thesis. PNG renders at
-16/32/64/128/256/512/1024px in [`logos/png/`](./logos/png). Rationale: [`logos/LOGO_SUITE.md`](./logos/LOGO_SUITE.md).
-
-## Typography & components
-
-- [`TYPOGRAPHY.md`](./TYPOGRAPHY.md) — families, modular scale (Major Third, base 16px),
-  `@font-face`, fallback chains.
-- [`COMPONENT_TOKENS.md`](./COMPONENT_TOKENS.md) — spacing (4px grid), radii, shadows, motion,
-  z-index.
-- [`examples/`](./examples) — button, card, alert in **HTML/CSS**, **React**, and **Vue**.
-
-## Voice (one rule)
-
-Math-grounded, story-aware, never mystical, never marketing-fluff. Claim only what is on disk;
-label proof status honestly (PROVEN / SORRY / AXIOM / **Conjecture 1**); receipt signatures are
-**DSSE PLACEHOLDER**; supply chain is **SLSA L1**. The full lock list lives in `brand-bible.md`.
-
-— Yachay, 2026-06-01. ADDITIVE only; no v11 LOCKED number changed; no mystical content.
-
-## SZL Holdings
-
-![SZL Holdings](./branding/szl-avatar-animated.gif)
-
-*The animated brand mark of SZL Holdings — a double-headed Andean serpent motif (400×400, 16fps loop). Signed Yachay. ("Amaru" here is the iconographic motif of the mark, not a product; the codename `amaru` is retired — see `brand-bible.md` §5.)*
-
+The codenames `amaru`, `sentra`, and `rosie` are retired product names. The serpent remains a visual
+motif only. See [`brand-bible.md`](./brand-bible.md) for the full naming and public-claim lock list.

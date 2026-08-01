@@ -30,6 +30,14 @@ BANNER = f"""\033[38;5;141m
 """
 
 
+def _configure_stdio() -> None:
+    """Keep the CLI usable when a Windows console cannot encode brand glyphs."""
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is not None:
+            reconfigure(errors="replace")
+
+
 def cmd_generate(args: argparse.Namespace) -> int:
     """Generate all registered social previews."""
     from szl_brand.preview import generate_all
@@ -208,8 +216,31 @@ def cmd_serve(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_export_system(args: argparse.Namespace) -> int:
+    """Export the versioned KANCHAY design-system contract."""
+    from szl_brand.system import export_system, verify_system
+
+    output = Path(args.output)
+    try:
+        manifest = export_system(output, args.source_revision)
+    except (OSError, ValueError) as exc:
+        print(f"  \033[31merror\033[0m {exc}", file=sys.stderr)
+        return 2
+
+    errors = verify_system(output)
+    if errors:
+        for error in errors:
+            print(f"  \033[31merror\033[0m {error}", file=sys.stderr)
+        return 1
+
+    print(f"KANCHAY design system {__version__} exported to {output}")
+    print(f"Manifest: {manifest}")
+    return 0
+
+
 def app() -> None:
     """Main CLI entry point."""
+    _configure_stdio()
     parser = argparse.ArgumentParser(
         prog="szl-brand",
         description="SZL Holdings Brand SDK — Deterministic asset generation & governance",
@@ -253,6 +284,16 @@ def app() -> None:
     p_serve.add_argument("-p", "--port", type=int, default=8742, help="Server port")
     p_serve.add_argument("--dirs", nargs="*", help="Directories to serve")
 
+    p_system = sub.add_parser(
+        "export-system", help="Export the pinned KANCHAY design-system bundle"
+    )
+    p_system.add_argument("-o", "--output", required=True, help="Output directory")
+    p_system.add_argument(
+        "--source-revision",
+        required=True,
+        help="Exact lowercase 40-character Git SHA for the source state",
+    )
+
     args = parser.parse_args()
 
     if not args.command:
@@ -267,6 +308,7 @@ def app() -> None:
         "inventory": cmd_inventory,
         "drift": cmd_drift,
         "serve": cmd_serve,
+        "export-system": cmd_export_system,
     }
 
     sys.exit(handlers[args.command](args))

@@ -175,9 +175,7 @@ class AssetHandler(http.server.SimpleHTTPRequestHandler):
             self.send_error(404)
             return
         allowed_bases = [d.resolve() for d in self.asset_dirs if d.exists()]
-        if not any(
-            resolved == base or base in resolved.parents for base in allowed_bases
-        ):
+        if not any(resolved == base or base in resolved.parents for base in allowed_bases):
             self.send_error(404)
             return
         file_path = resolved
