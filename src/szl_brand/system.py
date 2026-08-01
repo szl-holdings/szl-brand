@@ -127,10 +127,7 @@ def _atomic_write(destination: Path, data: bytes) -> None:
             os.fsync(handle.fileno())
         os.replace(stage, destination)
     finally:
-        try:
-            stage.unlink()
-        except FileNotFoundError:
-            pass
+        stage.unlink(missing_ok=True)
 
 
 def _sha256(data: bytes) -> str:

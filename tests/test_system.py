@@ -11,7 +11,10 @@ from jsonschema.exceptions import ValidationError
 
 import szl_brand.system as system_module
 from szl_brand.palette import Color
-from szl_brand.system import CONTRACT, export_system, verify_system
+
+CONTRACT = system_module.CONTRACT
+export_system = system_module.export_system
+verify_system = system_module.verify_system
 
 REVISION = "a" * 40
 

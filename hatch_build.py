@@ -154,7 +154,4 @@ class CustomBuildHook(BuildHookInterface):
 
     def _cleanup(self) -> None:
         for stage in getattr(self, "_stages", []):
-            try:
-                stage.unlink()
-            except FileNotFoundError:
-                pass
+            stage.unlink(missing_ok=True)
