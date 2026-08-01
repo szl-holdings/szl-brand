@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 import pytest
 from jsonschema import Draft202012Validator
@@ -82,6 +83,37 @@ def test_verifier_rejects_unmanifested_entry(tmp_path):
     assert verify_system(output) == ["unexpected bundle entry: injected.js"]
 
 
+def test_verifier_rejects_symlinked_manifest(tmp_path, monkeypatch):
+    output = tmp_path / "system"
+    manifest_path = export_system(output, REVISION)
+    original_is_symlink = Path.is_symlink
+    monkeypatch.setattr(
+        Path,
+        "is_symlink",
+        lambda path: path == manifest_path or original_is_symlink(path),
+    )
+
+    assert verify_system(output) == ["manifest.json symlink is forbidden"]
+
+
+def test_verifier_reports_unreadable_asset(tmp_path, monkeypatch):
+    output = tmp_path / "system"
+    export_system(output, REVISION)
+    original_read_bytes = Path.read_bytes
+
+    def read_bytes(path):
+        if path.name == "system.css":
+            raise OSError("simulated read failure")
+        return original_read_bytes(path)
+
+    monkeypatch.setattr(Path, "read_bytes", read_bytes)
+
+    assert verify_system(output) == [
+        "asset is unreadable: system.css",
+        "bundle root mismatch",
+    ]
+
+
 def test_accessibility_and_network_contracts_are_explicit(tmp_path):
     output = tmp_path / "system"
     export_system(output, REVISION)
@@ -134,7 +166,15 @@ def test_metadata_schema_accepts_evidenced_surface_and_rejects_overclaim(tmp_pat
 
 
 @pytest.mark.parametrize(
-    "bad_url", ["https://", "https://not a url", "http://github.com/szl-holdings"]
+    "bad_url",
+    [
+        "https://",
+        "https://not a url",
+        "http://github.com/szl-holdings",
+        "https://foo..example.com",
+        "https://foo.-bar.example.com",
+        "https://foo.bar-.example.com",
+    ],
 )
 def test_metadata_schema_rejects_invalid_urls_without_format_checker(tmp_path, bad_url):
     output = tmp_path / "system"

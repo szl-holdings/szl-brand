@@ -100,6 +100,8 @@ def verify_system(directory: Path) -> list[str]:
     """Return fail-closed integrity errors for an exported bundle."""
 
     manifest_path = directory / "manifest.json"
+    if manifest_path.is_symlink():
+        return ["manifest.json symlink is forbidden"]
     if not manifest_path.is_file():
         return ["manifest.json is missing"]
 
@@ -162,7 +164,11 @@ def verify_system(directory: Path) -> list[str]:
         if asset_path.is_symlink():
             errors.append(f"symlink asset is forbidden: {name}")
             continue
-        data = asset_path.read_bytes()
+        try:
+            data = asset_path.read_bytes()
+        except OSError:
+            errors.append(f"asset is unreadable: {name}")
+            continue
         digest = _sha256(data)
         if digest != record.get("sha256"):
             errors.append(f"hash mismatch: {name}")
