@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:szl:public-metadata:v1",
+  "title": "SZL public surface metadata",
+  "description": "Fail-closed metadata for investor, developer, and evidence surfaces.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "title",
+    "description",
+    "canonicalUrl",
+    "surface",
+    "status",
+    "sourceUrl",
+    "evidenceUrl"
+  ],
+  "properties": {
+    "title": { "type": "string", "minLength": 8, "maxLength": 70 },
+    "description": { "type": "string", "minLength": 24, "maxLength": 180 },
+    "canonicalUrl": { "type": "string", "format": "uri", "pattern": "^https://" },
+    "surface": {
+      "type": "string",
+      "enum": ["product", "documentation", "github", "huggingface", "research"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["REAL", "MEASURED", "MODELED", "ROADMAP", "UNAVAILABLE"]
+    },
+    "sourceUrl": { "type": "string", "format": "uri", "pattern": "^https://" },
+    "evidenceUrl": { "type": "string", "format": "uri", "pattern": "^https://" },
+    "imageUrl": { "type": "string", "format": "uri", "pattern": "^https://" },
+    "lastVerified": { "type": "string", "format": "date-time" }
+  }
+}

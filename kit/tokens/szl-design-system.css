@@ -1,5 +1,5 @@
 /* ============================================================================
- * SZL HOLDINGS — KANCHAY Design System  ·  szl-design-system.css
+ * SZL HOLDINGS — KANCHAY Design System v1.1.0  ·  szl-design-system.css
  * One self-contained file. 0 runtime CDN. No Google Fonts. No Inter default.
  * No purple gradients. Self-hosted system-font stack only.
  *
@@ -328,6 +328,34 @@ hr { border:0; border-top:var(--border-hairline) solid var(--border); margin:var
 .orbit-rule::before,.orbit-rule::after { content:""; height:1px; flex:1;
   background:linear-gradient(to right, transparent,
     color-mix(in srgb, var(--color-silver-300) 40%, transparent), transparent); }
+
+/* --- 16 - EVIDENCE CARD + DECISION METRIC --------------------------------- */
+.evidence-card { display:grid; gap:var(--space-4); background:var(--surface);
+  border:var(--border-hairline) solid var(--border); border-radius:var(--radius-lg);
+  padding:var(--space-6); }
+.evidence-card__header { display:flex; align-items:flex-start; justify-content:space-between;
+  gap:var(--space-4); }
+.evidence-card__title { margin:0; font-size:var(--text-lg); }
+.evidence-card__meta { display:grid; gap:var(--space-2); margin:0; }
+.evidence-card__meta > div { display:grid; grid-template-columns:minmax(7rem,.35fr) 1fr;
+  gap:var(--space-3); padding-top:var(--space-2); border-top:1px solid var(--hairline); }
+.evidence-card__meta dt { color:var(--text-ghost); font-size:var(--text-xs);
+  font-weight:var(--weight-semibold); letter-spacing:var(--tracking-caps); text-transform:uppercase; }
+.evidence-card__meta dd { margin:0; color:var(--text); overflow-wrap:anywhere; }
+.metric { display:grid; gap:var(--space-1); }
+.metric__value { color:var(--text); font:var(--weight-bold) var(--text-2xl)/1 var(--font-display);
+  font-variant-numeric:tabular-nums lining-nums; }
+.metric__label { color:var(--text-ghost); font-size:var(--text-xs);
+  letter-spacing:var(--tracking-caps); text-transform:uppercase; }
+
+@media (max-width:640px) {
+  .evidence-card__header { display:grid; }
+  .evidence-card__meta > div { grid-template-columns:1fr; gap:var(--space-1); }
+}
+
+@media (forced-colors:active) {
+  .chip::before,.receipt__dot,.hero__node { border:1px solid currentColor; }
+}
 .orbit-rule__node { width:7px; height:7px; border-radius:var(--radius-full);
   background:var(--accent); flex:0 0 auto; }
 

@@ -1,201 +1,145 @@
-> **SZL Holdings** · Doctrine v11 · Λ = Conjecture 1 (advisory, never "green"/theorem) · canonical [a-11-oy.com](https://a-11-oy.com)
-
 <div align="center">
 
-# 🜂 szl-brand
+![SZL Brand](./social-previews/szl-brand.png)
 
-<!-- series-a-badges (Doctrine v11) -->
-[![Dependabot](https://img.shields.io/badge/Dependabot-enabled-025E8C?style=flat-square&logo=dependabot&logoColor=white)](https://github.com/szl-holdings/szl-brand/security/dependabot)
+# KANCHAY design system
 
+The versioned visual and public-claim system for SZL Holdings.
 
-**brand**
-
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20434276.svg)](https://doi.org/10.5281/zenodo.20434276) [![ORCID](https://img.shields.io/badge/ORCID-0009--0001--0110--4173-a6ce39?style=flat-square&logo=orcid&logoColor=white)](https://orcid.org/0009-0001-0110-4173) [![Doctrine](https://img.shields.io/badge/Doctrine-v11-3b82f6?style=flat-square)](https://github.com/szl-holdings/.github/tree/main/doctrine) [![SLSA](https://img.shields.io/badge/SLSA-L1_honest-22c55e?style=flat-square)](https://slsa.dev/spec/v1.0/levels)
-
-[Hugging Face](https://huggingface.co/SZLHOLDINGS) · [Demo](https://szlholdings-readme.static.hf.space/) · [GitHub Org](https://github.com/szl-holdings)
-
-`receipts.in ≡ receipts.out`
+[Documentation](https://holdings.a-11-oy.com/docs-site/brand.html) · [GitHub organization](https://github.com/szl-holdings) · [Hugging Face](https://huggingface.co/SZLHOLDINGS) · [Security](./SECURITY.md)
 
 </div>
 
----
-# szl-brand
+## One system, four guarantees
 
-[![License: CC BY 4.0](https://img.shields.io/badge/License-CC_BY_4.0-0B1F3A.svg?style=flat-square&logo=creativecommons&logoColor=00D4FF)](https://creativecommons.org/licenses/by/4.0/)
-[![DOI Thesis v18.0](https://zenodo.org/badge/DOI/10.5281/zenodo.20434276.svg)](https://doi.org/10.5281/zenodo.20434276) [![DOI Concept](https://zenodo.org/badge/DOI/10.5281/zenodo.19944926.svg)](https://doi.org/10.5281/zenodo.19944926)
-[![CI](https://github.com/szl-holdings/szl-brand/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/szl-holdings/szl-brand/actions/workflows/ci.yml)
-[![Tests](https://github.com/szl-holdings/szl-brand/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/szl-holdings/szl-brand/actions/workflows/tests.yml)
-[![CodeQL](https://github.com/szl-holdings/szl-brand/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/szl-holdings/szl-brand/actions/workflows/codeql.yml)
-[![GHAS Code Security](https://img.shields.io/badge/GHAS-Code_Security-2DA44E.svg?style=flat-square&logo=github)](https://github.com/szl-holdings/szl-brand/security/code-scanning)
-[![Secret Protection](https://img.shields.io/badge/GHAS-Secret_Protection-2DA44E.svg?style=flat-square&logo=github)](https://github.com/szl-holdings/szl-brand/security/secret-scanning)
-[![SBOM](https://github.com/szl-holdings/szl-brand/actions/workflows/sbom.yml/badge.svg?branch=main)](https://github.com/szl-holdings/szl-brand/actions/workflows/sbom.yml)
-[![SLSA L1 (SBOM + DCO)](https://img.shields.io/badge/SLSA-L1_(SBOM_%2B_DCO)-0B1F3A.svg?style=flat-square)](https://slsa.dev/spec/v1.0/levels)
-[![DCO](https://github.com/szl-holdings/szl-brand/actions/workflows/dco.yml/badge.svg?branch=main)](https://github.com/szl-holdings/szl-brand/actions/workflows/dco.yml)
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/szl-holdings/szl-brand/badge)](https://securityscorecards.dev/viewer/?uri=github.com/szl-holdings/szl-brand)
-[![ORCID](https://img.shields.io/badge/ORCID-0009--0001--0110--4173-A6CE39.svg?style=flat-square&logo=orcid&logoColor=white)](https://orcid.org/0009-0001-0110-4173)
+KANCHAY makes an SZL surface recognizable without letting presentation outrun evidence.
 
-> Brand assets, logos, social-preview templates, and visual doctrine for SZL Holdings
+| Contract | What it guarantees |
+|---|---|
+| **Tokens** | A single color, type, spacing, radius, elevation, and motion vocabulary. |
+| **Components** | Accessible buttons, cards, status chips, receipts, code, navigation, heroes, and evidence panels. |
+| **Metadata** | Every public page declares its source, evidence URL, canonical URL, and honest status. |
+| **Adapters** | Deterministic framework bundles with SHA-256 integrity and an exact source revision. |
 
+The design system is calm, technical, and evidence-forward. Coral is the decision accent; teal
+is the interaction and focus color; gold is reserved for doctrine and premium emphasis. Status is
+always written in text and never communicated by color alone.
 
-> **Frontier Capability:** Brand SDK governed by Doctrine v11 with monosemantic governance feature decomposition — `szl-interp` visual-layer integration target (v18.0 Frontier 3 · [Ouroboros Thesis DOI 10.5281/zenodo.20434276](https://doi.org/10.5281/zenodo.20434276)).
+## Quickstart
 
-`szl-brand` is the authoritative source for SZL Holdings brand assets: social-preview images (1280×640 PNG), logo monograms, visual identity doctrine, and the Python SDK for programmatic brand asset generation. All brand artifacts deployed across the SZL org originate from this repository.
-
----
-
-## On Hugging Face
-
-This repository's dataset mirror and org showcase live on the [SZLHOLDINGS Hugging Face org](https://huggingface.co/SZLHOLDINGS):
-
-| Surface | Hugging Face artifact |
-|---------|---------------------|
-| **Source mirror** | [szl-visual-identity](https://huggingface.co/datasets/SZLHOLDINGS/szl-visual-identity) |
-| **Org showcase** | [SZLHOLDINGS on Hugging Face](https://huggingface.co/SZLHOLDINGS) — 8 governed-kernel models · 19+ datasets · 11+ Spaces |
-
-## Contents
-
-| Path | Purpose |
-|------|---------|
-| `anatomy/` | Logo monograms and anatomical brand components |
-| `mockups/` | Mockup templates for product and marketing surfaces |
-| `motion/` | Motion design assets and animation specifications |
-| `posts/` | Social media post templates |
-| `social-previews/` | Repository social-preview images (1280×640 PNG, per-repo) |
-| `docs/` | Visual identity doctrine and brand guidelines |
-
----
-
-## Quick Start
+The SDK requires Python 3.12 or newer.
 
 ```bash
-# Clone and install (Python SDK)
 git clone https://github.com/szl-holdings/szl-brand.git
 cd szl-brand
-
-# With uv (recommended)
-uv sync
-uv run python -m szl_brand --help
-
-# With pip
-pip install -e .
-python -m szl_brand --help
+python -m pip install -e ".[dev]"
+python -m pytest tests -q
 ```
 
-**To generate a social preview for a new repo:**
+Export a byte-deterministic design-system bundle from an immutable source revision:
 
 ```bash
-uv run python -m szl_brand generate-preview \
-  --repo my-new-repo \
-  --title "My Repo Title" \
-  --subtitle "Short description" \
-  --output social-previews/my-new-repo.png
+python -m szl_brand export-system \
+  --source-revision "$(git rev-parse HEAD)" \
+  --output ./dist/kanchay
 ```
 
-Upload the output to: GitHub repo Settings → Social preview.
+The export contains:
 
----
+```text
+dist/kanchay/
+├── manifest.json          # contract, version, exact source, per-file hashes, root hash
+├── system.css             # tokens + accessible components + reduced-motion behavior
+├── tokens.json            # typed token source and measured contrast pairs
+├── metadata.schema.json   # fail-closed public metadata convention
+└── vitepress.css          # first framework adapter
+```
 
-## Visual Identity
+Identical inputs and the same source SHA produce byte-identical outputs. Mutable refs, abbreviated
+SHAs, uppercase SHAs, and path-like values are rejected.
 
-### Social Preview Specification
+## Use the system
 
-All SZL repo social previews conform to:
-- **Dimensions:** 1280×640 px (2:1 aspect ratio, GitHub recommended)
-- **Format:** PNG, lossless
-- **Color system:** KANCHAY brand palette — deep-space navy ground `#030F29`, single coral accent `#DF735F` (used sparingly), gold premium `#D7B96B`, teal focus/links `#5CC4BF`. No purple (Doctrine v11). See [`kit/tokens/`](kit/tokens/) and [`docs/DESIGN_DIRECTION.md`](docs/DESIGN_DIRECTION.md).
-- **Typography:** Consistent monogram + repo name + tagline layout
+For a plain web surface:
 
-### Logo Monograms
+```html
+<link rel="stylesheet" href="/brand/system.css">
+```
 
-The SZL monogram system is defined in `anatomy/`. Three variants:
-- **Primary** — full color, light backgrounds
-- **Reversed** — white, dark backgrounds
-- **Mono** — single-color for print/embossing
+```html
+<article class="evidence-card">
+  <header class="evidence-card__header">
+    <h2 class="evidence-card__title">Runtime readiness</h2>
+    <span class="chip chip-proven">REAL</span>
+  </header>
+  <dl class="evidence-card__meta">
+    <div><dt>Source</dt><dd><code>cad529a2...</code></dd></div>
+    <div><dt>Evidence</dt><dd><a href="/evidence">Open verification</a></dd></div>
+  </dl>
+</article>
+```
 
----
+For VitePress, keep `vitepress.css`, `system.css`, and the manifest together, then import the
+adapter from the theme entry point. The adapter consumes only canonical KANCHAY tokens and has no
+runtime font or stylesheet dependency.
 
-## Security and Governance
+## Repository map
 
-- OpenSSF Scorecard: **7.0** (as of 2026-05-28) — see [scorecard report](https://securityscorecards.dev/viewer/?uri=github.com/szl-holdings/szl-brand)
-- CodeQL scanning on every push
-- Brand asset changes require PR review — unauthorized derivative works are not permitted under CC-BY-4.0 without attribution
+| Path | Responsibility |
+|---|---|
+| [`kit/tokens`](./kit/tokens) | Canonical typed tokens and component stylesheet. |
+| [`kit/contracts`](./kit/contracts) | Public metadata and truth-label schemas. |
+| [`kit/adapters`](./kit/adapters) | Deterministic framework adapters. |
+| [`src/szl_brand`](./src/szl_brand) | Export, integrity, validation, preview, and CLI implementation. |
+| [`tests`](./tests) | Determinism, tamper, accessibility, metadata, CLI, palette, and asset gates. |
+| [`social-previews`](./social-previews) | Deterministically generated GitHub preview assets. |
+| [`anatomy`](./anatomy) | Visual anatomy source and rendered figures. |
+| [`motion`](./motion) | Governed motion studies and exports. |
 
----
+## Truth and accessibility contract
 
-## How to Cite
+- Public status vocabulary is exactly `REAL`, `MEASURED`, `MODELED`, `ROADMAP`, or `UNAVAILABLE`.
+- Every metadata record requires source and evidence URLs.
+- Focus is visible, status has a text label, and forced-colors mode keeps state indicators legible.
+- `prefers-reduced-motion: reduce` collapses nonessential animation and transition duration.
+- The exported VitePress adapter has no runtime CDN or font download.
+- The current supply-chain posture is SLSA L1; stronger levels are not claimed here.
+
+See [`kit/brand-bible.md`](./kit/brand-bible.md) for voice and naming, and
+[`kit/tokens/COLOR_CONTRAST_REPORT.md`](./kit/tokens/COLOR_CONTRAST_REPORT.md) for measured contrast
+pairs.
+
+## Generate and validate social previews
+
+```bash
+python -m szl_brand generate --output social-previews
+python -m szl_brand validate social-previews
+python -m szl_brand manifest social-previews --output brand-manifest.json
+python -m szl_brand drift --manifest brand-manifest.json social-previews
+```
+
+The GitHub social preview is a repository setting, so generated images remain reviewable artifacts;
+this repository does not silently mutate other repositories.
+
+## Governance
+
+Changes use signed commits, DCO, protected pull requests, executable tests, and normal branch
+protection. Brand doctrine is additive to the locked proof register and does not change theorem,
+axiom, or `sorry` counts.
+
+- Code and tokens: Apache-2.0 where identified in [`kit/LICENSE`](./kit/LICENSE)
+- Brand assets: CC BY 4.0 under the repository [`LICENSE`](./LICENSE)
+- Attribution: SZL Holdings, ORCID `0009-0001-0110-4173`
+
+## Citation
 
 ```bibtex
-@software{szl_holdings_brand_2026,
-  title  = {szl-brand — SZL Holdings Brand Assets and Visual Doctrine},
-  author = {{SZL Holdings}},
-  year   = {2026},
-  doi    = {10.5281/zenodo.20434276},
-  url    = {https://github.com/szl-holdings/szl-brand}
+@software{szl_holdings_kanchay_2026,
+  title   = {KANCHAY: the SZL Holdings design system},
+  author  = {{SZL Holdings}},
+  year    = {2026},
+  version = {1.1.0},
+  doi     = {10.5281/zenodo.20434276},
+  url     = {https://github.com/szl-holdings/szl-brand}
 }
 ```
-
-[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.20434276-DF735F?style=flat-square&logo=doi&logoColor=white)](https://doi.org/10.5281/zenodo.20434276)
-
-
-> **NOTE:** SLSA Level 1 (source + build provenance documented). L2/L3 require Sigstore + isolated builders (roadmap).
-
----
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md). Brand asset changes require one reviewer approval. Doctrine v11 visual standards required.
-
-Related: [`szl-holdings/platform`](https://github.com/szl-holdings/platform) · [`szl-holdings/szl-cookbook`](https://github.com/szl-holdings/szl-cookbook)
-
----
-
-## License
-
-CC-BY-4.0 — See [LICENSE](./LICENSE). Brand assets may be used with attribution to SZL Holdings. Copyright (c) 2024-2026 SZL Holdings.
-
----
-
-## Related repositories in the SZL substrate
-
-The substrate repos cross-link reciprocally. Links below point only to live repositories.
-
-- [`a11oy`](https://github.com/szl-holdings/a11oy) — governed command platform (policy · measurement · knowledge · QEC-integrity)
-- [`killinchu`](https://github.com/szl-holdings/killinchu) — drones & vessels counter-UAS Λ-gate
-- [`lutar-lean`](https://github.com/szl-holdings/lutar-lean) — Lean 4 + Mathlib kernel proofs (8 locked theorems · 749 decl / 14 axioms / 163 sorries · canonical @ `c7c0ba17`)
-- [`ouroboros`](https://github.com/szl-holdings/ouroboros) — bounded-recursion runtime
-- [`platform`](https://github.com/szl-holdings/platform) — composing monorepo
-- [`szl-brand`](https://github.com/szl-holdings/szl-brand) — visual doctrine (PDFs hosted in-repo)
-- [`szl-cookbook`](https://github.com/szl-holdings/szl-cookbook) — governed-AI recipes
-- [`vsp-otel`](https://github.com/szl-holdings/vsp-otel) — OpenTelemetry exporter for Λ-axis spans
-
-Org page: [github.com/szl-holdings](https://github.com/szl-holdings) · Doctrine v11 LOCKED — 749 / 14 / 163 · kernel `c7c0ba17` · Λ = Conjecture 1
-
-
----
-
-## What szl-brand Is NOT
-
-Doctrine v11 honest scoping:
-
-- **Not a design system for external use.** Brand assets are SZL Holdings proprietary; no license for third-party reuse without written permission.
-- **Not a component library.** This repo ships PDFs, SVGs, and doctrine documents, not React/CSS components.
-- **Not a marketing agency brief.** Brand doctrine is founder-governed; external agencies must use approved assets only.
-- **Not complete.** Ongoing evolution tracked in ROADMAP.md; Doctrine v11 is the current baseline.
-
----
-
-## `kit/` — Merged from brand-kit
-
-As of 2026-06-03, the former `szl-holdings/brand-kit` repository has been consolidated here to reduce org sprawl. Its full contents are preserved under [`kit/`](./kit/):
-
-| Path | Contents |
-|------|----------|
-| [`kit/tokens/`](./kit/tokens/) | Design tokens (color, spacing, radius, elevation) |
-| [`kit/logos/`](./kit/logos/) | Logo suite (SVG, PNG variants) |
-| [`kit/fonts/`](./kit/fonts/) | Typography assets |
-| [`kit/TYPOGRAPHY.md`](./kit/TYPOGRAPHY.md) | Typography doctrine |
-| [`kit/COMPONENT_TOKENS.md`](./kit/COMPONENT_TOKENS.md) | Component-level token reference |
-| [`kit/brand-bible.md`](./kit/brand-bible.md) | Brand bible |
-| [`kit/examples/`](./kit/examples/) | Usage examples |
-
-> **Migration:** If you previously referenced `szl-holdings/brand-kit`, update bookmarks to `szl-holdings/szl-brand/tree/main/kit`. The original brand-kit repo is archived and points here.

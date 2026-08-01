@@ -17,7 +17,7 @@ class TestCLI:
             [sys.executable, "-m", "szl_brand", "--version"], capture_output=True, text=True
         )
         assert result.returncode == 0
-        assert "1.0.0" in result.stdout
+        assert "1.1.0" in result.stdout
 
     def test_generate(self, tmp_path):
         result = subprocess.run(
@@ -103,3 +103,22 @@ class TestCLI:
         )
         assert result.returncode == 0
         assert "png" in result.stdout
+
+    def test_export_system(self, tmp_path):
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "szl_brand",
+                "export-system",
+                "--source-revision",
+                "a" * 40,
+                "-o",
+                str(tmp_path / "system"),
+            ],
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0, result.stderr
+        assert (tmp_path / "system" / "manifest.json").is_file()
+        assert "KANCHAY design system 1.1.0" in result.stdout

@@ -50,7 +50,7 @@ ruff format --check src/ tests/   # format check
 - **Pillow** — PNG banner generation (procedural generative engine)
 - **ReportLab** — PDF anatomy figure generation
 - **poppler-utils** (`pdftoppm`) — PDF→PNG conversion for anatomy scripts
-- **DejaVu fonts** — text rendering at `/usr/share/fonts/truetype/dejavu/`
+- **Pillow bundled font** — portable preview rendering with no host-font dependency
 - **Ruff** — lint/format
 - **pytest** — test suite
 
