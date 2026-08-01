@@ -118,6 +118,10 @@ HYDRA_TEAL = PROOF_TEAL  # backward-compatible alias — value re-pointed to KAN
 GOLD = Color.from_hex("#D7B96B")  # hatun-300 (premium emphasis)
 EMBER = Color.from_hex("#E85D3A")
 FROST = Color.from_hex("#4ECDC4")
+SPACE_900 = Color.from_hex("#030F29")
+SPACE_800 = Color.from_hex("#061536")
+SPACE_700 = Color.from_hex("#0A1E47")
+GRAY_900 = Color.from_hex("#10151C")
 
 TEXT_PRIMARY = Color.from_hex("#F0F0F0")
 TEXT_SECONDARY = Color.from_hex("#B4B4BE")
@@ -137,7 +141,6 @@ class ProcPalette:
 
     def __init__(self, seed: str):
         self._hash = hashlib.sha256(seed.encode()).digest()
-        self._base_hue = (int.from_bytes(self._hash[:2], "big") % 360) / 360.0
 
     @property
     def seed_bytes(self) -> bytes:
@@ -145,27 +148,27 @@ class ProcPalette:
 
     @property
     def primary_hue(self) -> float:
-        return self._base_hue * 360
+        return ACCENT.hsl[0]
 
     def accent(self, index: int = 0) -> Color:
-        """Generate the nth accent color for this seed."""
-        phi = (1 + math.sqrt(5)) / 2
-        hue = (self._base_hue + index * (1 / phi)) % 1.0
-        r, g, b = colorsys.hls_to_rgb(hue, 0.55, 0.75)
-        return Color(int(r * 255), int(g * 255), int(b * 255))
+        """Return the nth color from the governed KANCHAY accent set.
+
+        Repository identity changes geometry and texture, never the approved gamut.
+        Index zero remains the single coral decision accent on every preview.
+        """
+        accents = (ACCENT, PROOF_TEAL, GOLD, ACCENT_BRIGHT)
+        return accents[index % len(accents)]
 
     def gradient_stops(self, n: int = 4) -> list[Color]:
         """Generate n gradient stops for background decoration."""
-        stops = []
+        anchors = (SPACE_900, SPACE_800, SPACE_700, GRAY_900)
+        stops: list[Color] = []
         for i in range(n):
-            t = i / max(n - 1, 1)
             byte_idx = (i * 4 + 4) % 28
             offset = int.from_bytes(self._hash[byte_idx : byte_idx + 2], "big") / 65535
-            hue = (self._base_hue + offset * 0.15) % 1.0
-            lightness = 0.06 + t * 0.04
-            saturation = 0.4 + offset * 0.3
-            r, g, b = colorsys.hls_to_rgb(hue, lightness, saturation)
-            stops.append(Color(int(r * 255), int(g * 255), int(b * 255)))
+            left = anchors[i % len(anchors)]
+            right = anchors[(i + 1) % len(anchors)]
+            stops.append(left.lerp(right, 0.18 + offset * 0.28))
         return stops
 
     def noise_field(

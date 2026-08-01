@@ -1,6 +1,15 @@
 """Tests for szl_brand palette module."""
 
-from szl_brand.palette import TEXT_PRIMARY, VOID, Color, ProcPalette
+from szl_brand.palette import (
+    ACCENT,
+    ACCENT_BRIGHT,
+    GOLD,
+    PROOF_TEAL,
+    TEXT_PRIMARY,
+    VOID,
+    Color,
+    ProcPalette,
+)
 
 
 class TestColor:
@@ -81,15 +90,15 @@ class TestProcPalette:
         assert p1.accent(0) == p2.accent(0)
         assert p1.gradient_stops(4) == p2.gradient_stops(4)
 
-    def test_different_seeds_produce_different_accents(self):
+    def test_different_seeds_keep_canonical_primary_accent(self):
         p1 = ProcPalette("repo-a")
         p2 = ProcPalette("repo-b")
-        assert p1.accent(0) != p2.accent(0)
+        assert p1.accent(0) == p2.accent(0) == ACCENT
 
     def test_accent_sequence_unique(self):
         p = ProcPalette("test-repo")
         accents = [p.accent(i) for i in range(5)]
-        assert len(set(accents)) == 5
+        assert set(accents) == {ACCENT, PROOF_TEAL, GOLD, ACCENT_BRIGHT}
 
     def test_gradient_stops_count(self):
         p = ProcPalette("test")
@@ -98,7 +107,15 @@ class TestProcPalette:
 
     def test_primary_hue_range(self):
         p = ProcPalette("anything")
-        assert 0 <= p.primary_hue < 360
+        assert p.primary_hue == ACCENT.hsl[0]
+
+    def test_gradients_stay_in_deep_blue_gamut(self):
+        for repo in ("docs-site", "a11oy", "killinchu", "szl-brand"):
+            for color in ProcPalette(repo).gradient_stops(8):
+                hue, saturation, lightness = color.hsl
+                assert 200 <= hue <= 235
+                assert saturation >= 20
+                assert lightness <= 15
 
     def test_noise_field_values_bounded(self):
         p = ProcPalette("noise-test")
