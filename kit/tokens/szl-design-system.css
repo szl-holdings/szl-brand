@@ -199,6 +199,7 @@ hr { border:0; border-top:var(--border-hairline) solid var(--border); margin:var
   padding-block-end:calc(var(--space-6) + var(--safe-area-bottom));
 }
 .control-target {
+  display:inline-flex; align-items:center; justify-content:center;
   min-inline-size:var(--target-size-min); min-block-size:var(--target-size-min);
 }
 .control-dock {
@@ -297,6 +298,12 @@ hr { border:0; border-top:var(--border-hairline) solid var(--border); margin:var
 .chip-sample     { color:var(--text-ghost); }
 .chip-simulated  { color:var(--color-warning-light); }
 .chip-unavailable { color:var(--color-error-light); }
+[data-surface="light"] .chip-proven,
+[data-surface="light"] .chip-live { color:var(--color-success-strong); }
+[data-surface="light"] .chip-conjecture,
+[data-surface="light"] .chip-simulated { color:#6b4f00; }
+[data-surface="light"] .chip-sorry,
+[data-surface="light"] .chip-unavailable { color:#9f281e; }
 
 /* --- 11 · RECEIPT / PROOF chip (signature component) ----------------------- */
 .receipt { display:inline-flex; align-items:center; gap:var(--space-3);

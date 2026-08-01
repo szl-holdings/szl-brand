@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -321,9 +322,33 @@ def test_metadata_schema_accepts_valid_escaped_path_without_format_checker(tmp_p
 
 
 def test_light_mode_status_and_focus_colors_meet_contrast_contract():
-    light_background = Color.from_hex("#f9fafc")
-    real_status = Color.from_hex("#116b3d")
+    light_background = Color.from_hex("#fbfcfe")
+    status_colors = {
+        "live": Color.from_hex("#116b3d"),
+        "simulated": Color.from_hex("#6b4f00"),
+        "unavailable": Color.from_hex("#9f281e"),
+    }
     focus_indicator = Color.from_hex("#083f3e")
 
-    assert real_status.contrast_ratio(light_background) >= 4.5
+    for status, color in status_colors.items():
+        assert color.contrast_ratio(light_background) >= 4.5, status
     assert focus_indicator.contrast_ratio(light_background) >= 3.0
+
+    css = (Path(__file__).resolve().parents[1] / "kit/tokens/szl-design-system.css").read_text(
+        encoding="utf-8"
+    )
+    assert '[data-surface="light"] .chip-live { color:var(--color-success-strong); }' in css
+    assert '[data-surface="light"] .chip-simulated { color:#6b4f00; }' in css
+    assert '[data-surface="light"] .chip-unavailable { color:#9f281e; }' in css
+
+
+def test_control_target_uses_a_sizable_display_mode():
+    css = (Path(__file__).resolve().parents[1] / "kit/tokens/szl-design-system.css").read_text(
+        encoding="utf-8"
+    )
+    rule = re.search(r"\.control-target\s*\{(?P<body>[^}]*)\}", css)
+
+    assert rule is not None
+    assert "display:inline-flex" in rule.group("body")
+    assert "min-inline-size:var(--target-size-min)" in rule.group("body")
+    assert "min-block-size:var(--target-size-min)" in rule.group("body")
