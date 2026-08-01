@@ -55,8 +55,10 @@ dist/kanchay/
 └── vitepress.css          # first framework adapter
 ```
 
-Identical inputs and the same source SHA produce byte-identical outputs. Mutable refs, abbreviated
-SHAs, uppercase SHAs, and path-like values are rejected.
+Identical inputs and the same source SHA produce byte-identical outputs. Checkout exports read the
+asset blobs from the canonical repository's exact `HEAD`; wheel exports require build-embedded
+revision and per-asset hashes. Mutable refs, mismatched revisions, forks, abbreviated SHAs,
+uppercase SHAs, and path-like values are rejected.
 
 ## Use the system
 

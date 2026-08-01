@@ -23,5 +23,9 @@ Consumers must pin the generated `manifest.json`, keep the four exported assets 
 verify their SHA-256 hashes before publication. The initial production adapter targets VitePress;
 other adapters remain outside the v1 contract until they have executable consumer tests.
 
+The exporter binds checkout bytes to the canonical repository's exact `HEAD`. Built wheels carry
+that revision plus per-asset hashes as generated build provenance, so a caller-supplied SHA cannot
+relabel either source mode.
+
 The codenames `amaru`, `sentra`, and `rosie` are retired product names. The serpent remains a visual
 motif only. See [`brand-bible.md`](./brand-bible.md) for the full naming and public-claim lock list.

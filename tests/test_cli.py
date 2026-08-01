@@ -105,6 +105,12 @@ class TestCLI:
         assert "png" in result.stdout
 
     def test_export_system(self, tmp_path):
+        revision = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
         result = subprocess.run(
             [
                 sys.executable,
@@ -112,7 +118,7 @@ class TestCLI:
                 "szl_brand",
                 "export-system",
                 "--source-revision",
-                "a" * 40,
+                revision,
                 "-o",
                 str(tmp_path / "system"),
             ],

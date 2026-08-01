@@ -9,10 +9,21 @@ import pytest
 from jsonschema import Draft202012Validator
 from jsonschema.exceptions import ValidationError
 
+import szl_brand.system as system_module
 from szl_brand.palette import Color
 from szl_brand.system import CONTRACT, export_system, verify_system
 
 REVISION = "a" * 40
+
+
+@pytest.fixture(autouse=True)
+def _bind_test_assets_to_revision(monkeypatch):
+    root = Path(__file__).resolve().parents[1]
+    assets = {
+        export_name: (root / source_path).read_bytes()
+        for export_name, source_path in system_module._ASSETS
+    }
+    monkeypatch.setattr(system_module, "_source_bundle", lambda: (assets, REVISION))
 
 
 def _snapshot(directory):
@@ -48,6 +59,97 @@ def test_manifest_pins_source_and_every_asset(tmp_path):
 def test_export_rejects_mutable_or_malformed_revision(tmp_path, revision):
     with pytest.raises(ValueError, match="exact lowercase 40-character Git SHA"):
         export_system(tmp_path / "system", revision)
+
+
+def test_export_rejects_well_formed_revision_not_bound_to_assets(tmp_path):
+    with pytest.raises(ValueError, match="does not match exported source"):
+        export_system(tmp_path / "system", "b" * 40)
+
+
+def test_checkout_source_reads_only_canonical_revision_bytes(tmp_path, monkeypatch):
+    committed: dict[str, bytes] = {}
+    for export_name, source_path in system_module._ASSETS:
+        data = f"{export_name}\n".encode()
+        path = tmp_path / source_path
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(data)
+        committed[source_path] = data
+
+    def fake_git(_root, *arguments):
+        if arguments == ("remote", "get-url", "origin"):
+            return b"https://github.com/szl-holdings/szl-brand.git\n"
+        if arguments == ("rev-parse", "--verify", "HEAD"):
+            return f"{REVISION}\n".encode()
+        if arguments[0] == "show":
+            return committed[arguments[1].split(":", 1)[1]]
+        raise AssertionError(arguments)
+
+    monkeypatch.setattr(system_module, "_git", fake_git)
+    assets, revision = system_module._checkout_source(tmp_path)
+    assert revision == REVISION
+    assert assets["system.css"] == b"system.css\n"
+
+    (tmp_path / system_module._ASSETS[0][1]).write_bytes(b"dirty")
+    assets, _revision = system_module._checkout_source(tmp_path)
+    assert assets["system.css"] == b"system.css\n"
+
+
+def test_checkout_source_rejects_noncanonical_repository(tmp_path, monkeypatch):
+    monkeypatch.setattr(
+        system_module,
+        "_git",
+        lambda _root, *arguments: b"https://github.com/example/fork.git\n",
+    )
+    with pytest.raises(ValueError, match="source repository is not canonical"):
+        system_module._checkout_source(tmp_path)
+
+
+def test_packaged_source_requires_hash_bound_provenance(tmp_path, monkeypatch):
+    package_root = tmp_path / "package"
+    design_system = package_root / "design_system"
+    design_system.mkdir(parents=True)
+    recorded: dict[str, str] = {}
+    for export_name, _source_path in system_module._ASSETS:
+        data = f"packaged {export_name}\n".encode()
+        (design_system / export_name).write_bytes(data)
+        recorded[export_name] = system_module._sha256(data)
+    (design_system / "source-provenance.json").write_text(
+        json.dumps(
+            {
+                "contract": system_module._SOURCE_PROVENANCE_CONTRACT,
+                "repository": system_module._SOURCE_REPOSITORY,
+                "revision": REVISION,
+                "assets": recorded,
+            }
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(system_module.resources, "files", lambda _package: package_root)
+
+    assets, revision = system_module._packaged_source()
+    assert revision == REVISION
+    assert set(assets) == recorded.keys()
+
+    (design_system / "system.css").write_bytes(b"tampered")
+    with pytest.raises(ValueError, match="asset provenance mismatch: system.css"):
+        system_module._packaged_source()
+
+
+def test_export_refuses_asset_symlink_without_touching_target(tmp_path):
+    output = tmp_path / "system"
+    output.mkdir()
+    outside = tmp_path / "outside.css"
+    outside.write_text("guarded", encoding="utf-8")
+    destination = output / "system.css"
+    try:
+        destination.symlink_to(outside)
+    except OSError:
+        pytest.skip("symlink creation is unavailable on this platform")
+
+    with pytest.raises(ValueError, match="output symlink is forbidden: system.css"):
+        export_system(output, REVISION)
+
+    assert outside.read_text(encoding="utf-8") == "guarded"
 
 
 def test_verifier_detects_tamper(tmp_path):
@@ -174,6 +276,9 @@ def test_metadata_schema_accepts_evidenced_surface_and_rejects_overclaim(tmp_pat
         "https://foo..example.com",
         "https://foo.-bar.example.com",
         "https://foo.bar-.example.com",
+        "https://example.com/%ZZ",
+        "https://example.com/<script>",
+        "https://example.com/raw\\path",
     ],
 )
 def test_metadata_schema_rejects_invalid_urls_without_format_checker(tmp_path, bad_url):
@@ -192,6 +297,24 @@ def test_metadata_schema_rejects_invalid_urls_without_format_checker(tmp_path, b
     }
     with pytest.raises(ValidationError):
         validator.validate(record)
+
+
+def test_metadata_schema_accepts_valid_escaped_path_without_format_checker(tmp_path):
+    output = tmp_path / "system"
+    export_system(output, REVISION)
+    schema = json.loads((output / "metadata.schema.json").read_text(encoding="utf-8"))
+    validator = Draft202012Validator(schema)
+    validator.validate(
+        {
+            "title": "KANCHAY design system documentation",
+            "description": "Versioned components and evidence conventions for SZL public surfaces.",
+            "canonicalUrl": "https://example.com/evidence/receipt%20one?view=full#integrity",
+            "surface": "documentation",
+            "status": "REAL",
+            "sourceUrl": "https://github.com/szl-holdings/szl-brand",
+            "evidenceUrl": "https://github.com/szl-holdings/szl-brand/actions",
+        }
+    )
 
 
 def test_light_mode_status_and_focus_colors_meet_contrast_contract():

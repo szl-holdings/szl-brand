@@ -29,5 +29,21 @@ jobs:
         run: python -m pytest tests -q
       - name: Lint and format gate
         run: |
-          ruff check src tests
-          ruff format --check src tests
+          ruff check src tests hatch_build.py
+          ruff format --check src tests hatch_build.py
+      - name: Build and verify revision-bound wheel export
+        run: |
+          set -euo pipefail
+          python -m pip wheel --no-deps --wheel-dir dist .
+          python -m venv wheel-test-venv
+          wheel-test-venv/bin/python -m pip install --no-deps dist/szl_brand-*.whl
+          revision="$(git rev-parse HEAD)"
+          consumer="$(mktemp -d)"
+          (
+            cd "$consumer"
+            "$GITHUB_WORKSPACE/wheel-test-venv/bin/python" -m szl_brand export-system \
+              --source-revision "$revision" \
+              --output ./kanchay
+            "$GITHUB_WORKSPACE/wheel-test-venv/bin/python" -c \
+              'from pathlib import Path; from szl_brand.system import verify_system; assert verify_system(Path("kanchay")) == []'
+          )
