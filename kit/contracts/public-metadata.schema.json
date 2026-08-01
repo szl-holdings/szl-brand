@@ -5,6 +5,13 @@
   "description": "Fail-closed metadata for investor, developer, and evidence surfaces.",
   "type": "object",
   "additionalProperties": false,
+  "$defs": {
+    "httpsUrl": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?\\.[A-Za-z]{2,}(?::[0-9]{1,5})?(?:/[^\\s]*)?$"
+    }
+  },
   "required": [
     "title",
     "description",
@@ -17,7 +24,7 @@
   "properties": {
     "title": { "type": "string", "minLength": 8, "maxLength": 70 },
     "description": { "type": "string", "minLength": 24, "maxLength": 180 },
-    "canonicalUrl": { "type": "string", "format": "uri", "pattern": "^https://" },
+    "canonicalUrl": { "$ref": "#/$defs/httpsUrl" },
     "surface": {
       "type": "string",
       "enum": ["product", "documentation", "github", "huggingface", "research"]
@@ -26,9 +33,9 @@
       "type": "string",
       "enum": ["REAL", "MEASURED", "MODELED", "ROADMAP", "UNAVAILABLE"]
     },
-    "sourceUrl": { "type": "string", "format": "uri", "pattern": "^https://" },
-    "evidenceUrl": { "type": "string", "format": "uri", "pattern": "^https://" },
-    "imageUrl": { "type": "string", "format": "uri", "pattern": "^https://" },
+    "sourceUrl": { "$ref": "#/$defs/httpsUrl" },
+    "evidenceUrl": { "$ref": "#/$defs/httpsUrl" },
+    "imageUrl": { "$ref": "#/$defs/httpsUrl" },
     "lastVerified": { "type": "string", "format": "date-time" }
   }
 }

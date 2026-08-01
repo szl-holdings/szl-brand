@@ -132,6 +132,15 @@ def verify_system(directory: Path) -> list[str]:
     if not isinstance(records, list):
         return [*errors, "assets must be an array"]
 
+    expected_assets = {name for name, _source_path in _ASSETS}
+    expected_entries = {*expected_assets, "manifest.json"}
+    try:
+        actual_entries = {entry.name for entry in directory.iterdir()}
+    except OSError as exc:
+        return [*errors, f"bundle directory is unreadable: {exc}"]
+    for unexpected in sorted(actual_entries - expected_entries):
+        errors.append(f"unexpected bundle entry: {unexpected}")
+
     root_material = bytearray()
     seen: set[str] = set()
     for record in records:
@@ -150,6 +159,9 @@ def verify_system(directory: Path) -> list[str]:
         if not asset_path.is_file():
             errors.append(f"missing asset: {name}")
             continue
+        if asset_path.is_symlink():
+            errors.append(f"symlink asset is forbidden: {name}")
+            continue
         data = asset_path.read_bytes()
         digest = _sha256(data)
         if digest != record.get("sha256"):
@@ -158,7 +170,6 @@ def verify_system(directory: Path) -> list[str]:
             errors.append(f"size mismatch: {name}")
         root_material.extend(f"{name}\0{digest}\0".encode())
 
-    expected_assets = {name for name, _source_path in _ASSETS}
     if seen != expected_assets:
         errors.append(f"asset set mismatch: expected {sorted(expected_assets)}, got {sorted(seen)}")
     expected_root = integrity.get("root") if isinstance(integrity, dict) else None

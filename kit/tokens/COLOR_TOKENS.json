@@ -58,6 +58,7 @@
     },
     "semantic": {
       "success": "#1f9d57",
+      "success-strong": "#116b3d",
       "warning": "#c08f2f",
       "error": "#c0392b",
       "info": "#2f7fb5"

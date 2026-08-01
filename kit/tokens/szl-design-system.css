@@ -60,7 +60,7 @@
   --color-silver-100:#E9EEF6; --color-silver-300:#9AA7BD; --color-silver-500:#5C6B86;
   --color-white:#FFFFFF; --color-ink:#0a0f1e; --color-ink-soft:#2a3340;
   /* semantic (status) — KEEP */
-  --color-success:#1f9d57; --color-success-light:#3fce82;
+  --color-success:#1f9d57; --color-success-strong:#116b3d; --color-success-light:#3fce82;
   --color-warning:#c08f2f; --color-warning-light:#e4cf99;
   --color-error:#c0392b;   --color-error-light:#f0a3a3;
   --color-info:#2f7fb5;    --color-info-light:#7cb8e0;
