@@ -126,10 +126,17 @@
   --ease-orbit:cubic-bezier(.45,.05,.25,1);
   --duration-instant:75ms; --duration-fast:150ms; --duration-base:250ms;
   --duration-slow:400ms; --duration-slower:600ms; --duration-orbit:24s;
-  --z-raised:10; --z-dropdown:1000; --z-sticky:1100; --z-overlay:1200;
+  --z-base:0; --z-raised:10; --z-dropdown:1000; --z-sticky:1100; --z-overlay:1200;
   --z-modal:1300; --z-popover:1400; --z-toast:1500; --z-max:2147483000;
+  --z-control-dock:var(--z-popover);
   --border-hairline:1px; --border-thick:2px; --border-focus:3px;
   --measure:68ch; --container:1200px;
+  --safe-area-top:env(safe-area-inset-top,0px);
+  --safe-area-right:env(safe-area-inset-right,0px);
+  --safe-area-bottom:env(safe-area-inset-bottom,0px);
+  --safe-area-left:env(safe-area-inset-left,0px);
+  --target-size-min:24px; --target-size-coarse:44px;
+  --control-dock-max-inline-size:24rem;
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -184,11 +191,40 @@ hr { border:0; border-top:var(--border-hairline) solid var(--border); margin:var
 .stack > * + * { margin-top:var(--space-4); }
 .cluster { display:flex; flex-wrap:wrap; gap:var(--space-3); align-items:center; }
 .grid-auto { display:grid; gap:var(--space-6); grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); }
+.safe-area-inline {
+  padding-inline-start:calc(var(--space-6) + var(--safe-area-left));
+  padding-inline-end:calc(var(--space-6) + var(--safe-area-right));
+}
+.safe-area-block-end {
+  padding-block-end:calc(var(--space-6) + var(--safe-area-bottom));
+}
+.control-target {
+  display:inline-flex; align-items:center; justify-content:center;
+  min-inline-size:var(--target-size-min); min-block-size:var(--target-size-min);
+}
+.control-dock {
+  position:fixed; isolation:isolate; z-index:var(--z-control-dock);
+  inset-inline-end:calc(var(--space-4) + var(--safe-area-right));
+  inset-block-end:calc(var(--space-4) + var(--safe-area-bottom));
+  display:grid; gap:var(--space-3); inline-size:max-content;
+  max-inline-size:min(var(--control-dock-max-inline-size),
+    calc(100vw - var(--space-4) - var(--space-4) - var(--safe-area-left) - var(--safe-area-right)));
+}
+.control-dock > * { min-inline-size:0; max-inline-size:100%; }
+
+@media (max-width:640px) {
+  .grid-auto { grid-template-columns:minmax(0,1fr); }
+  .control-dock {
+    inset-inline-start:calc(var(--space-4) + var(--safe-area-left));
+    inline-size:auto;
+  }
+}
 
 /* --- 8 · BUTTONS (coral primary = the single accent, used sparingly) ------- */
 .btn {
   --_pad-y:.625rem; --_pad-x:1.125rem;
   display:inline-flex; align-items:center; justify-content:center; gap:var(--space-2);
+  min-inline-size:var(--target-size-min); min-block-size:var(--target-size-min);
   padding:var(--_pad-y) var(--_pad-x);
   font-family:var(--font-body); font-size:var(--text-sm); font-weight:var(--weight-semibold);
   line-height:1; letter-spacing:.005em; white-space:nowrap;
@@ -214,6 +250,11 @@ hr { border:0; border-top:var(--border-hairline) solid var(--border); margin:var
   background:color-mix(in srgb, var(--premium) 10%, transparent); }
 .btn-lg { --_pad-y:.85rem; --_pad-x:1.5rem; font-size:var(--text-base); }
 .btn-sm { --_pad-y:.4rem;  --_pad-x:.8rem;  font-size:var(--text-xs); }
+@media (pointer:coarse) {
+  .btn,.control-target {
+    min-inline-size:var(--target-size-coarse); min-block-size:var(--target-size-coarse);
+  }
+}
 
 /* --- 9 · CARDS (dark-first, optional orbital arc accent) ------------------- */
 .card {
@@ -253,7 +294,16 @@ hr { border:0; border-top:var(--border-hairline) solid var(--border); margin:var
 .chip-conjecture { color:var(--color-warning-light); }
 .chip-sorry      { color:var(--color-error-light); }
 .chip-axiom      { color:var(--link); }
+.chip-live       { color:var(--color-success-light); }
 .chip-sample     { color:var(--text-ghost); }
+.chip-simulated  { color:var(--color-warning-light); }
+.chip-unavailable { color:var(--color-error-light); }
+[data-surface="light"] .chip-proven,
+[data-surface="light"] .chip-live { color:var(--color-success-strong); }
+[data-surface="light"] .chip-conjecture,
+[data-surface="light"] .chip-simulated { color:#6b4f00; }
+[data-surface="light"] .chip-sorry,
+[data-surface="light"] .chip-unavailable { color:#9f281e; }
 
 /* --- 11 · RECEIPT / PROOF chip (signature component) ----------------------- */
 .receipt { display:inline-flex; align-items:center; gap:var(--space-3);

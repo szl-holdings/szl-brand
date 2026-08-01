@@ -17,7 +17,7 @@ KANCHAY makes an SZL surface recognizable without letting presentation outrun ev
 | Contract | What it guarantees |
 |---|---|
 | **Tokens** | A single color, type, spacing, radius, elevation, and motion vocabulary. |
-| **Components** | Accessible buttons, cards, status chips, receipts, code, navigation, heroes, and evidence panels. |
+| **Components** | Accessible buttons, cards, status chips, receipts, control docks, navigation, and evidence panels. |
 | **Metadata** | Every public page declares its source, evidence URL, canonical URL, and honest status. |
 | **Adapters** | Deterministic framework bundles with SHA-256 integrity and an exact source revision. |
 
@@ -92,6 +92,7 @@ runtime font or stylesheet dependency.
 | [`kit/tokens`](./kit/tokens) | Canonical typed tokens and component stylesheet. |
 | [`kit/contracts`](./kit/contracts) | Public metadata and truth-label schemas. |
 | [`kit/adapters`](./kit/adapters) | Deterministic framework adapters. |
+| [`docs/FRONTEND_HARDENING.md`](./docs/FRONTEND_HARDENING.md) | Estate-wide responsive, accessibility, state, performance, and PR acceptance contract. |
 | [`src/szl_brand`](./src/szl_brand) | Export, integrity, validation, preview, and CLI implementation. |
 | [`tests`](./tests) | Determinism, tamper, accessibility, metadata, CLI, palette, and asset gates. |
 | [`social-previews`](./social-previews) | Deterministically generated GitHub preview assets. |
@@ -106,6 +107,8 @@ runtime font or stylesheet dependency.
 - `prefers-reduced-motion: reduce` collapses nonessential animation and transition duration.
 - The exported VitePress adapter has no runtime CDN or font download.
 - The current supply-chain posture is SLSA L1; stronger levels are not claimed here.
+- Front-end consumers follow the [`KANCHAY hardening standard`](./docs/FRONTEND_HARDENING.md),
+  including control-dock ownership, safe areas, truthful runtime states, and Core Web Vitals budgets.
 
 See [`kit/brand-bible.md`](./kit/brand-bible.md) for voice and naming, and
 [`kit/tokens/COLOR_CONTRAST_REPORT.md`](./kit/tokens/COLOR_CONTRAST_REPORT.md) for measured contrast
