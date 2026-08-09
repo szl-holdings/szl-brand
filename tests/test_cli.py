@@ -1,5 +1,6 @@
 """Tests for szl_brand CLI."""
 
+import os
 import subprocess
 import sys
 
@@ -128,3 +129,61 @@ class TestCLI:
         assert result.returncode == 0, result.stderr
         assert (tmp_path / "system" / "manifest.json").is_file()
         assert "KANCHAY design system 1.1.0" in result.stdout
+
+    def test_validate_command_contract(self):
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "szl_brand",
+                "validate-command-contract",
+                "kit/contracts/khipu-command-system.example.json",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0, result.stderr
+        assert "KHIPU Command System contract valid" in result.stdout
+
+    def test_validate_command_contract_oversized_integer_fails_closed(self, tmp_path):
+        contract = tmp_path / "oversized-integer.json"
+        contract.write_text("9" * 641, encoding="utf-8")
+        environment = os.environ.copy()
+        environment["PYTHONINTMAXSTRDIGITS"] = "640"
+
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "szl_brand",
+                "validate-command-contract",
+                str(contract),
+            ],
+            capture_output=True,
+            text=True,
+            env=environment,
+        )
+
+        assert result.returncode == 1
+        assert "contract file is unreadable:" in result.stderr
+        assert "Traceback" not in result.stderr
+
+    def test_validate_command_contract_deeply_nested_json_fails_closed(self, tmp_path):
+        contract = tmp_path / "deeply-nested.json"
+        contract.write_text("[" * 10_000 + "0" + "]" * 10_000, encoding="utf-8")
+
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "szl_brand",
+                "validate-command-contract",
+                str(contract),
+            ],
+            capture_output=True,
+            text=True,
+        )
+
+        assert result.returncode == 1
+        assert "contract file is unreadable:" in result.stderr
+        assert "Traceback" not in result.stderr

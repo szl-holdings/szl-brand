@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     role="img"
+     aria-labelledby="title description"
+     viewBox="0 0 1600 800"
+     width="100%"
+     preserveAspectRatio="xMidYMid meet">
+  <title id="title">{{ORGANIZATION_NAME}} - {{MISSION_OUTCOME}}</title>
+  <desc id="description">
+    A braided command and evidence system connects product, builder, and verifier paths.
+  </desc>
+  <defs>
+    <linearGradient id="field" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a0f1e" />
+      <stop offset="0.62" stop-color="#10151c" />
+      <stop offset="1" stop-color="#1b222c" />
+    </linearGradient>
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#5cc4bf" stop-opacity="0.32" />
+      <stop offset="1" stop-color="#5cc4bf" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="1600" height="800" rx="40" fill="url(#field)" />
+  <rect x="1" y="1" width="1598" height="798" rx="39"
+        fill="none" stroke="#3c4757" stroke-width="2" />
+  <circle cx="1280" cy="400" r="330" fill="url(#halo)" />
+
+  <g aria-hidden="true" fill="none" stroke-linecap="round">
+    <path d="M860 142 C1038 142 1050 258 1216 258 S1396 142 1530 142"
+          stroke="#5cc4bf" stroke-width="5" />
+    <path d="M860 400 C1038 400 1050 400 1216 400 S1396 400 1530 400"
+          stroke="#d7b96b" stroke-width="5" />
+    <path d="M860 658 C1038 658 1050 542 1216 542 S1396 658 1530 658"
+          stroke="#e57373" stroke-width="5" />
+    <path d="M1010 178 V622 M1216 258 V542 M1412 188 V612"
+          stroke="#76859b" stroke-width="2" opacity="0.8" />
+    <g fill="#f5f7fa">
+      <circle cx="1010" cy="282" r="8" />
+      <circle cx="1010" cy="400" r="8" />
+      <circle cx="1010" cy="518" r="8" />
+      <circle cx="1216" cy="330" r="8" />
+      <circle cx="1216" cy="470" r="8" />
+      <circle cx="1412" cy="278" r="8" />
+      <circle cx="1412" cy="400" r="8" />
+      <circle cx="1412" cy="522" r="8" />
+    </g>
+    <g>
+      <circle cx="1530" cy="142" r="13" fill="#5cc4bf" />
+      <circle cx="1530" cy="400" r="13" fill="#d7b96b" />
+      <circle cx="1530" cy="658" r="13" fill="#e57373" />
+    </g>
+  </g>
+
+  <g font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+    <text x="96" y="118" fill="#8fd9d5" font-size="22" font-weight="700"
+          letter-spacing="4">{{CATEGORY}}</text>
+    <text x="96" y="246" fill="#f5f7fa" font-size="74" font-weight="700">
+      {{ORGANIZATION_NAME}}
+    </text>
+    <text x="96" y="338" fill="#c9d2df" font-size="34">
+      {{MISSION_LINE_ONE}}
+    </text>
+    <text x="96" y="390" fill="#c9d2df" font-size="34">
+      {{MISSION_LINE_TWO}}
+    </text>
+    <g font-size="19" font-weight="700" letter-spacing="1">
+      <rect x="96" y="558" width="188" height="58" rx="12" fill="#d65151" />
+      <text x="190" y="595" fill="#0a0f1e" text-anchor="middle">PRODUCT</text>
+      <rect x="302" y="558" width="188" height="58" rx="12"
+            fill="none" stroke="#8fd9d5" stroke-width="2" />
+      <text x="396" y="595" fill="#f5f7fa" text-anchor="middle">BUILD</text>
+      <rect x="508" y="558" width="188" height="58" rx="12"
+            fill="none" stroke="#d7b96b" stroke-width="2" />
+      <text x="602" y="595" fill="#f5f7fa" text-anchor="middle">VERIFY</text>
+    </g>
+    <text x="96" y="704" fill="#a4b1c4" font-size="18" font-weight="600"
+          letter-spacing="2">GOVERN / EXECUTE / PROVE</text>
+  </g>
+</svg>

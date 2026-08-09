@@ -20,6 +20,20 @@ _ASSETS: Final = {
     "tokens.json": "kit/tokens/COLOR_TOKENS.json",
     "metadata.schema.json": "kit/contracts/public-metadata.schema.json",
     "vitepress.css": "kit/adapters/vitepress.css",
+    "khipu-command-system.css": "kit/patterns/khipu-command-system.css",
+    "khipu-command-system.schema.json": "kit/contracts/khipu-command-system.schema.json",
+    "khipu-command-system.example.json": "kit/contracts/khipu-command-system.example.json",
+    "repository-readme-template.md": (
+        "kit/templates/khipu-command-system/repository-readme-template.md"
+    ),
+    "org-card-template.md": "kit/templates/khipu-command-system/org-card-template.md",
+    "repository-hero-template.svg": (
+        "kit/templates/khipu-command-system/repository-hero-template.svg"
+    ),
+    "org-card-template.svg": "kit/templates/khipu-command-system/org-card-template.svg",
+    "executive-brief-template.html": (
+        "kit/templates/khipu-command-system/executive-brief-template.html"
+    ),
 }
 _SOURCE_PROVENANCE = "src/szl_brand/design_system/source-provenance.json"
 _WHEEL_PROVENANCE = "szl_brand/design_system/source-provenance.json"
