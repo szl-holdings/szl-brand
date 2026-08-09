@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     role="img"
+     aria-labelledby="title description"
+     viewBox="0 0 1440 720"
+     width="100%"
+     preserveAspectRatio="xMidYMid meet">
+  <title id="title">{{PROJECT_NAME}} - {{ONE_SENTENCE_OUTCOME}}</title>
+  <desc id="description">
+    Two connected Khipu paths pair a bounded product action with its evidence record.
+  </desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a0f1e" />
+      <stop offset="1" stop-color="#10151c" />
+    </linearGradient>
+    <linearGradient id="cord" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#5cc4bf" />
+      <stop offset="1" stop-color="#e57373" />
+    </linearGradient>
+    <filter id="node-glow" x="-120%" y="-120%" width="340%" height="340%">
+      <feGaussianBlur stdDeviation="10" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1440" height="720" rx="40" fill="url(#background)" />
+  <rect x="1" y="1" width="1438" height="718" rx="39"
+        fill="none" stroke="#3c4757" stroke-width="2" />
+
+  <g fill="none" stroke="#3c4757" stroke-width="2" opacity="0.55">
+    <path d="M890 88 C1090 16 1355 110 1395 322" />
+    <path d="M932 662 C1120 714 1350 612 1404 430" />
+  </g>
+
+  <g aria-hidden="true">
+    <path d="M832 168 C980 168 1012 218 1114 218 S1262 168 1368 168"
+          fill="none" stroke="url(#cord)" stroke-width="4" />
+    <path d="M832 552 C980 552 1012 502 1114 502 S1262 552 1368 552"
+          fill="none" stroke="url(#cord)" stroke-width="4" />
+    <path d="M930 168 V552 M1114 218 V502 M1288 186 V534"
+          fill="none" stroke="#76859b" stroke-width="2" />
+    <g fill="#d7b96b">
+      <circle cx="930" cy="294" r="8" />
+      <circle cx="930" cy="426" r="8" />
+      <circle cx="1114" cy="330" r="8" />
+      <circle cx="1114" cy="390" r="8" />
+      <circle cx="1288" cy="274" r="8" />
+      <circle cx="1288" cy="446" r="8" />
+    </g>
+    <circle cx="1368" cy="168" r="12" fill="#e57373" filter="url(#node-glow)" />
+    <circle cx="1368" cy="552" r="12" fill="#5cc4bf" filter="url(#node-glow)" />
+  </g>
+
+  <g font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+    <text x="88" y="104" fill="#8fd9d5" font-size="22" font-weight="700"
+          letter-spacing="4">KHIPU COMMAND SYSTEM</text>
+    <text x="88" y="228" fill="#f5f7fa" font-size="72" font-weight="700">
+      {{PROJECT_NAME}}
+    </text>
+    <text x="88" y="306" fill="#c9d2df" font-size="32">
+      {{OUTCOME_LINE_ONE}}
+    </text>
+    <text x="88" y="354" fill="#c9d2df" font-size="32">
+      {{OUTCOME_LINE_TWO}}
+    </text>
+    <rect x="88" y="500" width="248" height="58" rx="12"
+          fill="#d65151" />
+    <text x="212" y="538" fill="#0a0f1e" font-size="20" font-weight="700"
+          text-anchor="middle">{{PRIMARY_ACTION}}</text>
+    <rect x="354" y="500" width="248" height="58" rx="12"
+          fill="none" stroke="#8fd9d5" stroke-width="2" />
+    <text x="478" y="538" fill="#f5f7fa" font-size="20" font-weight="700"
+          text-anchor="middle">VERIFY EVIDENCE</text>
+    <text x="88" y="644" fill="#a4b1c4" font-size="18" font-weight="600"
+          letter-spacing="2">{{EVIDENCE_CLASS}} / {{OPERATIONAL_STATE}}</text>
+  </g>
+</svg>

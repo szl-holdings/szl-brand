@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en" data-surface="dark">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{SURFACE_TITLE}} | Executive brief</title>
+    <link rel="stylesheet" href="./system.css">
+    <link rel="stylesheet" href="./khipu-command-system.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <main id="main" class="kcs-shell kcs-main">
+      <section class="kcs-hero" aria-labelledby="surface-title">
+        <div class="kcs-hero__copy">
+          <p class="eyebrow">{{CATEGORY}}</p>
+          <h1 id="surface-title" class="kcs-hero__title">{{SURFACE_TITLE}}</h1>
+          <p class="kcs-hero__outcome">{{ONE_SENTENCE_OUTCOME}}</p>
+        </div>
+        <nav class="kcs-actions" aria-label="Surface actions">
+          <a class="kcs-action" data-priority="primary" href="{{PRODUCT_URL}}">
+            {{PRIMARY_ACTION}}
+          </a>
+          <a class="kcs-action" href="{{EVIDENCE_URL}}">Inspect evidence</a>
+        </nav>
+      </section>
+
+      <article class="kcs-executive-brief" aria-labelledby="brief-title">
+        <header>
+          <p class="eyebrow">Executive brief</p>
+          <h2 id="brief-title">{{DECISION_OR_OUTCOME}}</h2>
+          <p class="kcs-executive-brief__summary">{{EXECUTIVE_SUMMARY}}</p>
+        </header>
+        <dl class="kcs-brief-facts">
+          <div>
+            <dt>Primary user</dt>
+            <dd>{{PRIMARY_USER}}</dd>
+          </div>
+          <div>
+            <dt>Operational state</dt>
+            <dd><strong>{{OPERATIONAL_STATE}}</strong> as of {{OBSERVED_AT}}</dd>
+          </div>
+          <div>
+            <dt>Evidence class</dt>
+            <dd><strong>{{EVIDENCE_CLASS}}</strong> within {{EVIDENCE_SCOPE}}</dd>
+          </div>
+          <div>
+            <dt>Boundary</dt>
+            <dd>{{IMPORTANT_BOUNDARY}}</dd>
+          </div>
+        </dl>
+      </article>
+
+      <details class="kcs-evidence">
+        <summary>{{CLAIM}} - {{EVIDENCE_CLASS}} / {{OPERATIONAL_STATE}}</summary>
+        <div class="kcs-evidence__body">
+          <p class="kcs-status-line">
+            <strong>Source</strong>
+            <a href="{{SOURCE_URL}}">{{SOURCE_LABEL}}</a>
+          </p>
+          <p><strong>Scope:</strong> {{SCOPE}}</p>
+          <p><strong>Limitations:</strong> {{LIMITATIONS}}</p>
+        </div>
+      </details>
+    </main>
+  </body>
+</html>

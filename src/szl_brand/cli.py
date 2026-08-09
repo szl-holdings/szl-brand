@@ -238,6 +238,20 @@ def cmd_export_system(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_validate_command_contract(args: argparse.Namespace) -> int:
+    """Validate a KHIPU Command System surface disclosure."""
+
+    from szl_brand.khipu import validate_surface_file
+
+    errors = validate_surface_file(Path(args.contract))
+    if errors:
+        for error in errors:
+            print(f"  \033[31merror\033[0m {error}", file=sys.stderr)
+        return 1
+    print(f"KHIPU Command System contract valid: {args.contract}")
+    return 0
+
+
 def app() -> None:
     """Main CLI entry point."""
     _configure_stdio()
@@ -294,6 +308,12 @@ def app() -> None:
         help="Exact lowercase 40-character Git SHA for the source state",
     )
 
+    p_command = sub.add_parser(
+        "validate-command-contract",
+        help="Validate a KHIPU Command System surface disclosure",
+    )
+    p_command.add_argument("contract", help="Path to the JSON surface disclosure")
+
     args = parser.parse_args()
 
     if not args.command:
@@ -309,6 +329,7 @@ def app() -> None:
         "drift": cmd_drift,
         "serve": cmd_serve,
         "export-system": cmd_export_system,
+        "validate-command-contract": cmd_validate_command_contract,
     }
 
     sys.exit(handlers[args.command](args))

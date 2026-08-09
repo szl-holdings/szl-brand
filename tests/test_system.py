@@ -55,6 +55,14 @@ def test_manifest_pins_source_and_every_asset(tmp_path):
         "tokens.json",
         "metadata.schema.json",
         "vitepress.css",
+        "khipu-command-system.css",
+        "khipu-command-system.schema.json",
+        "khipu-command-system.example.json",
+        "repository-readme-template.md",
+        "org-card-template.md",
+        "repository-hero-template.svg",
+        "org-card-template.svg",
+        "executive-brief-template.html",
     }
     assert verify_system(output) == []
 

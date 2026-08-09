@@ -128,3 +128,18 @@ class TestCLI:
         assert result.returncode == 0, result.stderr
         assert (tmp_path / "system" / "manifest.json").is_file()
         assert "KANCHAY design system 1.1.0" in result.stdout
+
+    def test_validate_command_contract(self):
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "szl_brand",
+                "validate-command-contract",
+                "kit/contracts/khipu-command-system.example.json",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0, result.stderr
+        assert "KHIPU Command System contract valid" in result.stdout
