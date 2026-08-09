@@ -15,7 +15,7 @@
       "type": "string",
       "minLength": 3,
       "maxLength": 180,
-      "pattern": "^(?=[^\\s\\u0000-\\u001F\\u007F])(?:[^\\u0000-\\u001F\\u007F]*[^\\s\\u0000-\\u001F\\u007F])?$"
+      "pattern": "^(?=[^\\s\\u0085\\uFEFF\\u0000-\\u001F\\u007F])(?:[^\\u0000-\\u001F\\u007F]*[^\\s\\u0085\\uFEFF\\u0000-\\u001F\\u007F])?$"
     },
     "rfc3339Timestamp": {
       "type": "string",
@@ -38,7 +38,7 @@
           "type": "string",
           "minLength": 8,
           "maxLength": 240,
-          "pattern": "^(?=[^\\s\\u0000-\\u001F\\u007F])(?:[^\\u0000-\\u001F\\u007F]*[^\\s\\u0000-\\u001F\\u007F])?$"
+          "pattern": "^(?=[^\\s\\u0085\\uFEFF\\u0000-\\u001F\\u007F])(?:[^\\u0000-\\u001F\\u007F]*[^\\s\\u0085\\uFEFF\\u0000-\\u001F\\u007F])?$"
         },
         "evidenceClass": {
           "type": "string",
@@ -58,7 +58,7 @@
           "type": "string",
           "minLength": 8,
           "maxLength": 300,
-          "pattern": "^(?=[^\\s\\u0000-\\u001F\\u007F])(?:[^\\u0000-\\u001F\\u007F]*[^\\s\\u0000-\\u001F\\u007F])?$"
+          "pattern": "^(?=[^\\s\\u0085\\uFEFF\\u0000-\\u001F\\u007F])(?:[^\\u0000-\\u001F\\u007F]*[^\\s\\u0085\\uFEFF\\u0000-\\u001F\\u007F])?$"
         },
         "limitations": {
           "type": "array",
@@ -67,18 +67,31 @@
             "type": "string",
             "minLength": 8,
             "maxLength": 240,
-            "pattern": "^(?=[^\\s\\u0000-\\u001F\\u007F])(?:[^\\u0000-\\u001F\\u007F]*[^\\s\\u0000-\\u001F\\u007F])?$"
+            "pattern": "^(?=[^\\s\\u0085\\uFEFF\\u0000-\\u001F\\u007F])(?:[^\\u0000-\\u001F\\u007F]*[^\\s\\u0085\\uFEFF\\u0000-\\u001F\\u007F])?$"
           }
         }
       },
       "allOf": [
         {
           "if": {
-            "properties": {
-              "operationalState": {
-                "enum": ["OPERATIONAL", "PARTIAL", "DEGRADED"]
+            "anyOf": [
+              {
+                "properties": {
+                  "operationalState": {
+                    "enum": ["OPERATIONAL", "PARTIAL", "DEGRADED", "HISTORICAL"]
+                  }
+                },
+                "required": ["operationalState"]
+              },
+              {
+                "properties": {
+                  "evidenceClass": {
+                    "const": "MEASURED"
+                  }
+                },
+                "required": ["evidenceClass"]
               }
-            }
+            ]
           },
           "then": {
             "required": ["observedAt"]
@@ -250,7 +263,7 @@
           "type": "string",
           "minLength": 12,
           "maxLength": 240,
-          "pattern": "^(?=[^\\s\\u0000-\\u001F\\u007F])(?:[^\\u0000-\\u001F\\u007F]*[^\\s\\u0000-\\u001F\\u007F])?$"
+          "pattern": "^(?=[^\\s\\u0085\\uFEFF\\u0000-\\u001F\\u007F])(?:[^\\u0000-\\u001F\\u007F]*[^\\s\\u0085\\uFEFF\\u0000-\\u001F\\u007F])?$"
         }
       }
     },

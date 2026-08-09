@@ -138,9 +138,35 @@ def test_current_operational_state_requires_timestamp():
     record["evidence"][0]["operationalState"] = "OPERATIONAL"
 
     assert (
-        "$.evidence[0].observedAt is required for current operational states"
+        "$.evidence[0].observedAt is required for measured or observed evidence"
         in validate_surface(record)
     )
+
+
+def test_measured_and_historical_evidence_require_observation_timestamp():
+    schema = json.loads(
+        (CONTRACTS / "khipu-command-system.schema.json").read_text(encoding="utf-8")
+    )
+    validator = Draft202012Validator(schema)
+
+    cases = (
+        ("MEASURED", "UNAVAILABLE"),
+        ("REAL", "HISTORICAL"),
+        ("MEASURED", "HISTORICAL"),
+    )
+    for evidence_class, state in cases:
+        record = _example()
+        record["evidence"][0]["evidenceClass"] = evidence_class
+        record["evidence"][0]["operationalState"] = state
+        assert list(validator.iter_errors(record)), (evidence_class, state)
+        assert (
+            "$.evidence[0].observedAt is required for measured or observed evidence"
+            in validate_surface(record)
+        )
+
+        record["evidence"][0]["observedAt"] = "2026-08-09T00:00:00Z"
+        assert list(validator.iter_errors(record)) == [], (evidence_class, state)
+        assert validate_surface(record) == [], (evidence_class, state)
 
 
 def test_sample_and_planned_evidence_cannot_claim_current_operation():
@@ -306,13 +332,32 @@ def test_oversized_json_integer_is_reported_as_unreadable(tmp_path):
     assert "Exceeds the limit" in errors[0]
 
 
+def test_deeply_nested_json_is_reported_as_unreadable(tmp_path):
+    contract = tmp_path / "deeply-nested.json"
+    contract.write_text("[" * 10_000 + "0" + "]" * 10_000, encoding="utf-8")
+
+    errors = validate_surface_file(contract)
+
+    assert len(errors) == 1
+    assert errors[0].startswith("contract file is unreadable:")
+
+
 def test_schema_and_runtime_reject_untrimmed_or_control_text():
     schema = json.loads(
         (CONTRACTS / "khipu-command-system.schema.json").read_text(encoding="utf-8")
     )
     validator = Draft202012Validator(schema)
 
-    for bad_text in ("   ", " leading", "trailing ", "line one\nline two"):
+    for bad_text in (
+        "   ",
+        " leading",
+        "trailing ",
+        "line one\nline two",
+        "\ufeffleading",
+        "trailing\ufeff",
+        "\u0085leading",
+        "trailing\u0085",
+    ):
         record = _example()
         record["executiveBrief"]["outcome"] = bad_text
         assert list(validator.iter_errors(record)), repr(bad_text)

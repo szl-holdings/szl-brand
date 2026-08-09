@@ -66,8 +66,11 @@ def _text(value: object, *, path: str, minimum: int, maximum: int) -> list[str]:
         return [f"{path} must be a string"]
     if not minimum <= len(value) <= maximum:
         return [f"{path} length must be between {minimum} and {maximum}"]
-    if value != value.strip() or any(
-        ord(character) < 32 or ord(character) == 127 for character in value
+    if (
+        value != value.strip()
+        or value.startswith("\ufeff")
+        or value.endswith("\ufeff")
+        or any(ord(character) < 32 or ord(character) == 127 for character in value)
     ):
         return [f"{path} must be trimmed printable text"]
     return []
@@ -313,9 +316,15 @@ def validate_surface(document: object) -> list[str]:
                             maximum=240,
                         )
                     )
-            if isinstance(state, str) and state in {"OPERATIONAL", "PARTIAL", "DEGRADED"}:
+            requires_observation = (
+                isinstance(state, str)
+                and state in {"OPERATIONAL", "PARTIAL", "DEGRADED", "HISTORICAL"}
+            ) or evidence_class == "MEASURED"
+            if requires_observation:
                 if "observedAt" not in record:
-                    errors.append(f"{path}.observedAt is required for current operational states")
+                    errors.append(
+                        f"{path}.observedAt is required for measured or observed evidence"
+                    )
                 else:
                     errors.extend(_timestamp(record.get("observedAt"), path=f"{path}.observedAt"))
             elif "observedAt" in record:
@@ -339,6 +348,6 @@ def validate_surface_file(path: Path) -> list[str]:
 
     try:
         document = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, UnicodeError, ValueError) as exc:
+    except (OSError, UnicodeError, ValueError, RecursionError) as exc:
         return [f"contract file is unreadable: {exc}"]
     return validate_surface(document)

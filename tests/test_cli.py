@@ -167,3 +167,23 @@ class TestCLI:
         assert result.returncode == 1
         assert "contract file is unreadable:" in result.stderr
         assert "Traceback" not in result.stderr
+
+    def test_validate_command_contract_deeply_nested_json_fails_closed(self, tmp_path):
+        contract = tmp_path / "deeply-nested.json"
+        contract.write_text("[" * 10_000 + "0" + "]" * 10_000, encoding="utf-8")
+
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "szl_brand",
+                "validate-command-contract",
+                str(contract),
+            ],
+            capture_output=True,
+            text=True,
+        )
+
+        assert result.returncode == 1
+        assert "contract file is unreadable:" in result.stderr
+        assert "Traceback" not in result.stderr
