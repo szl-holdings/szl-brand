@@ -5,6 +5,7 @@ from __future__ import annotations
 import copy
 import json
 import re
+import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -108,6 +109,28 @@ def test_accessibility_assertions_require_json_booleans():
         record["accessibility"][name] = 1
         assert list(validator.iter_errors(record)), name
         assert f"$.accessibility.{name} must equal True" in validate_surface(record)
+
+
+def test_body_measure_matches_json_schema_integer_semantics():
+    schema = json.loads(
+        (CONTRACTS / "khipu-command-system.schema.json").read_text(encoding="utf-8")
+    )
+    validator = Draft202012Validator(schema)
+
+    for literal in ("72", "72.0", "72e0"):
+        record = _example()
+        record["responsive"]["bodyMeasureCh"] = json.loads(literal)
+        assert list(validator.iter_errors(record)) == [], literal
+        assert validate_surface(record) == [], literal
+
+    for value in (True, False, 72.5, float("nan"), float("inf"), "72", 59, 79):
+        record = _example()
+        record["responsive"]["bodyMeasureCh"] = value
+        assert list(validator.iter_errors(record)), repr(value)
+        assert (
+            "$.responsive.bodyMeasureCh must be an integer from 60 through 78"
+            in validate_surface(record)
+        ), repr(value)
 
 
 def test_current_operational_state_requires_timestamp():
@@ -266,6 +289,21 @@ def test_invalid_utf8_contract_is_reported_as_unreadable(tmp_path):
     errors = validate_surface_file(contract)
     assert len(errors) == 1
     assert errors[0].startswith("contract file is unreadable:")
+
+
+def test_oversized_json_integer_is_reported_as_unreadable(tmp_path):
+    contract = tmp_path / "contract.json"
+    contract.write_text("9" * 641, encoding="utf-8")
+    original_limit = sys.get_int_max_str_digits()
+    try:
+        sys.set_int_max_str_digits(640)
+        errors = validate_surface_file(contract)
+    finally:
+        sys.set_int_max_str_digits(original_limit)
+
+    assert len(errors) == 1
+    assert errors[0].startswith("contract file is unreadable:")
+    assert "Exceeds the limit" in errors[0]
 
 
 def test_schema_and_runtime_reject_untrimmed_or_control_text():

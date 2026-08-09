@@ -108,6 +108,16 @@ def _enum(value: object, *, path: str, allowed: frozenset[str]) -> list[str]:
     return []
 
 
+def _is_json_integer(value: object) -> bool:
+    """Match JSON Schema's integer semantics for decoded JSON numbers."""
+
+    if isinstance(value, bool):
+        return False
+    if isinstance(value, int):
+        return True
+    return isinstance(value, float) and value.is_integer()
+
+
 def validate_surface(document: object) -> list[str]:
     """Return deterministic contract violations for a decoded disclosure."""
 
@@ -180,7 +190,7 @@ def validate_surface(document: object) -> list[str]:
         if responsive.get("zoomPercent") != list(REQUIRED_ZOOM_PERCENT):
             errors.append(f"$.responsive.zoomPercent must equal {list(REQUIRED_ZOOM_PERCENT)}")
         measure = responsive.get("bodyMeasureCh")
-        if not isinstance(measure, int) or isinstance(measure, bool) or not 60 <= measure <= 78:
+        if not _is_json_integer(measure) or not 60 <= measure <= 78:
             errors.append("$.responsive.bodyMeasureCh must be an integer from 60 through 78")
 
     accessibility, accessibility_errors = _keys(
@@ -329,6 +339,6 @@ def validate_surface_file(path: Path) -> list[str]:
 
     try:
         document = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+    except (OSError, UnicodeError, ValueError) as exc:
         return [f"contract file is unreadable: {exc}"]
     return validate_surface(document)

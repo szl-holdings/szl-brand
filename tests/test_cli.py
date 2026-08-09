@@ -1,5 +1,6 @@
 """Tests for szl_brand CLI."""
 
+import os
 import subprocess
 import sys
 
@@ -143,3 +144,26 @@ class TestCLI:
         )
         assert result.returncode == 0, result.stderr
         assert "KHIPU Command System contract valid" in result.stdout
+
+    def test_validate_command_contract_oversized_integer_fails_closed(self, tmp_path):
+        contract = tmp_path / "oversized-integer.json"
+        contract.write_text("9" * 641, encoding="utf-8")
+        environment = os.environ.copy()
+        environment["PYTHONINTMAXSTRDIGITS"] = "640"
+
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "szl_brand",
+                "validate-command-contract",
+                str(contract),
+            ],
+            capture_output=True,
+            text=True,
+            env=environment,
+        )
+
+        assert result.returncode == 1
+        assert "contract file is unreadable:" in result.stderr
+        assert "Traceback" not in result.stderr
