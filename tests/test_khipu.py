@@ -70,6 +70,46 @@ def test_required_viewports_zoom_and_accessibility_cannot_drift():
     assert "$.accessibility.reducedMotion must equal True" in errors
 
 
+def test_enum_fields_fail_closed_on_non_string_values():
+    schema = json.loads(
+        (CONTRACTS / "khipu-command-system.schema.json").read_text(encoding="utf-8")
+    )
+    validator = Draft202012Validator(schema)
+
+    for path, value in (
+        (("recordKind",), []),
+        (("audience",), {}),
+        (("evidence", 0, "evidenceClass"), []),
+        (("evidence", 0, "operationalState"), {}),
+    ):
+        record = _example()
+        target = record
+        for part in path[:-1]:
+            target = target[part]
+        target[path[-1]] = value
+        assert list(validator.iter_errors(record)), path
+        assert validate_surface(record), path
+
+
+def test_accessibility_assertions_require_json_booleans():
+    schema = json.loads(
+        (CONTRACTS / "khipu-command-system.schema.json").read_text(encoding="utf-8")
+    )
+    validator = Draft202012Validator(schema)
+
+    for name in (
+        "focusVisible",
+        "keyboardOnly",
+        "reducedMotion",
+        "nonColorStatus",
+        "semanticLandmarks",
+    ):
+        record = _example()
+        record["accessibility"][name] = 1
+        assert list(validator.iter_errors(record)), name
+        assert f"$.accessibility.{name} must equal True" in validate_surface(record)
+
+
 def test_current_operational_state_requires_timestamp():
     record = _example()
     record["evidence"][0]["operationalState"] = "OPERATIONAL"
@@ -77,6 +117,35 @@ def test_current_operational_state_requires_timestamp():
     assert (
         "$.evidence[0].observedAt is required for current operational states"
         in validate_surface(record)
+    )
+
+
+def test_sample_and_planned_evidence_cannot_claim_current_operation():
+    schema = json.loads(
+        (CONTRACTS / "khipu-command-system.schema.json").read_text(encoding="utf-8")
+    )
+    validator = Draft202012Validator(schema)
+
+    sample = _example()
+    sample["evidence"][0]["operationalState"] = "OPERATIONAL"
+    sample["evidence"][0]["observedAt"] = "2026-08-09T00:00:00Z"
+    assert list(validator.iter_errors(sample))
+    assert (
+        "$.evidence[0].operationalState must not be current for SAMPLE records"
+        in validate_surface(sample)
+    )
+
+    roadmap = _example()
+    roadmap["recordKind"] = "RELEASE"
+    roadmap["source"]["revision"] = "1" * 40
+    roadmap["source"]["kanchayManifestRoot"] = "2" * 64
+    roadmap["evidence"][0]["evidenceClass"] = "ROADMAP"
+    roadmap["evidence"][0]["operationalState"] = "OPERATIONAL"
+    roadmap["evidence"][0]["observedAt"] = "2026-08-09T00:00:00Z"
+    assert list(validator.iter_errors(roadmap))
+    assert (
+        "$.evidence[0].operationalState must be UNAVAILABLE when evidenceClass is ROADMAP"
+        in validate_surface(roadmap)
     )
 
 
@@ -140,22 +209,63 @@ def test_schema_and_runtime_require_strict_rfc3339_timestamps():
         "2026-01-01T00:00:00+0000",
         "2026-01-01T00:00Z",
         "2026-13-01T00:00:00Z",
+        "0000-01-01T00:00:00Z",
+        "1900-02-29T00:00:00Z",
+        "2026-02-29T00:00:00Z",
+        "2026-04-31T00:00:00Z",
+        "2026-01-01T00:00:00Z\n",
+        "2026-01-01T00:00:00Z\r\n",
+        "2026-01-01T00:00:00Z\u2028",
+        "2026-01-01T00:00:00Z\u2029",
     ):
         record = _example()
-        record["evidence"][0]["operationalState"] = "OPERATIONAL"
+        record["evidence"][0]["operationalState"] = "HISTORICAL"
         record["evidence"][0]["observedAt"] = bad_timestamp
         assert list(validator.iter_errors(record)), bad_timestamp
         assert "$.evidence[0].observedAt must be an RFC 3339 timestamp" in validate_surface(record)
 
     for good_timestamp in (
         "2026-01-01T00:00:00Z",
+        "2000-02-29T23:59:59Z",
+        "2024-02-29T12:30:45Z",
         "2026-01-01T00:00:00.123456+05:30",
     ):
         record = _example()
-        record["evidence"][0]["operationalState"] = "OPERATIONAL"
+        record["evidence"][0]["operationalState"] = "HISTORICAL"
         record["evidence"][0]["observedAt"] = good_timestamp
         assert list(validator.iter_errors(record)) == []
         assert validate_surface(record) == []
+
+
+def test_timestamp_schema_rejects_impossible_dates_without_format_checker():
+    schema = json.loads(
+        (CONTRACTS / "khipu-command-system.schema.json").read_text(encoding="utf-8")
+    )
+    validator = Draft202012Validator(schema)
+
+    for bad_timestamp in (
+        "0000-01-01T00:00:00Z",
+        "1900-02-29T00:00:00Z",
+        "2026-02-31T00:00:00Z",
+        "2026-04-31T00:00:00Z",
+        "2026-01-01T00:00:00Z\n",
+        "2026-01-01T00:00:00Z\r\n",
+        "2026-01-01T00:00:00Z\u2028",
+        "2026-01-01T00:00:00Z\u2029",
+    ):
+        record = _example()
+        record["evidence"][0]["observedAt"] = bad_timestamp
+        assert list(validator.iter_errors(record)), bad_timestamp
+        assert "$.evidence[0].observedAt must be an RFC 3339 timestamp" in validate_surface(record)
+
+
+def test_invalid_utf8_contract_is_reported_as_unreadable(tmp_path):
+    contract = tmp_path / "contract.json"
+    contract.write_bytes(b'{"contract":"szl.khipu-command-system/v1","bad":"\xff"}')
+
+    errors = validate_surface_file(contract)
+    assert len(errors) == 1
+    assert errors[0].startswith("contract file is unreadable:")
 
 
 def test_schema_and_runtime_reject_untrimmed_or_control_text():

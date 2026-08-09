@@ -33,9 +33,13 @@ _HTTPS_URL_RE: Final = re.compile(
     r"(?:#(?:[A-Za-z0-9._~!$&'()*+,;=:@/?-]|%[0-9A-Fa-f]{2})*)?$"
 )
 _RFC3339_RE: Final = re.compile(
-    r"^[0-9]{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01])"
+    r"^(?:(?:[0-9]{2}(?:0[48]|[2468][048]|[13579][26])|"
+    r"(?:0[48]|[2468][048]|[13579][26])00)-02-29|"
+    r"(?:(?!0000)[0-9]{4})-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12][0-9]|3[01])|"
+    r"(?:0[469]|11)-(?:0[1-9]|[12][0-9]|30)|02-(?:0[1-9]|1[0-9]|2[0-8])))"
     r"T(?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]"
-    r"(?:\.[0-9]+)?(?:Z|[+-](?:[01][0-9]|2[0-3]):[0-5][0-9])$"
+    r"(?:\.[0-9]+)?(?:Z|[+-](?:[01][0-9]|2[0-3]):[0-5][0-9])"
+    r"(?![\s\S])"
 )
 _ZERO_REVISION: Final = "0" * 40
 _ZERO_DIGEST: Final = "0" * 64
@@ -96,6 +100,14 @@ def _timestamp(value: object, *, path: str) -> list[str]:
     return []
 
 
+def _enum(value: object, *, path: str, allowed: frozenset[str]) -> list[str]:
+    if not isinstance(value, str):
+        return [f"{path} must be a string"]
+    if value not in allowed:
+        return [f"{path} must be one of {sorted(allowed)}"]
+    return []
+
+
 def validate_surface(document: object) -> list[str]:
     """Return deterministic contract violations for a decoded disclosure."""
 
@@ -122,7 +134,7 @@ def validate_surface(document: object) -> list[str]:
         errors.append("$.contract is unsupported")
 
     record_kind = root.get("recordKind")
-    if record_kind not in {"SAMPLE", "RELEASE"}:
+    if not isinstance(record_kind, str) or record_kind not in {"SAMPLE", "RELEASE"}:
         errors.append("$.recordKind must be SAMPLE or RELEASE")
 
     surface_id = root.get("surfaceId")
@@ -131,8 +143,7 @@ def validate_surface(document: object) -> list[str]:
     elif not 3 <= len(surface_id) <= 64:
         errors.append("$.surfaceId length must be between 3 and 64")
 
-    if root.get("audience") not in AUDIENCES:
-        errors.append(f"$.audience must be one of {sorted(AUDIENCES)}")
+    errors.extend(_enum(root.get("audience"), path="$.audience", allowed=AUDIENCES))
 
     source, source_errors = _keys(
         root.get("source"),
@@ -186,17 +197,19 @@ def validate_surface(document: object) -> list[str]:
     )
     errors.extend(accessibility_errors)
     if accessibility is not None:
-        expected = {
-            "minimumTargetCssPx": MINIMUM_TARGET_CSS_PX,
-            "focusVisible": True,
-            "keyboardOnly": True,
-            "reducedMotion": True,
-            "nonColorStatus": True,
-            "semanticLandmarks": True,
-        }
-        for name, expected_value in expected.items():
-            if accessibility.get(name) != expected_value:
-                errors.append(f"$.accessibility.{name} must equal {expected_value!r}")
+        if accessibility.get("minimumTargetCssPx") != MINIMUM_TARGET_CSS_PX:
+            errors.append(
+                f"$.accessibility.minimumTargetCssPx must equal {MINIMUM_TARGET_CSS_PX!r}"
+            )
+        for name in (
+            "focusVisible",
+            "keyboardOnly",
+            "reducedMotion",
+            "nonColorStatus",
+            "semanticLandmarks",
+        ):
+            if type(accessibility.get(name)) is not bool or accessibility.get(name) is not True:
+                errors.append(f"$.accessibility.{name} must equal True")
 
     brief, brief_errors = _keys(
         root.get("executiveBrief"),
@@ -254,13 +267,27 @@ def validate_surface(document: object) -> list[str]:
             if record is None:
                 continue
             errors.extend(_text(record.get("claim"), path=f"{path}.claim", minimum=8, maximum=240))
-            if record.get("evidenceClass") not in EVIDENCE_CLASSES:
-                errors.append(f"{path}.evidenceClass must be one of {sorted(EVIDENCE_CLASSES)}")
+            evidence_class = record.get("evidenceClass")
+            errors.extend(
+                _enum(evidence_class, path=f"{path}.evidenceClass", allowed=EVIDENCE_CLASSES)
+            )
             state = record.get("operationalState")
-            if state not in OPERATIONAL_STATES:
+            errors.extend(_enum(state, path=f"{path}.operationalState", allowed=OPERATIONAL_STATES))
+            if (
+                isinstance(evidence_class, str)
+                and evidence_class in {"ROADMAP", "UNAVAILABLE"}
+                and state != "UNAVAILABLE"
+            ):
                 errors.append(
-                    f"{path}.operationalState must be one of {sorted(OPERATIONAL_STATES)}"
+                    f"{path}.operationalState must be UNAVAILABLE when evidenceClass is "
+                    f"{evidence_class}"
                 )
+            if (
+                record_kind == "SAMPLE"
+                and isinstance(state, str)
+                and state in {"OPERATIONAL", "PARTIAL", "DEGRADED"}
+            ):
+                errors.append(f"{path}.operationalState must not be current for SAMPLE records")
             errors.extend(_https_url(record.get("sourceUrl"), path=f"{path}.sourceUrl"))
             errors.extend(_text(record.get("scope"), path=f"{path}.scope", minimum=8, maximum=300))
             limitations = record.get("limitations")
@@ -276,7 +303,7 @@ def validate_surface(document: object) -> list[str]:
                             maximum=240,
                         )
                     )
-            if state in {"OPERATIONAL", "PARTIAL", "DEGRADED"}:
+            if isinstance(state, str) and state in {"OPERATIONAL", "PARTIAL", "DEGRADED"}:
                 if "observedAt" not in record:
                     errors.append(f"{path}.observedAt is required for current operational states")
                 else:
@@ -302,6 +329,6 @@ def validate_surface_file(path: Path) -> list[str]:
 
     try:
         document = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
         return [f"contract file is unreadable: {exc}"]
     return validate_surface(document)
