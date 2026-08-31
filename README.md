@@ -128,7 +128,7 @@ this repository does not silently mutate other repositories.
 
 ## Governance
 
-Changes use signed commits, DCO, protected pull requests, executable tests, and normal branch
+Changes use protected pull requests, executable tests, and normal branch
 protection. Brand doctrine is additive to the locked proof register and does not change theorem,
 axiom, or `sorry` counts.
 
