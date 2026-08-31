@@ -22,7 +22,6 @@ Thank you for contributing to SZL Holdings.
 
 Before opening a PR, confirm:
 
-- [ ] Commits are signed / verified
 - [ ] Tests pass locally
 - [ ] Documentation is updated if behavior changed
 - [ ] `STATUS.md` remains accurate
