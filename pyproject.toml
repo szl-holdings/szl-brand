@@ -26,6 +26,7 @@ dev = [
 szl-brand = "szl_brand.cli:app"
 szl-surface = "szl_brand.surface:main"
 szl-capability = "szl_brand.capability:main"
+szl-estate-plan = "szl_brand.estate:main"
 
 [build-system]
 requires = ["hatchling"]
