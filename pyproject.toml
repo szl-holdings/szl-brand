@@ -1,6 +1,6 @@
 [project]
 name = "szl-brand"
-version = "1.1.0"
+version = "1.2.0"
 description = "SZL Holdings Brand SDK — Deterministic asset generation, validation, and governance"
 readme = "README.md"
 license = {text = "CC-BY-4.0"}
@@ -24,6 +24,7 @@ dev = [
 
 [project.scripts]
 szl-brand = "szl_brand.cli:app"
+szl-surface = "szl_brand.surface:main"
 
 [build-system]
 requires = ["hatchling"]
