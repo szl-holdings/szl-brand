@@ -1,8 +1,8 @@
 """Class-native visual motif compiler for the SZL Holdings public estate.
 
-A reviewed estate class determines information architecture; the stable surface
-slug determines a deterministic variation inside that class. Generation is
-provider-neutral and produces only local SVG/CSS/profile/receipt artifacts.
+Estate class controls information architecture. Surface identity controls a
+stable SHA-seeded variant inside that class. Generation is provider-neutral and
+produces local profile, SVG, CSS, and receipt artifacts only.
 """
 
 from __future__ import annotations
@@ -142,7 +142,7 @@ class MotifRequest:
                 "motif request keys must be exactly slug, display_name, and estate_class"
             )
         request = cls(**value)
-        validate_request(request)
+        _validate_request(request)
         return request
 
 
@@ -182,7 +182,7 @@ class MotifReceipt:
         return json.dumps(asdict(self), sort_keys=True, indent=2) + "\n"
 
 
-def validate_request(request: MotifRequest) -> None:
+def _validate_request(request: MotifRequest) -> None:
     errors: list[str] = []
     if not SLUG_RE.fullmatch(request.slug):
         errors.append("slug must be 1-96 safe path characters")
@@ -195,16 +195,16 @@ def validate_request(request: MotifRequest) -> None:
 
 
 def _seed(request: MotifRequest) -> bytes:
-    return hashlib.sha256(f"{request.estate_class}:{request.slug}".encode()).digest()
+    material = f"{request.estate_class}:{request.slug}".encode()
+    return hashlib.sha256(material).digest()
 
 
 def build_profile(request: MotifRequest) -> MotifProfile:
-    validate_request(request)
+    _validate_request(request)
     theme = THEMES[request.estate_class]
     seed = _seed(request)
-    fingerprint = hashlib.sha256(
-        f"{request.slug}:{theme['family']}:{seed.hex()}".encode()
-    ).hexdigest()[:16]
+    fingerprint_material = f"{request.slug}:{theme['family']}:{seed.hex()}".encode()
+    fingerprint = hashlib.sha256(fingerprint_material).hexdigest()[:16]
     return MotifProfile(
         schema=SCHEMA,
         slug=request.slug,
@@ -239,7 +239,6 @@ def render_css(profile: MotifProfile) -> str:
   --szl-motif-line: rgba(169, 197, 255, .16);
   --szl-motif-ink: #f5fbff;
   --szl-motif-touch: 44px;
-  --szl-motif-gutter: clamp(14px, 3vw, 32px);
 }}
 [data-szl-motif="{profile.theme_family}"] {{
   color-scheme: dark;
@@ -281,18 +280,20 @@ def render_css(profile: MotifProfile) -> str:
 
 
 def _svg_header(profile: MotifProfile) -> str:
-    pieces = [
-        f'<text x="64" y="68" fill="#B6C0CE" font-family="ui-monospace,monospace" '
-        f'font-size="14">SZL / {profile.theme_family} / {profile.surface_fingerprint}</text>',
-        f'<text x="64" y="142" fill="#F5FBFF" font-family="system-ui,sans-serif" '
-        f'font-size="54" font-weight="720">{html.escape(profile.display_name, quote=True)}</text>',
-        f'<text x="64" y="178" fill="#9FB0C2" font-family="ui-monospace,monospace" '
-        f'font-size="13">{profile.interaction} · {profile.evidence_placement}</text>',
-    ]
-    return "".join(pieces)
+    title = html.escape(profile.display_name, quote=True)
+    return "".join(
+        [
+            f'<text x="64" y="68" fill="#B6C0CE" font-family="ui-monospace,monospace" '
+            f'font-size="14">SZL / {profile.theme_family} / {profile.surface_fingerprint}</text>',
+            f'<text x="64" y="142" fill="#F5FBFF" font-family="system-ui,sans-serif" '
+            f'font-size="54" font-weight="720">{title}</text>',
+            f'<text x="64" y="178" fill="#9FB0C2" font-family="ui-monospace,monospace" '
+            f'font-size="13">{profile.interaction} · {profile.evidence_placement}</text>',
+        ]
+    )
 
 
-def _domain_command(profile: MotifProfile, seed: bytes) -> str:
+def _product_body(profile: MotifProfile, seed: bytes) -> str:
     pieces = [
         '<rect x="64" y="238" width="500" height="250" rx="18" fill="#07101A" '
         'stroke="#203142"/>',
@@ -316,10 +317,9 @@ def _domain_command(profile: MotifProfile, seed: bytes) -> str:
     return "".join(pieces)
 
 
-def _foundry_control(profile: MotifProfile, seed: bytes) -> str:
+def _control_body(profile: MotifProfile, seed: bytes) -> str:
     pieces: list[str] = []
-    labels = ("INGEST", "TRANSFORM", "EVALUATE", "APPROVE", "PUBLISH")
-    for index, label in enumerate(labels):
+    for index, label in enumerate(("INGEST", "TRANSFORM", "EVALUATE", "APPROVE", "PUBLISH")):
         x = 78 + index * 232
         y = 286 + (seed[index] % 2) * 24
         pieces.extend(
@@ -333,7 +333,7 @@ def _foundry_control(profile: MotifProfile, seed: bytes) -> str:
     return "".join(pieces)
 
 
-def _substrate_runtime(profile: MotifProfile, seed: bytes) -> str:
+def _runtime_body(profile: MotifProfile, seed: bytes) -> str:
     pieces = [
         '<rect x="960" y="226" width="250" height="300" rx="16" fill="#050C14" '
         'stroke="#203142"/>',
@@ -355,25 +355,25 @@ def _substrate_runtime(profile: MotifProfile, seed: bytes) -> str:
     return "".join(pieces)
 
 
-def _proof_ledger(profile: MotifProfile, seed: bytes) -> str:
+def _proof_body(profile: MotifProfile, seed: bytes) -> str:
     pieces: list[str] = []
     for index in range(5):
         y = 246 + index * 64
         digest = hashlib.sha256(seed + bytes([index])).hexdigest()[:12]
+        label = f"RECEIPT-{index + 1} · sha256:{digest}"
         pieces.extend(
             [
                 f'<circle cx="110" cy="{y}" r="9" fill="{profile.primary}"/>',
                 f'<rect x="204" y="{y - 22}" width="700" height="44" rx="10" '
                 'fill="#07101A" stroke="#203142"/>',
                 f'<text x="226" y="{y + 5}" fill="#D7E0EA" '
-                f'font-family="ui-monospace,monospace" font-size="12">RECEIPT-{index + 1} · '
-                f"sha256:{digest}</text>",
+                f'font-family="ui-monospace,monospace" font-size="12">{label}</text>',
             ]
         )
     return "".join(pieces)
 
 
-def _formula_notebook(profile: MotifProfile, seed: bytes) -> str:
+def _research_body(profile: MotifProfile, seed: bytes) -> str:
     pieces: list[str] = []
     equations = ("Λ = f(E, P, A)", "τ = Σ wᵢ·eᵢ", "R = H(receipt)", "Δ = observed − modeled")
     for index, equation in enumerate(equations):
@@ -389,7 +389,7 @@ def _formula_notebook(profile: MotifProfile, seed: bytes) -> str:
     return "".join(pieces)
 
 
-def _archive_mono(profile: MotifProfile, seed: bytes) -> str:
+def _archive_body(seed: bytes) -> str:
     pieces = [
         '<rect x="64" y="232" width="1148" height="72" rx="14" fill="#0A1018" '
         'stroke="#4C596A"/>',
@@ -408,7 +408,7 @@ def _archive_mono(profile: MotifProfile, seed: bytes) -> str:
     return "".join(pieces)
 
 
-def _neutral_review(profile: MotifProfile, seed: bytes) -> str:
+def _review_body(profile: MotifProfile, seed: bytes) -> str:
     pieces: list[str] = []
     for index in range(8):
         row, column = divmod(index, 4)
@@ -429,22 +429,22 @@ def render_svg(profile: MotifProfile) -> str:
     """Render an accessible hero whose structure is native to the estate class."""
 
     request = MotifRequest(profile.slug, profile.display_name, profile.estate_class)
-    validate_request(request)
+    _validate_request(request)
     seed = _seed(request)
     if profile.estate_class == FLAGSHIP_PRODUCT:
-        body = _domain_command(profile, seed)
+        body = _product_body(profile, seed)
     elif profile.estate_class == PLATFORM_CONTROL:
-        body = _foundry_control(profile, seed)
+        body = _control_body(profile, seed)
     elif profile.estate_class == RUNTIME_INFRA:
-        body = _substrate_runtime(profile, seed)
+        body = _runtime_body(profile, seed)
     elif profile.estate_class == GOVERNANCE_PROOF:
-        body = _proof_ledger(profile, seed)
+        body = _proof_body(profile, seed)
     elif profile.estate_class == RESEARCH_FORMULA:
-        body = _formula_notebook(profile, seed)
+        body = _research_body(profile, seed)
     elif profile.estate_class == HISTORICAL:
-        body = _archive_mono(profile, seed)
+        body = _archive_body(seed)
     else:
-        body = _neutral_review(profile, seed)
+        body = _review_body(profile, seed)
 
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{WIDTH}" height="{HEIGHT}" viewBox="0 0 {WIDTH} {HEIGHT}" role="img" aria-labelledby="title description">
 <title id="title">{html.escape(profile.display_name)} — {profile.theme_family}</title>
@@ -482,16 +482,17 @@ def load_manifest(path: Path) -> list[MotifRequest]:
     rows = payload.get("surfaces")
     if not isinstance(rows, list) or not rows:
         raise MotifContractError("surfaces must be a non-empty array")
+
     requests: list[MotifRequest] = []
     seen: set[str] = set()
     for index, row in enumerate(rows):
         if not isinstance(row, dict):
             raise MotifContractError(f"surface {index} must be an object")
         request = MotifRequest.from_mapping(row)
-        folded = request.slug.casefold()
-        if folded in seen:
+        key = request.slug.casefold()
+        if key in seen:
             raise MotifContractError(f"duplicate surface slug: {request.slug}")
-        seen.add(folded)
+        seen.add(key)
         requests.append(request)
     return requests
 
