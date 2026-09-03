@@ -185,9 +185,7 @@ def test_snapshot_generation_writes_only_plan_and_receipt(tmp_path: Path):
 
     assert len(paths) == 2
     plan = json.loads((tmp_path / "out" / "estate-surface-plan.json").read_text())
-    receipt = json.loads(
-        (tmp_path / "out" / "estate-surface-plan.receipt.json").read_text()
-    )
+    receipt = json.loads((tmp_path / "out" / "estate-surface-plan.receipt.json").read_text())
     assert receipt["schema"] == RECEIPT_SCHEMA
     assert plan["repositories"][0]["repository"] == "szl-holdings/a11oy"
     private = next(row for row in plan["repositories"] if row["name"] == "secret-control")
