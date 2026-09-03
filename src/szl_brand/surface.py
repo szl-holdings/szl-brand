@@ -20,9 +20,10 @@ import html
 import json
 import re
 import textwrap
+from collections.abc import Iterable
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Final, Iterable
+from typing import Any, Final
 from urllib.parse import urlsplit
 
 SCHEMA: Final = "szl.surface-foundry/v3"
@@ -127,7 +128,7 @@ class SurfaceSpec:
     accent: str | None = None
 
     @classmethod
-    def from_mapping(cls, value: dict[str, Any]) -> "SurfaceSpec":
+    def from_mapping(cls, value: dict[str, Any]) -> SurfaceSpec:
         allowed = set(cls.__dataclass_fields__)
         unknown = sorted(set(value) - allowed)
         required = {
@@ -268,7 +269,7 @@ def _digest(value: bytes | str) -> str:
 
 
 def _seed(spec: SurfaceSpec) -> bytes:
-    return hashlib.sha256(f"{spec.kind}:{spec.slug}".encode("utf-8")).digest()
+    return hashlib.sha256(f"{spec.kind}:{spec.slug}".encode()).digest()
 
 
 def visual_variant(spec: SurfaceSpec) -> int:
