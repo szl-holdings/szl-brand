@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-labelledby="avatar-title avatar-desc">
+  <title id="avatar-title">SZL Holdings organization mark</title>
+  <desc id="avatar-desc">High-resolution KANCHAY mark designed to remain legible at small avatar sizes.</desc>
+  <defs>
+    <linearGradient id="orbit" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E9EEF6"/><stop offset="0.52" stop-color="#A9C5FF"/><stop offset="1" stop-color="#5C6B86"/></linearGradient>
+    <radialGradient id="node" cx="38%" cy="34%" r="75%"><stop offset="0" stop-color="#F4B0A2"/><stop offset="0.55" stop-color="#D7B55E"/><stop offset="1" stop-color="#C4543F"/></radialGradient>
+    <radialGradient id="field" cx="50%" cy="42%" r="70%"><stop offset="0" stop-color="#0D2540"/><stop offset="1" stop-color="#030F29"/></radialGradient>
+    <filter id="avatar-glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="12" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1024" height="1024" rx="196" fill="url(#field)"/>
+  <rect x="18" y="18" width="988" height="988" rx="180" fill="none" stroke="#9AA7BD" stroke-opacity="0.18" stroke-width="4"/>
+  <g transform="rotate(-22 512 470)"><ellipse cx="512" cy="470" rx="370" ry="214" fill="none" stroke="url(#orbit)" stroke-width="15" opacity="0.95"/></g>
+  <circle cx="824" cy="245" r="31" fill="url(#node)" filter="url(#avatar-glow)"/>
+  <path d="M402 332 C365 291 238 299 229 367 C220 430 342 438 365 476 C395 525 338 574 251 561" fill="none" stroke="#F4F6F8" stroke-width="72" stroke-linecap="round"/><path d="M420 303 H642 V378 L532 516 H642 V594 H420 V520 L531 381 H420Z" fill="#F4F6F8"/><path d="M677 303 H754 V516 H881 L816 594 H677Z" fill="#F4F6F8"/>
+  <path d="M512 750 L558 858 H534 L512 793 L490 858 H466Z" fill="url(#orbit)" opacity="0.96"/>
+  <circle cx="512" cy="470" r="294" fill="none" stroke="#47D7C4" stroke-opacity="0.08" stroke-width="3"/>
+</svg>

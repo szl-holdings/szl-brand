@@ -24,6 +24,7 @@ dev = [
 
 [project.scripts]
 szl-brand = "szl_brand.cli:app"
+szl-surface = "szl_brand.surface:main"
 
 [build-system]
 requires = ["hatchling"]
