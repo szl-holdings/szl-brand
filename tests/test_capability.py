@@ -172,9 +172,7 @@ def test_generation_writes_agent_contract_and_receipt(tmp_path: Path):
     directory = tmp_path / "out" / "terra"
     assert (directory / "agents.md").exists()
     assert (directory / "capabilities.json").exists()
-    receipt = json.loads(
-        (directory / "capability-receipt.json").read_text(encoding="utf-8")
-    )
+    receipt = json.loads((directory / "capability-receipt.json").read_text(encoding="utf-8"))
     assert receipt["schema"] == RECEIPT_SCHEMA
     assert receipt["capability_count"] == 2
     assert receipt["bounded_action_count"] == 0
