@@ -1,0 +1,40 @@
+{
+  "schema": "szl.class-motif/v1",
+  "surfaces": [
+    {
+      "slug": "terra",
+      "display_name": "Terra",
+      "estate_class": "FLAGSHIP_PRODUCT"
+    },
+    {
+      "slug": "evidence-studio",
+      "display_name": "Evidence Studio",
+      "estate_class": "PLATFORM_CONTROL"
+    },
+    {
+      "slug": "hatun-mcp",
+      "display_name": "Hatun MCP",
+      "estate_class": "RUNTIME_INFRA"
+    },
+    {
+      "slug": "szl-trust",
+      "display_name": "SZL Trust",
+      "estate_class": "GOVERNANCE_PROOF"
+    },
+    {
+      "slug": "szl-quant",
+      "display_name": "SZL Quant",
+      "estate_class": "RESEARCH_FORMULA"
+    },
+    {
+      "slug": "legacy-reference",
+      "display_name": "Legacy Reference",
+      "estate_class": "HISTORICAL"
+    },
+    {
+      "slug": "review-surface",
+      "display_name": "Review Surface",
+      "estate_class": "UNCLASSIFIED"
+    }
+  ]
+}
