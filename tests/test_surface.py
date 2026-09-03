@@ -156,15 +156,7 @@ def test_unclosed_managed_block_fails_closed():
 
 
 def test_duplicate_managed_markers_fail_closed():
-    malformed = (
-        START_MARKER
-        + "\none\n"
-        + END_MARKER
-        + "\n"
-        + START_MARKER
-        + "\ntwo\n"
-        + END_MARKER
-    )
+    malformed = START_MARKER + "\none\n" + END_MARKER + "\n" + START_MARKER + "\ntwo\n" + END_MARKER
     with pytest.raises(SurfaceContractError, match="exactly once"):
         replace_managed_block(malformed, render_readme_block(spec()))
 
