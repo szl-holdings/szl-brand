@@ -1,8 +1,8 @@
 """Class-native visual motif compiler for the SZL Holdings public estate.
 
 A reviewed estate class determines information architecture; the stable surface
-slug determines a deterministic variation inside that class. The compiler is
-provider-neutral and writes only local SVG/CSS/profile/receipt artifacts.
+slug determines a deterministic variation inside that class. Generation is
+provider-neutral and produces only local SVG/CSS/profile/receipt artifacts.
 """
 
 from __future__ import annotations
@@ -281,139 +281,148 @@ def render_css(profile: MotifProfile) -> str:
 
 
 def _svg_header(profile: MotifProfile) -> str:
-    title = html.escape(profile.display_name, quote=True)
-    return (
+    pieces = [
         f'<text x="64" y="68" fill="#B6C0CE" font-family="ui-monospace,monospace" '
-        f'font-size="14">SZL / {profile.theme_family} / {profile.surface_fingerprint}</text>'
+        f'font-size="14">SZL / {profile.theme_family} / {profile.surface_fingerprint}</text>',
         f'<text x="64" y="142" fill="#F5FBFF" font-family="system-ui,sans-serif" '
-        f'font-size="54" font-weight="720">{title}</text>'
+        f'font-size="54" font-weight="720">{html.escape(profile.display_name, quote=True)}</text>',
         f'<text x="64" y="178" fill="#9FB0C2" font-family="ui-monospace,monospace" '
-        f'font-size="13">{profile.interaction} · {profile.evidence_placement}</text>'
-    )
+        f'font-size="13">{profile.interaction} · {profile.evidence_placement}</text>',
+    ]
+    return "".join(pieces)
 
 
 def _domain_command(profile: MotifProfile, seed: bytes) -> str:
-    nodes = []
+    pieces = [
+        '<rect x="64" y="238" width="500" height="250" rx="18" fill="#07101A" '
+        'stroke="#203142"/>',
+        f'<path d="M92 430 C180 340 255 446 342 318 S490 366 536 286" fill="none" '
+        f'stroke="{profile.primary}" stroke-width="3"/>',
+        '<text x="90" y="276" fill="#9FB0C2" font-family="ui-monospace,monospace" '
+        'font-size="12">DECISION / MAP / EVIDENCE</text>',
+        '<rect x="970" y="104" width="240" height="404" rx="18" fill="#07101A" '
+        'stroke="#203142"/>',
+        '<text x="996" y="140" fill="#9FB0C2" font-family="ui-monospace,monospace" '
+        'font-size="12">EVIDENCE RAIL</text>',
+    ]
     for index in range(6):
         x = 680 + (seed[index] % 5) * 92
         y = 120 + index * 70
         color = (profile.primary, profile.secondary, profile.tertiary)[index % 3]
-        nodes.append(
+        pieces.append(
             f'<circle cx="{x}" cy="{y}" r="{10 + seed[index + 8] % 9}" '
             f'fill="{color}" fill-opacity=".18" stroke="{color}"/>'
         )
-    return (
-        '<rect x="64" y="238" width="500" height="250" rx="18" fill="#07101A" '
-        'stroke="#203142"/>'
-        f'<path d="M92 430 C180 340 255 446 342 318 S490 366 536 286" fill="none" '
-        f'stroke="{profile.primary}" stroke-width="3"/>'
-        '<text x="90" y="276" fill="#9FB0C2" font-family="ui-monospace,monospace" '
-        'font-size="12">DECISION / MAP / EVIDENCE</text>'
-        '<rect x="970" y="104" width="240" height="404" rx="18" fill="#07101A" '
-        'stroke="#203142"/>'
-        '<text x="996" y="140" fill="#9FB0C2" font-family="ui-monospace,monospace" '
-        'font-size="12">EVIDENCE RAIL</text>'
-        + "".join(nodes)
-    )
+    return "".join(pieces)
 
 
 def _foundry_control(profile: MotifProfile, seed: bytes) -> str:
+    pieces: list[str] = []
     labels = ("INGEST", "TRANSFORM", "EVALUATE", "APPROVE", "PUBLISH")
-    stages = []
     for index, label in enumerate(labels):
         x = 78 + index * 232
         y = 286 + (seed[index] % 2) * 24
-        stages.append(
-            f'<rect x="{x}" y="{y}" width="174" height="86" rx="14" fill="#07101A" '
-            f'stroke="{profile.primary}" stroke-opacity=".34"/>'
-            f'<text x="{x + 18}" y="{y + 47}" fill="#E9EEF6" '
-            f'font-family="ui-monospace,monospace" font-size="13">{label}</text>'
+        pieces.extend(
+            [
+                f'<rect x="{x}" y="{y}" width="174" height="86" rx="14" fill="#07101A" '
+                f'stroke="{profile.primary}" stroke-opacity=".34"/>',
+                f'<text x="{x + 18}" y="{y + 47}" fill="#E9EEF6" '
+                f'font-family="ui-monospace,monospace" font-size="13">{label}</text>',
+            ]
         )
-    return "".join(stages)
+    return "".join(pieces)
 
 
 def _substrate_runtime(profile: MotifProfile, seed: bytes) -> str:
-    spans = []
+    pieces = [
+        '<rect x="960" y="226" width="250" height="300" rx="16" fill="#050C14" '
+        'stroke="#203142"/>',
+        '<text x="986" y="254" fill="#9FB0C2" font-family="ui-monospace,monospace" '
+        'font-size="12">TOPOLOGY</text>',
+    ]
     for index in range(6):
         y = 250 + index * 46
         offset = 60 + seed[index] % 130
         width = 380 + seed[index + 10] % 260
-        spans.append(
-            f'<text x="70" y="{y + 10}" fill="#9FB0C2" '
-            f'font-family="ui-monospace,monospace" font-size="11">SPAN-{index + 1:02d}</text>'
-            f'<rect x="{220 + offset}" y="{y}" width="{width}" height="14" rx="7" '
-            f'fill="{profile.primary}" fill-opacity=".20"/>'
+        pieces.extend(
+            [
+                f'<text x="70" y="{y + 10}" fill="#9FB0C2" '
+                f'font-family="ui-monospace,monospace" font-size="11">SPAN-{index + 1:02d}</text>',
+                f'<rect x="{220 + offset}" y="{y}" width="{width}" height="14" rx="7" '
+                f'fill="{profile.primary}" fill-opacity=".20"/>',
+            ]
         )
-    return (
-        "".join(spans)
-        + '<rect x="960" y="226" width="250" height="300" rx="16" fill="#050C14" '
-        'stroke="#203142"/>'
-        '<text x="986" y="254" fill="#9FB0C2" font-family="ui-monospace,monospace" '
-        'font-size="12">TOPOLOGY</text>'
-    )
+    return "".join(pieces)
 
 
 def _proof_ledger(profile: MotifProfile, seed: bytes) -> str:
-    rows = []
+    pieces: list[str] = []
     for index in range(5):
         y = 246 + index * 64
         digest = hashlib.sha256(seed + bytes([index])).hexdigest()[:12]
-        rows.append(
-            f'<circle cx="110" cy="{y}" r="9" fill="{profile.primary}"/>'
-            f'<rect x="204" y="{y - 22}" width="700" height="44" rx="10" fill="#07101A" '
-            'stroke="#203142"/>'
-            f'<text x="226" y="{y + 5}" fill="#D7E0EA" '
-            f'font-family="ui-monospace,monospace" font-size="12">RECEIPT-{index + 1} · '
-            f'sha256:{digest}</text>'
+        pieces.extend(
+            [
+                f'<circle cx="110" cy="{y}" r="9" fill="{profile.primary}"/>',
+                f'<rect x="204" y="{y - 22}" width="700" height="44" rx="10" '
+                'fill="#07101A" stroke="#203142"/>',
+                f'<text x="226" y="{y + 5}" fill="#D7E0EA" '
+                f'font-family="ui-monospace,monospace" font-size="12">RECEIPT-{index + 1} · '
+                f"sha256:{digest}</text>",
+            ]
         )
-    return "".join(rows)
+    return "".join(pieces)
 
 
 def _formula_notebook(profile: MotifProfile, seed: bytes) -> str:
+    pieces: list[str] = []
     equations = ("Λ = f(E, P, A)", "τ = Σ wᵢ·eᵢ", "R = H(receipt)", "Δ = observed − modeled")
-    rows = []
     for index, equation in enumerate(equations):
         y = 260 + index * 70
-        rows.append(
-            f'<text x="94" y="{y}" fill="#E9EEF6" font-family="Georgia,serif" '
-            f'font-size="26">{html.escape(equation)}</text>'
-            f'<text x="520" y="{y}" fill="#8294A8" font-family="ui-monospace,monospace" '
-            f'font-size="11">NOTE {seed[index] % 97:02d} · DERIVATION OPEN</text>'
+        pieces.extend(
+            [
+                f'<text x="94" y="{y}" fill="#E9EEF6" font-family="Georgia,serif" '
+                f'font-size="26">{html.escape(equation)}</text>',
+                f'<text x="520" y="{y}" fill="#8294A8" font-family="ui-monospace,monospace" '
+                f'font-size="11">NOTE {seed[index] % 97:02d} · DERIVATION OPEN</text>',
+            ]
         )
-    return "".join(rows)
+    return "".join(pieces)
 
 
 def _archive_mono(profile: MotifProfile, seed: bytes) -> str:
-    points = []
+    pieces = [
+        '<rect x="64" y="232" width="1148" height="72" rx="14" fill="#0A1018" '
+        'stroke="#4C596A"/>',
+        '<text x="90" y="276" fill="#B6C0CE" font-family="ui-monospace,monospace" '
+        'font-size="14">HISTORICAL ARTIFACT · NO LIVE RUNTIME CLAIM</text>',
+    ]
     for index in range(6):
         x = 100 + index * 190
         y = 400 + (seed[index] % 3) * 18
-        points.append(
-            f'<circle cx="{x}" cy="{y}" r="7" fill="#9AA7BD"/>'
-            f'<path d="M{x + 7} {y} H{x + 175}" stroke="#738097"/>'
+        pieces.extend(
+            [
+                f'<circle cx="{x}" cy="{y}" r="7" fill="#9AA7BD"/>',
+                f'<path d="M{x + 7} {y} H{x + 175}" stroke="#738097"/>',
+            ]
         )
-    return (
-        '<rect x="64" y="232" width="1148" height="72" rx="14" fill="#0A1018" '
-        'stroke="#4C596A"/>'
-        '<text x="90" y="276" fill="#B6C0CE" font-family="ui-monospace,monospace" '
-        'font-size="14">HISTORICAL ARTIFACT · NO LIVE RUNTIME CLAIM</text>'
-        + "".join(points)
-    )
+    return "".join(pieces)
 
 
 def _neutral_review(profile: MotifProfile, seed: bytes) -> str:
-    cells = []
+    pieces: list[str] = []
     for index in range(8):
         row, column = divmod(index, 4)
         x = 68 + column * 286
         y = 244 + row * 142
-        cells.append(
-            f'<rect x="{x}" y="{y}" width="248" height="108" rx="14" fill="#07101A" '
-            'stroke="#203142"/>'
-            f'<circle cx="{x + 28}" cy="{y + 30}" r="6" fill="{profile.primary}" '
-            f'fill-opacity=".{3 + seed[index] % 5}"/>'
+        pieces.extend(
+            [
+                f'<rect x="{x}" y="{y}" width="248" height="108" rx="14" '
+                'fill="#07101A" stroke="#203142"/>',
+                f'<circle cx="{x + 28}" cy="{y + 30}" r="6" fill="{profile.primary}" '
+                f'fill-opacity=".{3 + seed[index] % 5}"/>',
+            ]
         )
-    return "".join(cells)
+    return "".join(pieces)
 
 
 def render_svg(profile: MotifProfile) -> str:
