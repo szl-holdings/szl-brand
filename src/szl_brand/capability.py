@@ -72,9 +72,7 @@ class CapabilityAction:
                 "capability contains unknown fields: " + ", ".join(unknown)
             )
         if missing:
-            raise CapabilityContractError(
-                "capability is missing fields: " + ", ".join(missing)
-            )
+            raise CapabilityContractError("capability is missing fields: " + ", ".join(missing))
         action = cls(**value)
         validate_action(action)
         return action
@@ -102,13 +100,9 @@ class CapabilitySurface:
         unknown = sorted(set(value) - allowed)
         missing = sorted(required - set(value))
         if unknown:
-            raise CapabilityContractError(
-                "surface contains unknown fields: " + ", ".join(unknown)
-            )
+            raise CapabilityContractError("surface contains unknown fields: " + ", ".join(unknown))
         if missing:
-            raise CapabilityContractError(
-                "surface is missing fields: " + ", ".join(missing)
-            )
+            raise CapabilityContractError("surface is missing fields: " + ", ".join(missing))
         raw_actions = value.get("capabilities")
         if not isinstance(raw_actions, list) or not raw_actions:
             raise CapabilityContractError("capabilities must be a non-empty array")
@@ -180,9 +174,7 @@ def validate_action(action: CapabilityAction) -> None:
     if action.authority not in AUTHORITIES:
         errors.append("authority must be one of: " + ", ".join(sorted(AUTHORITIES)))
     if action.human_approval not in APPROVAL_POLICIES:
-        errors.append(
-            "human_approval must be one of: " + ", ".join(sorted(APPROVAL_POLICIES))
-        )
+        errors.append("human_approval must be one of: " + ", ".join(sorted(APPROVAL_POLICIES)))
     if not action.output_claim.strip() or len(action.output_claim.strip()) > 180:
         errors.append("output_claim must be 1-180 characters")
     _validate_optional_url("schema_url", action.schema_url, errors)
@@ -234,9 +226,9 @@ def validate_surface(surface: CapabilitySurface) -> None:
 
 
 def canonical_contract(surface: CapabilitySurface) -> bytes:
-    return (
-        json.dumps(asdict(surface), sort_keys=True, separators=(",", ":")) + "\n"
-    ).encode("utf-8")
+    return (json.dumps(asdict(surface), sort_keys=True, separators=(",", ":")) + "\n").encode(
+        "utf-8"
+    )
 
 
 def _digest(value: bytes | str) -> str:
