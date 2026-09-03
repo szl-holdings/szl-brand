@@ -1,0 +1,227 @@
+{
+  "schema": "szl.capability-foundry/v1",
+  "surfaces": [
+    {
+      "slug": "terra",
+      "display_name": "Terra",
+      "kind": "space",
+      "human_url": "https://szlholdings-terra.hf.space/",
+      "source_url": "https://github.com/szl-holdings/szl-real-estate",
+      "build_info_url": "https://szlholdings-terra.hf.space/api/build-info",
+      "receipt_url": null,
+      "operational_state": "OPERATIONAL",
+      "limitations": "Public parcel and underwriting evidence does not authorize acquisition, outreach, valuation reliance, or financial action.",
+      "capabilities": [
+        {
+          "name": "build-info",
+          "description": "Read exact public deployment identity, source revision, workflow run, artifact digest, and current Hugging Face revision.",
+          "interface": "HTTP",
+          "method": "GET",
+          "endpoint": "https://szlholdings-terra.hf.space/api/build-info",
+          "schema_url": null,
+          "evidence_label": "MEASURED",
+          "authority": "OBSERVE",
+          "human_approval": "NOT_APPLICABLE",
+          "output_claim": "Reports deployment identity only; it does not establish property, valuation, or investment accuracy."
+        },
+        {
+          "name": "live-evidence",
+          "description": "Read the current governed real-estate evidence projection and explicit availability state.",
+          "interface": "HTTP",
+          "method": "GET",
+          "endpoint": "https://szlholdings-terra.hf.space/api/live",
+          "schema_url": null,
+          "evidence_label": "REPORTED",
+          "authority": "OBSERVE",
+          "human_approval": "NOT_APPLICABLE",
+          "output_claim": "Returns a public evidence projection; absence or upstream failure remains explicit rather than inferred."
+        }
+      ]
+    },
+    {
+      "slug": "sentra",
+      "display_name": "Sentra",
+      "kind": "space",
+      "human_url": "https://szlholdings-sentra.hf.space/",
+      "source_url": "https://github.com/szl-holdings/szl-defensive-control-plane",
+      "build_info_url": "https://szlholdings-sentra.hf.space/api/build-info",
+      "receipt_url": null,
+      "operational_state": "OPERATIONAL",
+      "limitations": "Public cyber evidence is defensive context only and does not authorize containment, exploitation, access changes, or production response.",
+      "capabilities": [
+        {
+          "name": "build-info",
+          "description": "Read exact public deployment identity and the source-bound artifact witness for Sentra.",
+          "interface": "HTTP",
+          "method": "GET",
+          "endpoint": "https://szlholdings-sentra.hf.space/api/build-info",
+          "schema_url": null,
+          "evidence_label": "MEASURED",
+          "authority": "OBSERVE",
+          "human_approval": "NOT_APPLICABLE",
+          "output_claim": "Reports deployment provenance only; it does not establish security posture or remediation correctness."
+        },
+        {
+          "name": "live-evidence",
+          "description": "Read the governed public cyber evidence projection without granting response authority.",
+          "interface": "HTTP",
+          "method": "GET",
+          "endpoint": "https://szlholdings-sentra.hf.space/api/live",
+          "schema_url": null,
+          "evidence_label": "REPORTED",
+          "authority": "OBSERVE",
+          "human_approval": "NOT_APPLICABLE",
+          "output_claim": "Returns the public projection and availability state; it never grants containment or remediation authority."
+        }
+      ]
+    },
+    {
+      "slug": "counsel",
+      "display_name": "PRISM Counsel",
+      "kind": "space",
+      "human_url": "https://szlholdings-counsel.hf.space/",
+      "source_url": "https://github.com/szl-holdings/a11oy/tree/main/verticals/counsel",
+      "build_info_url": "https://szlholdings-counsel.hf.space/api/build-info",
+      "receipt_url": null,
+      "operational_state": "OPERATIONAL",
+      "limitations": "Public legal workflow evidence is not legal advice, a verified citation set, a client instruction, or authority to file or communicate externally.",
+      "capabilities": [
+        {
+          "name": "build-info",
+          "description": "Read the exact source and deployment identity for the public Counsel experience.",
+          "interface": "HTTP",
+          "method": "GET",
+          "endpoint": "https://szlholdings-counsel.hf.space/api/build-info",
+          "schema_url": null,
+          "evidence_label": "MEASURED",
+          "authority": "OBSERVE",
+          "human_approval": "NOT_APPLICABLE",
+          "output_claim": "Reports deployment provenance only; it does not validate legal authorities, deadlines, or work product."
+        },
+        {
+          "name": "live-evidence",
+          "description": "Read the current public matter-intelligence projection and explicit availability state.",
+          "interface": "HTTP",
+          "method": "GET",
+          "endpoint": "https://szlholdings-counsel.hf.space/api/live",
+          "schema_url": null,
+          "evidence_label": "REPORTED",
+          "authority": "OBSERVE",
+          "human_approval": "NOT_APPLICABLE",
+          "output_claim": "Returns public workflow evidence; a human remains responsible for legal research, citation checking, and final work."
+        }
+      ]
+    },
+    {
+      "slug": "finance",
+      "display_name": "PURIQ Finance",
+      "kind": "space",
+      "human_url": "https://szlholdings-finance.hf.space/",
+      "source_url": "https://github.com/szl-holdings/puriq-live",
+      "build_info_url": "https://szlholdings-finance.hf.space/api/build-info",
+      "receipt_url": null,
+      "operational_state": "OPERATIONAL",
+      "limitations": "Public finance evidence is not investment advice, a trading instruction, a live order, a price guarantee, or authority to move capital.",
+      "capabilities": [
+        {
+          "name": "build-info",
+          "description": "Read the exact deployment identity and artifact binding for the public Finance surface.",
+          "interface": "HTTP",
+          "method": "GET",
+          "endpoint": "https://szlholdings-finance.hf.space/api/build-info",
+          "schema_url": null,
+          "evidence_label": "MEASURED",
+          "authority": "OBSERVE",
+          "human_approval": "NOT_APPLICABLE",
+          "output_claim": "Reports deployment provenance only; it does not establish financial data accuracy or strategy performance."
+        },
+        {
+          "name": "live-evidence",
+          "description": "Read the current governed financial evidence projection without transaction authority.",
+          "interface": "HTTP",
+          "method": "GET",
+          "endpoint": "https://szlholdings-finance.hf.space/api/live",
+          "schema_url": null,
+          "evidence_label": "REPORTED",
+          "authority": "OBSERVE",
+          "human_approval": "NOT_APPLICABLE",
+          "output_claim": "Returns a public decision-support projection; no order placement or capital movement authority is implied."
+        }
+      ]
+    },
+    {
+      "slug": "vessels",
+      "display_name": "Vessels",
+      "kind": "space",
+      "human_url": "https://szlholdings-vessels.hf.space/",
+      "source_url": "https://github.com/szl-holdings/a11oy/tree/main/verticals/vessels",
+      "build_info_url": "https://szlholdings-vessels.hf.space/api/build-info",
+      "receipt_url": null,
+      "operational_state": "OPERATIONAL",
+      "limitations": "Public maritime evidence does not authorize navigation, interdiction, sanctions determinations, vessel contact, routing, or commercial execution.",
+      "capabilities": [
+        {
+          "name": "build-info",
+          "description": "Read the exact deployment identity and source-bound artifact witness for Vessels.",
+          "interface": "HTTP",
+          "method": "GET",
+          "endpoint": "https://szlholdings-vessels.hf.space/api/build-info",
+          "schema_url": null,
+          "evidence_label": "MEASURED",
+          "authority": "OBSERVE",
+          "human_approval": "NOT_APPLICABLE",
+          "output_claim": "Reports deployment provenance only; it does not validate maritime risk, route, AIS, or sanctions conclusions."
+        },
+        {
+          "name": "live-evidence",
+          "description": "Read the current governed fleet-risk projection and explicit upstream availability state.",
+          "interface": "HTTP",
+          "method": "GET",
+          "endpoint": "https://szlholdings-vessels.hf.space/api/live",
+          "schema_url": null,
+          "evidence_label": "REPORTED",
+          "authority": "OBSERVE",
+          "human_approval": "NOT_APPLICABLE",
+          "output_claim": "Returns a public maritime projection; navigation and operational decisions remain outside the interface authority."
+        }
+      ]
+    },
+    {
+      "slug": "lyte",
+      "display_name": "Lyte",
+      "kind": "space",
+      "human_url": "https://szlholdings-lyte.hf.space/",
+      "source_url": "https://github.com/szl-holdings/lyte-lattice",
+      "build_info_url": "https://szlholdings-lyte.hf.space/api/build-info",
+      "receipt_url": null,
+      "operational_state": "OPERATIONAL",
+      "limitations": "Public observability evidence is diagnostic context only and does not authorize production mutation, incident closure, rollback, or service control.",
+      "capabilities": [
+        {
+          "name": "build-info",
+          "description": "Read the exact deployment identity and artifact witness for the public Lyte experience.",
+          "interface": "HTTP",
+          "method": "GET",
+          "endpoint": "https://szlholdings-lyte.hf.space/api/build-info",
+          "schema_url": null,
+          "evidence_label": "MEASURED",
+          "authority": "OBSERVE",
+          "human_approval": "NOT_APPLICABLE",
+          "output_claim": "Reports deployment provenance only; it does not establish service health or incident correctness."
+        },
+        {
+          "name": "live-evidence",
+          "description": "Read the governed observability summary without granting production action authority.",
+          "interface": "HTTP",
+          "method": "GET",
+          "endpoint": "https://szlholdings-lyte.hf.space/api/live",
+          "schema_url": null,
+          "evidence_label": "REPORTED",
+          "authority": "OBSERVE",
+          "human_approval": "NOT_APPLICABLE",
+          "output_claim": "Returns public diagnostic evidence and availability state; service mutation remains outside the interface."
+        }
+      ]
+    }
+  ]
+}
