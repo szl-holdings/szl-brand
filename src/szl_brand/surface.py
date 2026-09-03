@@ -147,13 +147,9 @@ class SurfaceSpec:
         }
         missing = sorted(required - set(value))
         if unknown:
-            raise SurfaceContractError(
-                "surface contains unknown fields: " + ", ".join(unknown)
-            )
+            raise SurfaceContractError("surface contains unknown fields: " + ", ".join(unknown))
         if missing:
-            raise SurfaceContractError(
-                "surface is missing fields: " + ", ".join(missing)
-            )
+            raise SurfaceContractError("surface is missing fields: " + ", ".join(missing))
         spec = cls(**value)
         validate_surface(spec)
         return spec
@@ -225,15 +221,9 @@ def validate_surface(spec: SurfaceSpec) -> None:
     ):
         errors.append("image_url must be a relative path or HTTPS URL")
     if spec.evidence_label not in EVIDENCE_LABELS:
-        errors.append(
-            "evidence_label must be one of: "
-            + ", ".join(sorted(EVIDENCE_LABELS))
-        )
+        errors.append("evidence_label must be one of: " + ", ".join(sorted(EVIDENCE_LABELS)))
     if spec.operational_state not in OPERATIONAL_STATES:
-        errors.append(
-            "operational_state must be one of: "
-            + ", ".join(sorted(OPERATIONAL_STATES))
-        )
+        errors.append("operational_state must be one of: " + ", ".join(sorted(OPERATIONAL_STATES)))
     if spec.accent is not None and not HEX_RE.fullmatch(spec.accent):
         errors.append("accent must be a six-digit hexadecimal color")
 
@@ -257,9 +247,7 @@ def validate_surface(spec: SurfaceSpec) -> None:
 def canonical_contract(spec: SurfaceSpec) -> bytes:
     """Return stable JSON bytes for hashing and receipts."""
 
-    return (
-        json.dumps(asdict(spec), sort_keys=True, separators=(",", ":")) + "\n"
-    ).encode("utf-8")
+    return (json.dumps(asdict(spec), sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8")
 
 
 def _digest(value: bytes | str) -> str:
@@ -307,8 +295,7 @@ def _pattern(spec: SurfaceSpec, primary: str, secondary: str, tertiary: str) -> 
     variant = visual_variant(spec)
     opacity = 0.16
     pieces: list[str] = [
-        '<g aria-hidden="true" fill="none" stroke-linecap="round" '
-        'stroke-linejoin="round">'
+        '<g aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">'
     ]
 
     if variant == 0:
@@ -349,8 +336,7 @@ def _pattern(spec: SurfaceSpec, primary: str, secondary: str, tertiary: str) -> 
         for i in range(7):
             x = 820 + i * 55
             pieces.append(
-                f'<path d="M{x} 100 V520" stroke="{tertiary}" stroke-width="1" '
-                'opacity="0.12"/>'
+                f'<path d="M{x} 100 V520" stroke="{tertiary}" stroke-width="1" opacity="0.12"/>'
             )
             for j in range(3):
                 y = 150 + j * 118 + seed[(i * 3 + j) % len(seed)] % 66
@@ -463,13 +449,13 @@ def render_surface_svg(spec: SurfaceSpec) -> str:
   <text x="94" y="64" fill="#B6C0CE" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="15" font-weight="700" letter-spacing="2.2">SZL / {kind_label} / {surface_id}</text>
   {_pattern(spec, primary, secondary, tertiary)}
   <g font-family="Aptos, system-ui, -apple-system, Segoe UI, sans-serif">
-    <text x="74" y="{core_y}" fill="#F4F6F8" font-size="68" font-weight="750" letter-spacing="-2.7">{''.join(title_tspans)}</text>
-    <text x="76" y="{lede_y}" fill="#C9D3DF" font-size="24" font-weight="430">{''.join(lede_tspans)}</text>
+    <text x="74" y="{core_y}" fill="#F4F6F8" font-size="68" font-weight="750" letter-spacing="-2.7">{"".join(title_tspans)}</text>
+    <text x="76" y="{lede_y}" fill="#C9D3DF" font-size="24" font-weight="430">{"".join(lede_tspans)}</text>
     <g transform="translate(74 {path_y})"><rect width="222" height="46" rx="23" fill="{primary}" fill-opacity="0.11" stroke="{primary}" stroke-opacity="0.48"/><circle cx="23" cy="23" r="5" fill="{primary}"/><text x="39" y="29" fill="#E9EEF6" font-size="14" font-weight="700" letter-spacing="1.1">{_escape(spec.evidence_label)}</text></g>
     <g transform="translate(310 {path_y})"><rect width="232" height="46" rx="23" fill="#101824" stroke="#9AA7BD" stroke-opacity="0.35"/><path d="M22 16 v14 M15 23 h14" stroke="{secondary}" stroke-width="2"/><text x="42" y="29" fill="#E9EEF6" font-size="14" font-weight="700" letter-spacing="1.1">{_escape(spec.operational_state)}</text></g>
   </g>
-  <g font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="13"><text x="75" y="566" fill="#8592A5">CONTROL BEFORE ACTION</text><path d="M264 561 H282 M276 555 L282 561 L276 567" fill="none" stroke="{primary}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="294" y="566" fill="#8592A5">EVIDENCE AFTER</text><text x="1206" y="566" text-anchor="end" fill="#8592A5">{_escape(spec.primary_url.removeprefix('https://'))}</text></g>
-  {''.join(micro_marks)}
+  <g font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="13"><text x="75" y="566" fill="#8592A5">CONTROL BEFORE ACTION</text><path d="M264 561 H282 M276 555 L282 561 L276 567" fill="none" stroke="{primary}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="294" y="566" fill="#8592A5">EVIDENCE AFTER</text><text x="1206" y="566" text-anchor="end" fill="#8592A5">{_escape(spec.primary_url.removeprefix("https://"))}</text></g>
+  {"".join(micro_marks)}
   <circle cx="1192" cy="58" r="6" fill="{secondary}" filter="url(#soft-glow)"/>
   <text x="1211" y="64" fill="#9AA7BD" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="13">V{variant + 1}</text>
 </svg>
