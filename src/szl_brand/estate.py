@@ -265,7 +265,9 @@ def plan_estate(records: list[RepositoryRecord]) -> list[SurfacePlanRow]:
     duplicates = sorted(name for name, count in Counter(names).items() if count > 1)
     if duplicates:
         raise EstatePlanError("duplicate repositories in snapshot: " + ", ".join(duplicates))
-    return sorted((plan_repository(record) for record in records), key=lambda row: row.repository.casefold())
+    return sorted(
+        (plan_repository(record) for record in records), key=lambda row: row.repository.casefold()
+    )
 
 
 def canonical_snapshot(records: list[RepositoryRecord]) -> bytes:
