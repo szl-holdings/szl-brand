@@ -36,6 +36,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install the clean-checkout test toolchain
+        run: python -m pip install --disable-pip-version-check -e ".[dev]"
+
       - name: Apply the two exact Ruff UP012 corrections
         shell: bash
         run: |
@@ -61,7 +64,6 @@ jobs:
       - name: Prove complete motif bundle contract
         run: |
           set -euo pipefail
-          python -m pip install --disable-pip-version-check -e ".[dev]"
           python -m pytest tests -q
           ruff check src tests hatch_build.py
           ruff format --check src tests hatch_build.py
