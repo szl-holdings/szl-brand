@@ -1,0 +1,41 @@
+name: Format class motif v2 once
+
+on:
+  push:
+    branches: [feat/class-motif-compiler-v2]
+    paths:
+      - src/szl_brand/motif.py
+      - tests/test_motif_v2.py
+      - .github/workflows/format-class-motif-v2.yml
+
+permissions:
+  contents: write
+
+jobs:
+  format-once:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
+        with:
+          egress-policy: audit
+      - name: Checkout formatting branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: feat/class-motif-compiler-v2
+          fetch-depth: 1
+          persist-credentials: true
+      - name: Apply canonical Ruff format and remove this one-shot workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --no-cache-dir 'ruff==0.16.6'
+          ruff format src/szl_brand/motif.py tests/test_motif_v2.py
+          rm .github/workflows/format-class-motif-v2.yml
+          git config user.name 'Lutar, Stephen P.'
+          git config user.email 'stephenlutar2@gmail.com'
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -s -m 'style(brand): apply canonical motif formatting'
+          git push origin HEAD:feat/class-motif-compiler-v2
