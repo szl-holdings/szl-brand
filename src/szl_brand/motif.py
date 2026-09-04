@@ -194,13 +194,11 @@ def _validate_request(request: MotifRequest) -> None:
 
 
 def _seed(request: MotifRequest) -> bytes:
-    return hashlib.sha256(
-        f"{request.estate_class}:{request.slug}".encode("utf-8")
-    ).digest()
+    return hashlib.sha256(f"{request.estate_class}:{request.slug}".encode()).digest()
 
 
 def _digest(value: str) -> str:
-    return hashlib.sha256(value.encode("utf-8")).hexdigest()
+    return hashlib.sha256(value.encode()).hexdigest()
 
 
 def build_profile(request: MotifRequest) -> MotifProfile:
@@ -208,7 +206,7 @@ def build_profile(request: MotifRequest) -> MotifProfile:
     theme = THEMES[request.estate_class]
     seed = _seed(request)
     fingerprint = hashlib.sha256(
-        f"{request.slug}:{theme['family']}:{seed.hex()}".encode("utf-8")
+        f"{request.slug}:{theme['family']}:{seed.hex()}".encode()
     ).hexdigest()[:16]
     return MotifProfile(
         schema=SCHEMA,
