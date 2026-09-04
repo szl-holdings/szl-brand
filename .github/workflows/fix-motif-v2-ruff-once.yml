@@ -1,0 +1,80 @@
+# SPDX-License-Identifier: Apache-2.0
+name: Fix motif v2 Ruff debt once
+
+on:
+  push:
+    branches:
+      - fix/class-motif-bundle-contract
+    paths:
+      - .github/workflows/fix-motif-v2-ruff-once.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fix-motif-v2-ruff-once
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout exact feature branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: fix/class-motif-bundle-contract
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Apply the two exact Ruff UP012 corrections
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("src/szl_brand/motif.py")
+          text = path.read_text(encoding="utf-8")
+          needles = (
+              'f"{request.estate_class}:{request.slug}".encode("utf-8")',
+              'f"{request.slug}:{theme[\'family\']}:{seed.hex()}".encode("utf-8")',
+          )
+          for needle in needles:
+              count = text.count(needle)
+              if count != 1:
+                  raise SystemExit(f"expected one Ruff target, found {count}: {needle}")
+              text = text.replace(needle, needle.replace('.encode("utf-8")', '.encode()'))
+          path.write_text(text, encoding="utf-8", newline="\n")
+          PY
+          git diff --check
+
+      - name: Prove complete motif bundle contract
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check -e ".[dev]"
+          python -m pytest tests -q
+          ruff check src tests hatch_build.py
+          ruff format --check src tests hatch_build.py
+          git diff --check
+
+      - name: Commit durable source correction and remove this controller
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "Lutar, Stephen P."
+          git config user.email "stephenlutar2@gmail.com"
+          git add src/szl_brand/motif.py
+          git rm .github/workflows/fix-motif-v2-ruff-once.yml
+          git diff --cached --quiet && { echo "no motif Ruff correction"; exit 1; }
+          git commit -s -m "fix(brand): clear motif v2 Ruff UP012 debt"
+          git push origin HEAD:fix/class-motif-bundle-contract
