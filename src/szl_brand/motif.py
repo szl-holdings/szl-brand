@@ -298,11 +298,9 @@ def _product_body(profile: MotifProfile, seed: bytes) -> str:
         '<rect x="64" y="238" width="500" height="250" rx="18" fill="#07101A" stroke="#203142"/>',
         f'<path d="M92 430 C180 340 255 446 342 318 S490 366 536 286" fill="none" '
         f'stroke="{profile.primary}" stroke-width="3"/>',
-        '<text x="90" y="276" fill="#9FB0C2" font-family="ui-monospace,monospace" '
-        'font-size="12">DECISION / MAP / EVIDENCE</text>',
+        '<text x="90" y="276" fill="#9FB0C2" font-family="ui-monospace,monospace" font-size="12">DECISION / MAP / EVIDENCE</text>',
         '<rect x="970" y="104" width="240" height="404" rx="18" fill="#07101A" stroke="#203142"/>',
-        '<text x="996" y="140" fill="#9FB0C2" font-family="ui-monospace,monospace" '
-        'font-size="12">EVIDENCE RAIL</text>',
+        '<text x="996" y="140" fill="#9FB0C2" font-family="ui-monospace,monospace" font-size="12">EVIDENCE RAIL</text>',
     ]
     for index in range(6):
         x = 680 + (seed[index] % 5) * 92
@@ -334,8 +332,7 @@ def _control_body(profile: MotifProfile, seed: bytes) -> str:
 def _runtime_body(profile: MotifProfile, seed: bytes) -> str:
     pieces = [
         '<rect x="960" y="226" width="250" height="300" rx="16" fill="#050C14" stroke="#203142"/>',
-        '<text x="986" y="254" fill="#9FB0C2" font-family="ui-monospace,monospace" '
-        'font-size="12">TOPOLOGY</text>',
+        '<text x="986" y="254" fill="#9FB0C2" font-family="ui-monospace,monospace" font-size="12">TOPOLOGY</text>',
     ]
     for index in range(6):
         y = 250 + index * 46
@@ -389,8 +386,7 @@ def _research_body(profile: MotifProfile, seed: bytes) -> str:
 def _archive_body(seed: bytes) -> str:
     pieces = [
         '<rect x="64" y="232" width="1148" height="72" rx="14" fill="#0A1018" stroke="#4C596A"/>',
-        '<text x="90" y="276" fill="#B6C0CE" font-family="ui-monospace,monospace" '
-        'font-size="14">HISTORICAL ARTIFACT · NO LIVE RUNTIME CLAIM</text>',
+        '<text x="90" y="276" fill="#B6C0CE" font-family="ui-monospace,monospace" font-size="14">HISTORICAL ARTIFACT · NO LIVE RUNTIME CLAIM</text>',
     ]
     for index in range(6):
         x = 100 + index * 190
