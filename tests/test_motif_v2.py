@@ -64,19 +64,13 @@ class MotifCompilerV2Test(unittest.TestCase):
         self.assertEqual(first, second)
 
     def test_different_slugs_receive_stable_non_identical_variants(self) -> None:
-        terra = build_profile(
-            MotifRequest("terra", "Terra", FLAGSHIP_PRODUCT)
-        )
-        sentra = build_profile(
-            MotifRequest("sentra", "Sentra", FLAGSHIP_PRODUCT)
-        )
+        terra = build_profile(MotifRequest("terra", "Terra", FLAGSHIP_PRODUCT))
+        sentra = build_profile(MotifRequest("sentra", "Sentra", FLAGSHIP_PRODUCT))
         self.assertNotEqual(terra.surface_fingerprint, sentra.surface_fingerprint)
         self.assertEqual(terra.theme_family, sentra.theme_family)
 
     def test_css_preserves_mobile_and_accessibility_contracts(self) -> None:
-        profile = build_profile(
-            MotifRequest("lyte", "Lyte", FLAGSHIP_PRODUCT)
-        )
+        profile = build_profile(MotifRequest("lyte", "Lyte", FLAGSHIP_PRODUCT))
         css = render_css(profile)
         self.assertIn("--szl-motif-touch: 44px", css)
         self.assertIn("pointer: coarse", css)
@@ -101,9 +95,7 @@ class MotifCompilerV2Test(unittest.TestCase):
         self.assertNotIn("<Ledger>", svg)
 
     def test_historical_surface_cannot_imply_live_runtime(self) -> None:
-        profile = build_profile(
-            MotifRequest("archive", "Archive", HISTORICAL)
-        )
+        profile = build_profile(MotifRequest("archive", "Archive", HISTORICAL))
         svg = render_svg(profile)
         self.assertIn("NO LIVE RUNTIME CLAIM", svg)
         self.assertEqual(profile.motion, "NONE")
@@ -137,9 +129,7 @@ class MotifCompilerV2Test(unittest.TestCase):
         )
         with tempfile.TemporaryDirectory(prefix="szl-motif-") as root:
             paths = write_bundle(request, root)
-            self.assertEqual(
-                set(paths), {"profile", "css", "svg", "receipt"}
-            )
+            self.assertEqual(set(paths), {"profile", "css", "svg", "receipt"})
             self.assertEqual(
                 {path.name for path in Path(root).iterdir()},
                 {
