@@ -1,0 +1,81 @@
+# SPDX-License-Identifier: Apache-2.0
+name: One-shot explicit motif literals
+
+on:
+  push:
+    branches:
+      - feat/class-motif-compiler-v1
+    paths:
+      - .github/workflows/one-shot-collapse-motif-literals.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: one-shot-explicit-motif-literals
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
+        with:
+          egress-policy: audit
+
+      - name: Check out exact branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6.0.2
+        with:
+          ref: feat/class-motif-compiler-v1
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Collapse the four reviewed implicit literal pairs
+        env:
+          BRANCH: feat/class-motif-compiler-v1
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("src/szl_brand/motif.py")
+          text = path.read_text(encoding="utf-8")
+          replacements = [
+              (
+                  '''        '<text x="90" y="276" fill="#9FB0C2" font-family="ui-monospace,monospace" '\n        'font-size="12">DECISION / MAP / EVIDENCE</text>', ''',
+                  '''        '<text x="90" y="276" fill="#9FB0C2" font-family="ui-monospace,monospace" font-size="12">DECISION / MAP / EVIDENCE</text>', ''',
+              ),
+              (
+                  '''        '<text x="996" y="140" fill="#9FB0C2" font-family="ui-monospace,monospace" '\n        'font-size="12">EVIDENCE RAIL</text>', ''',
+                  '''        '<text x="996" y="140" fill="#9FB0C2" font-family="ui-monospace,monospace" font-size="12">EVIDENCE RAIL</text>', ''',
+              ),
+              (
+                  '''        '<text x="986" y="254" fill="#9FB0C2" font-family="ui-monospace,monospace" '\n        'font-size="12">TOPOLOGY</text>', ''',
+                  '''        '<text x="986" y="254" fill="#9FB0C2" font-family="ui-monospace,monospace" font-size="12">TOPOLOGY</text>', ''',
+              ),
+              (
+                  '''        '<text x="90" y="276" fill="#B6C0CE" font-family="ui-monospace,monospace" '\n        'font-size="14">HISTORICAL ARTIFACT · NO LIVE RUNTIME CLAIM</text>', ''',
+                  '''        '<text x="90" y="276" fill="#B6C0CE" font-family="ui-monospace,monospace" font-size="14">HISTORICAL ARTIFACT · NO LIVE RUNTIME CLAIM</text>', ''',
+              ),
+          ]
+          for old, new in replacements:
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f"expected exactly one reviewed pattern, found {count}: {old[:72]!r}")
+              text = text.replace(old, new)
+          path.write_text(text, encoding="utf-8", newline="\n")
+          PY
+          python -m pip install --disable-pip-version-check --no-cache-dir "ruff==0.16.6"
+          ruff check src tests hatch_build.py
+          ruff format --check src tests hatch_build.py
+          git config user.name "szl-frontier-bot"
+          git config user.email "stephenlutar2+frontier@gmail.com"
+          git add src/szl_brand/motif.py
+          git commit -m "fix(brand): remove implicit motif literal concatenation" -m "Signed-off-by: Stephen Lutar <stephenlutar2@gmail.com>"
+          git push origin "HEAD:${BRANCH}"
