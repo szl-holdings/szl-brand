@@ -200,7 +200,9 @@ def build_profile(request: MotifRequest) -> MotifProfile:
     _validate_request(request)
     theme = THEMES[request.estate_class]
     seed = _seed(request)
-    fingerprint = hashlib.sha256(f"{request.slug}:{theme['family']}:{seed.hex()}".encode()).hexdigest()[:16]
+    fingerprint = hashlib.sha256(
+        f"{request.slug}:{theme['family']}:{seed.hex()}".encode()
+    ).hexdigest()[:16]
     return MotifProfile(
         schema=SCHEMA,
         slug=request.slug,
@@ -275,23 +277,52 @@ def render_css(profile: MotifProfile) -> str:
 '''
 
 
-def _text(x: int, y: int, value: str, *, fill: str = "#9FB0C2", font: str = "ui-monospace,monospace", size: int = 12, weight: int | None = None) -> str:
+def _text(
+    x: int,
+    y: int,
+    value: str,
+    *,
+    fill: str = "#9FB0C2",
+    font: str = "ui-monospace,monospace",
+    size: int = 12,
+    weight: int | None = None,
+) -> str:
     weight_attr = f' font-weight="{weight}"' if weight is not None else ""
     return f'<text x="{x}" y="{y}" fill="{fill}" font-family="{font}" font-size="{size}"{weight_attr}>{html.escape(value)}</text>'
 
 
-def _rect(x: int, y: int, width: int, height: int, *, rx: int = 14, fill: str = "#07101A", stroke: str = "#203142", stroke_opacity: str | None = None) -> str:
+def _rect(
+    x: int,
+    y: int,
+    width: int,
+    height: int,
+    *,
+    rx: int = 14,
+    fill: str = "#07101A",
+    stroke: str = "#203142",
+    stroke_opacity: str | None = None,
+) -> str:
     opacity_attr = f' stroke-opacity="{stroke_opacity}"' if stroke_opacity is not None else ""
     return f'<rect x="{x}" y="{y}" width="{width}" height="{height}" rx="{rx}" fill="{fill}" stroke="{stroke}"{opacity_attr}/>'
 
 
-def _circle(x: int, y: int, radius: int, *, fill: str, stroke: str | None = None, fill_opacity: str | None = None) -> str:
+def _circle(
+    x: int,
+    y: int,
+    radius: int,
+    *,
+    fill: str,
+    stroke: str | None = None,
+    fill_opacity: str | None = None,
+) -> str:
     stroke_attr = f' stroke="{stroke}"' if stroke is not None else ""
     opacity_attr = f' fill-opacity="{fill_opacity}"' if fill_opacity is not None else ""
     return f'<circle cx="{x}" cy="{y}" r="{radius}" fill="{fill}"{stroke_attr}{opacity_attr}/>'
 
 
-def _path(d: str, *, stroke: str, width: int = 1, opacity: str | None = None, fill: str = "none") -> str:
+def _path(
+    d: str, *, stroke: str, width: int = 1, opacity: str | None = None, fill: str = "none"
+) -> str:
     opacity_attr = f' stroke-opacity="{opacity}"' if opacity is not None else ""
     return f'<path d="{d}" fill="{fill}" stroke="{stroke}" stroke-width="{width}"{opacity_attr}/>'
 
@@ -299,8 +330,22 @@ def _path(d: str, *, stroke: str, width: int = 1, opacity: str | None = None, fi
 def _svg_header(profile: MotifProfile) -> str:
     return "".join(
         [
-            _text(64, 68, f"SZL / {profile.theme_family} / {profile.surface_fingerprint}", fill="#B6C0CE", size=14),
-            _text(64, 142, profile.display_name, fill="#F5FBFF", font="system-ui,sans-serif", size=54, weight=720),
+            _text(
+                64,
+                68,
+                f"SZL / {profile.theme_family} / {profile.surface_fingerprint}",
+                fill="#B6C0CE",
+                size=14,
+            ),
+            _text(
+                64,
+                142,
+                profile.display_name,
+                fill="#F5FBFF",
+                font="system-ui,sans-serif",
+                size=54,
+                weight=720,
+            ),
             _text(64, 178, f"{profile.interaction} · {profile.evidence_placement}", size=13),
         ]
     )
@@ -318,7 +363,9 @@ def _product_body(profile: MotifProfile, seed: bytes) -> str:
         x = 680 + (seed[index] % 5) * 92
         y = 120 + index * 70
         color = (profile.primary, profile.secondary, profile.tertiary)[index % 3]
-        pieces.append(_circle(x, y, 10 + seed[index + 8] % 9, fill=color, stroke=color, fill_opacity=".18"))
+        pieces.append(
+            _circle(x, y, 10 + seed[index + 8] % 9, fill=color, stroke=color, fill_opacity=".18")
+        )
     return "".join(pieces)
 
 
@@ -327,7 +374,12 @@ def _control_body(profile: MotifProfile, seed: bytes) -> str:
     for index, label in enumerate(("INGEST", "TRANSFORM", "EVALUATE", "APPROVE", "PUBLISH")):
         x = 78 + index * 232
         y = 286 + (seed[index] % 2) * 24
-        pieces.extend([_rect(x, y, 174, 86, stroke=profile.primary, stroke_opacity=".34"), _text(x + 18, y + 47, label, fill="#E9EEF6", size=13)])
+        pieces.extend(
+            [
+                _rect(x, y, 174, 86, stroke=profile.primary, stroke_opacity=".34"),
+                _text(x + 18, y + 47, label, fill="#E9EEF6", size=13),
+            ]
+        )
     return "".join(pieces)
 
 
@@ -337,7 +389,21 @@ def _runtime_body(profile: MotifProfile, seed: bytes) -> str:
         y = 250 + index * 46
         offset = 60 + seed[index] % 130
         bar_width = 380 + seed[index + 10] % 260
-        pieces.extend([_text(70, y + 10, f"SPAN-{index + 1:02d}", size=11), _rect(220 + offset, y, bar_width, 14, rx=7, fill=profile.primary, stroke=profile.primary, stroke_opacity="0")])
+        pieces.extend(
+            [
+                _text(70, y + 10, f"SPAN-{index + 1:02d}", size=11),
+                _rect(
+                    220 + offset,
+                    y,
+                    bar_width,
+                    14,
+                    rx=7,
+                    fill=profile.primary,
+                    stroke=profile.primary,
+                    stroke_opacity="0",
+                ),
+            ]
+        )
     return "".join(pieces)
 
 
@@ -346,7 +412,13 @@ def _proof_body(profile: MotifProfile, seed: bytes) -> str:
     for index in range(5):
         y = 246 + index * 64
         digest = hashlib.sha256(seed + bytes([index])).hexdigest()[:12]
-        pieces.extend([_circle(110, y, 9, fill=profile.primary), _rect(204, y - 22, 700, 44, rx=10), _text(226, y + 5, f"RECEIPT-{index + 1} · sha256:{digest}", fill="#D7E0EA")])
+        pieces.extend(
+            [
+                _circle(110, y, 9, fill=profile.primary),
+                _rect(204, y - 22, 700, 44, rx=10),
+                _text(226, y + 5, f"RECEIPT-{index + 1} · sha256:{digest}", fill="#D7E0EA"),
+            ]
+        )
     return "".join(pieces)
 
 
@@ -355,16 +427,32 @@ def _research_body(seed: bytes) -> str:
     equations = ("Λ = f(E, P, A)", "τ = Σ wᵢ·eᵢ", "R = H(receipt)", "Δ = observed − modeled")
     for index, equation in enumerate(equations):
         y = 260 + index * 70
-        pieces.extend([_text(94, y, equation, fill="#E9EEF6", font="Georgia,serif", size=26), _text(520, y, f"NOTE {seed[index] % 97:02d} · DERIVATION OPEN", fill="#8294A8", size=11)])
+        pieces.extend(
+            [
+                _text(94, y, equation, fill="#E9EEF6", font="Georgia,serif", size=26),
+                _text(
+                    520,
+                    y,
+                    f"NOTE {seed[index] % 97:02d} · DERIVATION OPEN",
+                    fill="#8294A8",
+                    size=11,
+                ),
+            ]
+        )
     return "".join(pieces)
 
 
 def _archive_body(seed: bytes) -> str:
-    pieces = [_rect(64, 232, 1148, 72, fill="#0A1018", stroke="#4C596A"), _text(90, 276, "HISTORICAL ARTIFACT · NO LIVE RUNTIME CLAIM", fill="#B6C0CE", size=14)]
+    pieces = [
+        _rect(64, 232, 1148, 72, fill="#0A1018", stroke="#4C596A"),
+        _text(90, 276, "HISTORICAL ARTIFACT · NO LIVE RUNTIME CLAIM", fill="#B6C0CE", size=14),
+    ]
     for index in range(6):
         x = 100 + index * 190
         y = 400 + (seed[index] % 3) * 18
-        pieces.extend([_circle(x, y, 7, fill="#9AA7BD"), _path(f"M{x + 7} {y} H{x + 175}", stroke="#738097")])
+        pieces.extend(
+            [_circle(x, y, 7, fill="#9AA7BD"), _path(f"M{x + 7} {y} H{x + 175}", stroke="#738097")]
+        )
     return "".join(pieces)
 
 
@@ -374,7 +462,14 @@ def _review_body(profile: MotifProfile, seed: bytes) -> str:
         row, column = divmod(index, 4)
         x = 68 + column * 286
         y = 244 + row * 142
-        pieces.extend([_rect(x, y, 248, 108), _circle(x + 28, y + 30, 6, fill=profile.primary, fill_opacity=f".{3 + seed[index] % 5}")])
+        pieces.extend(
+            [
+                _rect(x, y, 248, 108),
+                _circle(
+                    x + 28, y + 30, 6, fill=profile.primary, fill_opacity=f".{3 + seed[index] % 5}"
+                ),
+            ]
+        )
     return "".join(pieces)
 
 
@@ -399,7 +494,9 @@ def render_svg(profile: MotifProfile) -> str:
     else:
         body = _review_body(profile, seed)
     title = html.escape(profile.display_name)
-    description = html.escape(f"SZL Holdings {profile.theme_family} motif. Interaction family: {profile.interaction}. Evidence placement: {profile.evidence_placement}. Variant {profile.variant}.")
+    description = html.escape(
+        f"SZL Holdings {profile.theme_family} motif. Interaction family: {profile.interaction}. Evidence placement: {profile.evidence_placement}. Variant {profile.variant}."
+    )
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{WIDTH}" height="{HEIGHT}" viewBox="0 0 {WIDTH} {HEIGHT}" role="img" aria-labelledby="title description">
 <title id="title">{title} — {profile.theme_family}</title>
 <desc id="description">{description}</desc>
