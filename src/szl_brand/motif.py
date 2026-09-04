@@ -312,10 +312,7 @@ def _circle(x: int, y: int, radius: int, *, color: str) -> str:
 
 
 def _line(x1: int, y1: int, x2: int, y2: int, *, color: str) -> str:
-    return (
-        f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" '
-        f'stroke="{color}" stroke-width="2"/>'
-    )
+    return f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{color}" stroke-width="2"/>'
 
 
 def _header(profile: MotifProfile) -> str:
@@ -457,8 +454,8 @@ def render_svg(profile: MotifProfile) -> str:
         f'<title id="szl-title">{title}</title>\n'
         f'<desc id="szl-desc">{description}</desc>\n'
         '<rect width="1280" height="640" fill="#03070C"/>\n'
-        f'{_header(profile)}{body}\n'
-        f'{_text(64, 606, "CONTROL BEFORE ACTION · AUTHORITY NONE", fill=profile.tertiary)}\n'
+        f"{_header(profile)}{body}\n"
+        f"{_text(64, 606, 'CONTROL BEFORE ACTION · AUTHORITY NONE', fill=profile.tertiary)}\n"
         "</svg>\n"
     )
 
@@ -519,9 +516,7 @@ def load_manifest(path: str | Path) -> list[MotifRequest]:
     if payload["schema"] != SCHEMA or not isinstance(payload["surfaces"], list):
         raise MotifContractError("manifest schema or surfaces collection is invalid")
     requests = [
-        MotifRequest.from_mapping(item)
-        for item in payload["surfaces"]
-        if isinstance(item, dict)
+        MotifRequest.from_mapping(item) for item in payload["surfaces"] if isinstance(item, dict)
     ]
     if len(requests) != len(payload["surfaces"]):
         raise MotifContractError("every surface must be an object")
