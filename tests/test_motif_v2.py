@@ -107,6 +107,7 @@ class MotifCompilerV2Test(unittest.TestCase):
             RUNTIME_INFRA,
         )
         profile, css, svg, receipt = build_bundle(request)
+        self.assertEqual(receipt.schema, "szl.class-motif-receipt/v1")
         self.assertEqual(
             receipt.profile_sha256,
             hashlib.sha256(profile.to_json().encode("utf-8")).hexdigest(),
