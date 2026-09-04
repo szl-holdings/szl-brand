@@ -45,31 +45,37 @@ jobs:
           from pathlib import Path
 
           path = Path("src/szl_brand/motif.py")
-          text = path.read_text(encoding="utf-8")
-          replacements = [
-              (
-                  '''        '<text x="90" y="276" fill="#9FB0C2" font-family="ui-monospace,monospace" '\n        'font-size="12">DECISION / MAP / EVIDENCE</text>', ''',
-                  '''        '<text x="90" y="276" fill="#9FB0C2" font-family="ui-monospace,monospace" font-size="12">DECISION / MAP / EVIDENCE</text>', ''',
-              ),
-              (
-                  '''        '<text x="996" y="140" fill="#9FB0C2" font-family="ui-monospace,monospace" '\n        'font-size="12">EVIDENCE RAIL</text>', ''',
-                  '''        '<text x="996" y="140" fill="#9FB0C2" font-family="ui-monospace,monospace" font-size="12">EVIDENCE RAIL</text>', ''',
-              ),
-              (
-                  '''        '<text x="986" y="254" fill="#9FB0C2" font-family="ui-monospace,monospace" '\n        'font-size="12">TOPOLOGY</text>', ''',
-                  '''        '<text x="986" y="254" fill="#9FB0C2" font-family="ui-monospace,monospace" font-size="12">TOPOLOGY</text>', ''',
-              ),
-              (
-                  '''        '<text x="90" y="276" fill="#B6C0CE" font-family="ui-monospace,monospace" '\n        'font-size="14">HISTORICAL ARTIFACT · NO LIVE RUNTIME CLAIM</text>', ''',
-                  '''        '<text x="90" y="276" fill="#B6C0CE" font-family="ui-monospace,monospace" font-size="14">HISTORICAL ARTIFACT · NO LIVE RUNTIME CLAIM</text>', ''',
-              ),
-          ]
-          for old, new in replacements:
-              count = text.count(old)
-              if count != 1:
-                  raise SystemExit(f"expected exactly one reviewed pattern, found {count}: {old[:72]!r}")
-              text = text.replace(old, new)
-          path.write_text(text, encoding="utf-8", newline="\n")
+          lines = path.read_text(encoding="utf-8").splitlines()
+          markers = {
+              "DECISION / MAP / EVIDENCE",
+              "EVIDENCE RAIL",
+              "TOPOLOGY",
+              "HISTORICAL ARTIFACT · NO LIVE RUNTIME CLAIM",
+          }
+          found: set[str] = set()
+          output: list[str] = []
+          index = 0
+          while index < len(lines):
+              if index + 1 < len(lines):
+                  first = lines[index]
+                  second = lines[index + 1]
+                  marker = next((value for value in markers if value in second), None)
+                  if (
+                      marker is not None
+                      and first.endswith("'")
+                      and second.lstrip().startswith("'font-size=")
+                  ):
+                      output.append(first[:-1] + second.lstrip()[1:])
+                      found.add(marker)
+                      index += 2
+                      continue
+              output.append(lines[index])
+              index += 1
+
+          missing = markers - found
+          if missing or len(found) != 4:
+              raise SystemExit(f"reviewed literal repair incomplete; found={sorted(found)!r} missing={sorted(missing)!r}")
+          path.write_text("\n".join(output) + "\n", encoding="utf-8", newline="\n")
           PY
           python -m pip install --disable-pip-version-check --no-cache-dir "ruff==0.16.6"
           ruff check src tests hatch_build.py
