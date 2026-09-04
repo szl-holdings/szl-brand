@@ -36,32 +36,18 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install the clean-checkout test toolchain
+      - name: Install from the clean provenance checkout
         run: python -m pip install --disable-pip-version-check -e ".[dev]"
 
-      - name: Apply the two exact Ruff UP012 corrections
+      - name: Apply the exact Ruff formatter output
         shell: bash
         run: |
           set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-
-          path = Path("src/szl_brand/motif.py")
-          text = path.read_text(encoding="utf-8")
-          needles = (
-              'f"{request.estate_class}:{request.slug}".encode("utf-8")',
-              'f"{request.slug}:{theme[\'family\']}:{seed.hex()}".encode("utf-8")',
-          )
-          for needle in needles:
-              count = text.count(needle)
-              if count != 1:
-                  raise SystemExit(f"expected one Ruff target, found {count}: {needle}")
-              text = text.replace(needle, needle.replace('.encode("utf-8")', '.encode()'))
-          path.write_text(text, encoding="utf-8", newline="\n")
-          PY
+          ruff check src/szl_brand/motif.py
+          ruff format src/szl_brand/motif.py
           git diff --check
 
-      - name: Prove complete motif bundle contract
+      - name: Prove the complete motif bundle contract
         run: |
           set -euo pipefail
           python -m pytest tests -q
@@ -69,7 +55,7 @@ jobs:
           ruff format --check src tests hatch_build.py
           git diff --check
 
-      - name: Commit durable source correction and remove this controller
+      - name: Commit the durable format and remove this controller
         shell: bash
         run: |
           set -euo pipefail
@@ -77,6 +63,6 @@ jobs:
           git config user.email "stephenlutar2@gmail.com"
           git add src/szl_brand/motif.py
           git rm .github/workflows/fix-motif-v2-ruff-once.yml
-          git diff --cached --quiet && { echo "no motif Ruff correction"; exit 1; }
-          git commit -s -m "fix(brand): clear motif v2 Ruff UP012 debt"
+          git diff --cached --quiet && { echo "no motif format correction"; exit 1; }
+          git commit -s -m "fix(brand): finalize the Ruff-clean motif v2 bundle"
           git push origin HEAD:fix/class-motif-bundle-contract
