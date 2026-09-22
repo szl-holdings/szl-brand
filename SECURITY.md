@@ -36,13 +36,13 @@ We ask that you give us a reasonable opportunity to investigate and patch before
 
 ## Scope
 
-This policy covers all software published under `szl-holdings/*`. For the upstream Defense Unicorns ecosystem we contribute to (Iron Bank, UDS, Pepr, Zarf), please follow their respective security policies.
+This policy covers software published under `szl-holdings/*` unless a repository carries a more specific security policy.
 
-In scope:
+In scope for this repository:
 
 - Source code in this repository
-- Released artifacts (packages, Docker images, Lean builds)
-- CI/CD pipelines producing signed attestations
+- Released artifacts produced from this repository
+- CI/CD workflows and provenance associated with those artifacts
 
 Out of scope:
 
@@ -51,7 +51,7 @@ Out of scope:
 
 ## Governance
 
-All security disclosures are governed by **SZL Doctrine v7**: no fake security claims, STAGED-ADVISORY label for gates not yet machine-checked, DSSE receipts on every governance decision.
+Current organization source defines **SZL Doctrine v11 LOCKED 749/14/163**. Security claims must remain evidence-bounded: an unobserved or unverified control is not promoted to a measured or completed result. DSSE or other provenance receipts are claimed only where the applicable workflow actually emits and verifies them.
 
 ## Hall of Thanks
 

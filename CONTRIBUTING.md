@@ -1,37 +1,48 @@
-# Contributing to ouroboros
+# Contributing to KANCHAY / szl-brand
 
-  Thank you for your interest in ouroboros. This repository is part of the [SZL Holdings](https://github.com/szl-holdings) platform — governed AI decision infrastructure for regulated enterprises.
+Thank you for considering a contribution to the SZL Brand SDK and KANCHAY design system.
 
-  ## Contribution model
+## Contribution model
 
-  ouroboros is **source-available, proprietary software**. The codebase is published for evaluation, audit, and reference. We do not accept unsolicited pull requests at this time. See the repository [`LICENSE`](./LICENSE) for the full grant.
+This is a public SZL Holdings repository. Proposed changes should preserve the evidence-first brand contract, deterministic exports, accessibility requirements, and repository licensing/trademark notices.
 
-  If you are a partner, customer, or collaborator with a written agreement, your contribution path is coordinated with your account contact. Reach us at [partners@szlholdings.com](mailto:partners@szlholdings.com).
+1. Open an issue describing the defect or proposed change when practical.
+2. Branch from the current `main` revision.
+3. Keep the change narrowly scoped and add or update tests for executable contracts.
+4. Open a pull request and address every applicable CI, security, provenance, and review-thread requirement.
+5. Admission follows the repository's active branch rules and normal protected path.
 
-  ## How you can engage
+For Stephen Lutar's first-party maintainer changes, repository admission does not invent an unavailable second-human approval or DCO status. External contributors remain responsible for authorship, rights, attribution, and any contribution terms that apply to their submission.
 
-  We welcome the following without prior agreement:
+## License and trademark boundary
 
-  - **Bug reports.** Open a [GitHub issue](../../issues/new) with reproduction steps, environment, and expected vs actual behavior.
-  - **Security disclosures.** Do **not** open a public issue. Follow [`SECURITY.md`](./SECURITY.md) — preferred channel is [security@szlholdings.com](mailto:security@szlholdings.com) or a private GitHub security advisory.
-  - **Questions and feedback.** Email [stephen@szlholdings.com](mailto:stephen@szlholdings.com) for product questions, integration requests, or partnership inquiries.
-  - **Documentation corrections.** Small typo / link / factual fixes to public docs are welcome via PR. Please open an issue first describing the change.
+The root [`LICENSE`](./LICENSE) and [`NOTICE`](./NOTICE) state the repository's CC BY 4.0 content grant and the trademark reservation for SZL Holdings names, marks, and brand colors. Some individual files also carry explicit SPDX notices; preserve those notices rather than silently rewriting licensing metadata in unrelated changes.
 
-  ## What we expect from contributors
+By submitting material, you confirm that you have the right to contribute it and that required third-party attribution and compatible-license notices are included. Do not submit copied source, model weights, datasets, fonts, images, or other assets without documented rights.
 
-  - Adherence to the [Code of Conduct](./CODE_OF_CONDUCT.md).
-  - For any contribution merged into this repository, you grant SZL Holdings, LLC a perpetual, irrevocable, royalty-free license to use, modify, and redistribute the contribution under the repository's license. By submitting a PR you confirm you have the right to make this grant.
-  - Honest disclosure: do not submit code derived from third-party sources without proper attribution and a compatible license.
+## What we welcome
 
-  ## Reporting a problem
+- **Bug reports** with reproduction steps, environment, and expected versus observed behavior.
+- **Accessibility and responsive-design fixes** backed by a reproducible check.
+- **Determinism, integrity, and metadata-contract repairs** with regression tests.
+- **Documentation corrections** that keep public claims aligned with current source and evidence.
 
-  | Channel | Use it for |
-  |---|---|
-  | [GitHub issues](../../issues) | Bugs, documentation gaps, reproducible defects |
-  | [security@szlholdings.com](mailto:security@szlholdings.com) | Security vulnerabilities (private) |
-  | [stephen@szlholdings.com](mailto:stephen@szlholdings.com) | Product, partnership, licensing |
+## Security disclosures
 
-  ---
+Do **not** publish a suspected vulnerability in a public issue. Follow [`SECURITY.md`](./SECURITY.md) and use its private reporting channels.
 
-  (c) 2024–2026 SZL Holdings, LLC. All rights reserved.
+## Conduct
 
+Participation is governed by [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md).
+
+## Reporting and contact
+
+| Channel | Use it for |
+|---|---|
+| [GitHub issues](../../issues) | Bugs, documentation gaps, reproducible defects |
+| [`SECURITY.md`](./SECURITY.md) | Private security reporting |
+| Repository pull requests | Reviewed source and documentation changes |
+
+---
+
+© 2024–2026 SZL Holdings. Repository licensing and trademark boundaries are defined by the checked-in license and notice files.
