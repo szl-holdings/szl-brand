@@ -132,9 +132,10 @@ Changes use protected pull requests, executable tests, and normal branch
 protection. Brand doctrine is additive to the locked proof register and does not change theorem,
 axiom, or `sorry` counts.
 
-- Code and tokens: Apache-2.0 where identified in [`kit/LICENSE`](./kit/LICENSE)
-- Brand assets: CC BY 4.0 under the repository [`LICENSE`](./LICENSE)
-- Attribution: SZL Holdings, ORCID `0009-0001-0110-4173`
+- Repository content: CC BY 4.0 under [`LICENSE`](./LICENSE) and [`NOTICE`](./NOTICE).
+- Trademark reservation: the SZL Holdings name, wordmark, and brand colors are not granted by CC BY 4.0; see [`NOTICE`](./NOTICE).
+- Some individual files carry additional SPDX notices; those notices are preserved as file-specific metadata and are not silently recharacterized here.
+- Attribution: SZL Holdings, ORCID `0009-0001-0110-4173`.
 
 ## Citation
 
