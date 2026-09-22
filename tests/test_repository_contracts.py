@@ -12,10 +12,11 @@ def test_public_license_claims_match_checked_in_license_and_notice() -> None:
     kit_license = read("kit/LICENSE")
     notice = read("NOTICE")
     readme = read("README.md")
+    notice_words = " ".join(notice.split())
 
     assert root_license == kit_license
     assert "Creative Commons Attribution 4.0 International" in root_license
-    assert "Creative Commons Attribution 4.0 International License" in notice
+    assert "Creative Commons Attribution 4.0 International License" in notice_words
     assert "Repository content: CC BY 4.0" in readme
     assert "kit/LICENSE" not in readme
 
