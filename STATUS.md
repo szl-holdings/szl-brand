@@ -8,7 +8,7 @@
 ## What's Live
 
 - Repository active and maintained under Apache-2.0 license
-- KANCHAY v1.1.0 (founder-approved) with its vendor bundle in [`kanchay/`](./kanchay):
+- KANCHAY v1.1.1 (founder-approved) with its vendor bundle in [`kanchay/`](./kanchay):
   `szl-design-system.css`, the `szl-console.css` 1.0.0 operator layer, the orbit logos and a
   sha256 manifest (`SOURCE.json`), built from `kit/` by `szl-brand kanchay-build` and checked
   against `kit/` in CI

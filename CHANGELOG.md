@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- KANCHAY 1.1.1: the base `:focus-visible` rule in `kit/tokens/szl-design-system.css` now draws a
+  solid focus outline, `outline:2px solid var(--focus); outline-offset:2px`, and keeps the
+  `--shadow-focus` halo and `--radius-sm`. The halo alone (`--focus` at 55%) measured 2.81:1 on
+  dark `--bg` and 2.32:1 on light `--bg`, below the 3:1 non-text floor; solid `--focus` measures
+  6.73:1 and 5.36:1. No color value changed. `kanchay/` is rebuilt as bundle 1.1.1 (only
+  `szl-design-system.css` and `SOURCE.json` differ from 1.1.0), the system version is 1.1.1
+  everywhere it is declared, and a test fails CI if the rule loses its solid outline or `--focus`
+  drops under 3:1 on any ground.
 - Make `kanchay/` the vendor bundle of the one KANCHAY token system, v1.1.0 (founder-approved):
   byte-for-byte copies of `kit/tokens/szl-design-system.css`, the new additive operator layer
   `kit/tokens/szl-console.css` 1.0.0, and the orbit logo suite, with a sha256 `SOURCE.json`.

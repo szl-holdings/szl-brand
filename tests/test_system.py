@@ -48,7 +48,7 @@ def test_manifest_pins_source_and_every_asset(tmp_path):
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 
     assert manifest["contract"] == CONTRACT
-    assert manifest["version"] == "1.1.0"
+    assert manifest["version"] == "1.1.1"
     assert manifest["source"]["revision"] == REVISION
     assert {record["path"] for record in manifest["assets"]} == {
         "system.css",
@@ -348,6 +348,63 @@ def test_light_mode_status_and_focus_colors_meet_contrast_contract():
     assert '[data-surface="light"] .chip-live { color:var(--color-success-strong); }' in css
     assert '[data-surface="light"] .chip-simulated { color:#6b4f00; }' in css
     assert '[data-surface="light"] .chip-unavailable { color:#9f281e; }' in css
+
+
+FOCUS_SELECTOR = ":where(a,button,input,select,textarea,[tabindex]):focus-visible"
+# Grounds a focusable control can sit on. The outline is offset outside the control, so it
+# is drawn against the ground, not against the control's own fill.
+FOCUS_GROUNDS = ("bg", "bg-deep", "surface", "surface-alt", "surface-raised")
+
+
+def _custom_properties(css: str, selector: str) -> dict[str, str]:
+    """Return every ``--name: value`` declared in the top-level blocks for ``selector``."""
+
+    blocks = re.findall(rf"(?m)^{re.escape(selector)}\s*\{{(?P<body>[^}}]*)\}}", css)
+    assert blocks, selector
+    return {
+        name: value.strip()
+        for body in blocks
+        for name, value in re.findall(r"--([\w-]+)\s*:\s*([^;]+);", body)
+    }
+
+
+def _resolve_hex(tokens: dict[str, str], name: str) -> Color:
+    value = tokens[name]
+    while reference := re.fullmatch(r"var\(--([\w-]+)\)", value):
+        value = tokens[reference.group(1)]
+    assert re.fullmatch(r"#[0-9A-Fa-f]{6}", value), f"--{name} does not resolve to an opaque hex"
+    return Color.from_hex(value)
+
+
+@pytest.mark.parametrize(
+    "path", ["kit/tokens/szl-design-system.css", "kanchay/szl-design-system.css"]
+)
+def test_base_focus_rule_draws_a_solid_outline_that_meets_3_to_1(path):
+    css = (Path(__file__).resolve().parents[1] / path).read_text(encoding="utf-8")
+
+    assert css.count(f"{FOCUS_SELECTOR} {{") == 1
+    body = css.split(f"{FOCUS_SELECTOR} {{", 1)[1].split("}", 1)[0]
+    rule = dict(
+        (name.strip(), value.strip())
+        for name, value in (part.split(":", 1) for part in body.split(";") if part.strip())
+    )
+    # The 55% --shadow-focus halo alone measures 2.81:1 on dark --bg and 2.32:1 on light --bg,
+    # under the 3:1 non-text floor, so the indicator is a solid --focus outline and the halo
+    # only softens it.
+    assert rule == {
+        "outline": "2px solid var(--focus)",
+        "outline-offset": "2px",
+        "box-shadow": "var(--shadow-focus)",
+        "border-radius": "var(--radius-sm)",
+    }
+
+    dark = _custom_properties(css, ":root")
+    light = {**dark, **_custom_properties(css, '[data-surface="light"]')}
+    for surface, tokens in (("dark", dark), ("light", light)):
+        focus = _resolve_hex(tokens, "focus")
+        for ground in FOCUS_GROUNDS:
+            ratio = focus.contrast_ratio(_resolve_hex(tokens, ground))
+            assert ratio >= 3.0, f"{surface} --focus on --{ground}: {ratio:.2f}:1"
 
 
 def test_control_target_uses_a_sizable_display_mode():

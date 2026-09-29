@@ -98,8 +98,18 @@ Named scale (Radix-style) to prevent stacking wars across flagships.
 | `border-thick` | 2px |
 | `border-focus` | 3px (matches `:focus-visible` outline used in a11oy index.html) |
 
-Focus ring color: `--color-yuyay-400` (teal) — meets WCAG AA non-text contrast (≥3:1) against
-both `gray-950` and `gray-50`.
+Focus ring color: `--focus`, which is `--color-yuyay-400` (teal) on the dark surface and
+`--color-yuyay-600` on the light surface. Each meets WCAG AA non-text contrast (≥3:1) on its own
+surface's grounds. `yuyay-400` measures 6.76:1 on `gray-950` but only 2.63:1 on `gray-50`, which
+is why the light surface uses `yuyay-600`.
+
+Since KANCHAY 1.1.1 the base `:focus-visible` rule in `tokens/szl-design-system.css` draws the
+indicator as a solid outline, `outline:2px solid var(--focus); outline-offset:2px`, and keeps
+`--shadow-focus` as a soft halo inside it. Solid `--focus` measures 6.73:1 on dark `--bg`
+(`yuyay-400` on space navy) and 5.36:1 on light `--bg` (`yuyay-600` on `gray-50`). The halo is
+`--focus` at 55%, which composites to 2.81:1 and 2.32:1 on those grounds, so it cannot carry the
+indicator alone. `tests/test_system.py` holds the rule to a solid outline and checks `--focus`
+against every ground at 3:1.
 
 ## 7 · CSS drop-in (`tokens/COMPONENT_TOKENS.css`)
 

@@ -1,15 +1,15 @@
 <!-- SPDX-License-Identifier: Apache-2.0
 (c) 2026 Lutar, Stephen P. - SZL Holdings - ORCID 0009-0001-0110-4173 -->
 
-# KANCHAY vendor bundle 1.1.0
+# KANCHAY vendor bundle 1.1.1
 
-This folder is the ready-to-vendor bundle of KANCHAY v1.1.0, the founder-approved SZL Holdings
+This folder is the ready-to-vendor bundle of KANCHAY v1.1.1, the founder-approved SZL Holdings
 design system. The source of truth is `kit/`. Every file here is a byte-for-byte copy of a kit file,
 pinned by sha256 in `SOURCE.json`. Nothing in this folder is generated or edited.
 
 | File | What it is | Kit source |
 |---|---|---|
-| `szl-design-system.css` | KANCHAY v1.1.0: tokens, both surfaces, base, type scale and components. | `kit/tokens/szl-design-system.css` |
+| `szl-design-system.css` | KANCHAY v1.1.1: tokens, both surfaces, base, type scale and components. | `kit/tokens/szl-design-system.css` |
 | `szl-console.css` | Operator console layer 1.0.0, additive, on the same tokens. | `kit/tokens/szl-console.css` |
 | `logos/` | The orbit mark suite: horizontal, primary, transparent, mono white and navy, favicons. | `kit/logos/`, `kit/logos/png/` |
 | `SOURCE.json` | Version, base, layers, `source_commit`, licenses and the sha256 of every file above. | built |
@@ -40,6 +40,12 @@ pinned by sha256 in `SOURCE.json`. Nothing in this folder is generated or edited
    cd assets/szl && python -c "import hashlib,json,pathlib;m=json.load(open('SOURCE.json'))['sha256'];bad=[p for p,h in m.items() if pathlib.Path(p).exists() and hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()!=h];print('modified: '+', '.join(bad) if bad else 'ok')"
    ```
 
+### Upgrading from 1.1.0
+
+1.1.1 changes only the focus ring (see "Focus" below). Replace `szl-design-system.css` and
+`SOURCE.json` in `szl/`. `szl-console.css` and every logo file are byte-identical to 1.1.0, so
+their hashes do not change.
+
 ## Two surfaces, one token set
 
 - **Dark operator is the default** on `:root`: consoles, dashboards, docs, bench and operator
@@ -57,6 +63,11 @@ pinned by sha256 in `SOURCE.json`. Nothing in this folder is generated or edited
 - **Gold is premium only.** `--premium`, `.btn-premium`, `.badge-premium` and
   `--shadow-glow-hatun` mark premium or investor emphasis, or the one important number.
 - **Teal is links and focus**: `--link`, `--link-hover`, `--focus` and `--shadow-focus`.
+- **Focus is a solid ring.** From 1.1.1 the base `:focus-visible` rule draws a 2px solid
+  `--focus` outline, offset 2px, around the `--shadow-focus` halo. The outline measures 6.73:1 on
+  dark `--bg` and 5.36:1 on light `--bg`. The 55% halo alone measured 2.81:1 and 2.32:1, below
+  the 3:1 floor for non-text contrast. Do not remove the outline in surface CSS unless a solid
+  `--focus` edge replaces it, as the console layer's `.input` and `.select` border does.
 - **Red is errors and destructive actions only.** Use `--color-error`, and `--ink-bad` from the
   console layer for red text.
 - **Silver linework** (`--hairline`, `--color-silver-*`) draws the orbit, `.orbit-rule` dividers
@@ -104,9 +115,11 @@ python -m szl_brand kanchay-build --check   # fails if kanchay/ differs from kit
 - a webfont or the withdrawn gold token appears in the bundle;
 - a `var(--…)` without a fallback is undefined in the two stylesheets.
 
-`source_commit` is the szl-brand main commit the bundle was cut from. For 1.1.0 that is
-`168c53a`. At that commit `kit/tokens/szl-design-system.css` and the logos already had these
-bytes. `szl-console.css` 1.0.0 was added to `kit/tokens/` in the change that created this bundle.
+`source_commit` is the szl-brand main commit the bundle was cut from. For 1.1.1 that is
+`a0a27f0`. The focus-outline change to `kit/tokens/szl-design-system.css` was made in the change
+that cut 1.1.1, on top of that commit; `szl-console.css` and the logos already had these bytes
+there. For 1.1.0 it was `168c53a`, and `szl-console.css` 1.0.0 was added to `kit/tokens/` in the
+change that created the bundle.
 
 ## Licenses
 
