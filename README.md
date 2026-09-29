@@ -21,9 +21,11 @@ KANCHAY makes an SZL surface recognizable without letting presentation outrun ev
 | **Metadata** | Every public page declares its source, evidence URL, canonical URL, and honest status. |
 | **Adapters** | Deterministic framework bundles with SHA-256 integrity and an exact source revision. |
 
-The design system is calm, technical, and evidence-forward. Coral is the decision accent; teal
-is the interaction and focus color; gold is reserved for doctrine and premium emphasis. Status is
-always written in text and never communicated by color alone.
+The design system is calm, technical, and evidence-forward. In the `kit/` contract bundle, coral
+is the decision accent; teal is the interaction and focus color; gold is reserved for doctrine and
+premium emphasis. The vendorable web export in [`kanchay/`](./kanchay) uses the a11oy roles
+instead: gold is its only accent and teal marks proof. Status is always written in text and never
+communicated by color alone.
 
 ## Quickstart
 
@@ -60,6 +62,24 @@ asset blobs from the canonical repository's exact `HEAD`; wheel exports require 
 revision and per-asset hashes. Mutable refs, mismatched revisions, forks, abbreviated SHAs,
 uppercase SHAs, and path-like values are rejected.
 
+## Vendorable web export (`kanchay/`)
+
+[`kanchay/`](./kanchay) is the KANCHAY web export that SZL web surfaces vendor, version 1.0.0:
+`tokens.json` (the token source of truth), `kanchay.css` (every token as a custom property, local
+`@font-face`, text styles, reduced motion), `kanchay-components.css`, the React bundle
+(`kanchay-components.js` and `.d.ts`), local WOFF2 fonts with their licenses, the SZL marks, and
+`SOURCE.json` with the sha256 of every payload file. Copy the folder into a surface's static root,
+link `kanchay.css` before any other stylesheet, and never edit the copy;
+[`kanchay/README.md`](./kanchay/README.md) has the steps and the token roles.
+
+```bash
+python -m szl_brand kanchay-build          # regenerate kanchay.css, kanchay-components.css, SOURCE.json
+python -m szl_brand kanchay-build --check  # fail if the committed export drifted from its sources
+```
+
+The export sits beside the `export-system` bundle above (contract `szl.design-system/v1`, SDK
+1.1.0) and does not replace it.
+
 ## Use the system
 
 For a plain web surface:
@@ -89,6 +109,8 @@ runtime font or stylesheet dependency.
 
 | Path | Responsibility |
 |---|---|
+| [`kanchay`](./kanchay) | Vendorable KANCHAY web export 1.0.0 (tokens, CSS, components, fonts, marks). |
+| [`kit/kanchay`](./kit/kanchay) | Component stylesheet source for the `kanchay/` export. |
 | [`kit/tokens`](./kit/tokens) | Canonical typed tokens and component stylesheet. |
 | [`kit/contracts`](./kit/contracts) | Public metadata and truth-label schemas. |
 | [`kit/adapters`](./kit/adapters) | Deterministic framework adapters. |

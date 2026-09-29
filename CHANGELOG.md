@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Ship the vendorable KANCHAY web export 1.0.0 in `kanchay/` (tokens.json, kanchay.css,
+  kanchay-components.css/.js/.d.ts, local fonts with license notices, SZL marks, SOURCE.json),
+  the `szl-brand kanchay-build` generator, and a test that fails on export drift or an
+  unresolved token reference.
 - Add the KHIPU Command System contract, responsive and accessible executive/evidence patterns,
   fail-closed disclosure validation, and reusable repository and organization templates.
 - Publish KANCHAY design-system contract v1 with deterministic, SHA-256-pinned exports.
