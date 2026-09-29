@@ -8,6 +8,7 @@ Usage:
     python -m szl_brand inventory       Show asset inventory
     python -m szl_brand serve           Start live preview gallery
     python -m szl_brand drift           Check manifest drift
+    python -m szl_brand kanchay-build   Regenerate or check the kanchay/ web export
 """
 
 from __future__ import annotations
@@ -238,6 +239,32 @@ def cmd_export_system(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_kanchay_build(args: argparse.Namespace) -> int:
+    """Regenerate the kanchay/ web export, or fail when it drifted from its sources."""
+    import hashlib
+
+    from szl_brand import kanchay
+
+    root = Path(args.root) if args.root else kanchay.repo_root()
+    try:
+        if args.check:
+            errors = kanchay.check(root)
+            if errors:
+                for error in errors:
+                    print(f"  [31merror[0m {error}", file=sys.stderr)
+                return 1
+            print(f"KANCHAY web export {kanchay.VERSION} matches its sources: {root / 'kanchay'}")
+            return 0
+        outputs = kanchay.write(root)
+    except (OSError, ValueError, KeyError) as exc:
+        print(f"  [31merror[0m {exc}", file=sys.stderr)
+        return 2
+    for name, data in outputs.items():
+        print(f"{hashlib.sha256(data).hexdigest()}  kanchay/{name}")
+    print(f"KANCHAY web export {kanchay.VERSION} regenerated in {root / 'kanchay'}")
+    return 0
+
+
 def cmd_validate_command_contract(args: argparse.Namespace) -> int:
     """Validate a KHIPU Command System surface disclosure."""
 
@@ -308,6 +335,14 @@ def app() -> None:
         help="Exact lowercase 40-character Git SHA for the source state",
     )
 
+    p_kanchay = sub.add_parser(
+        "kanchay-build", help="Regenerate or check the vendorable kanchay/ web export"
+    )
+    p_kanchay.add_argument(
+        "--check", action="store_true", help="Fail if the committed export drifted"
+    )
+    p_kanchay.add_argument("--root", help="Checkout root (default: this source tree)")
+
     p_command = sub.add_parser(
         "validate-command-contract",
         help="Validate a KHIPU Command System surface disclosure",
@@ -329,6 +364,7 @@ def app() -> None:
         "drift": cmd_drift,
         "serve": cmd_serve,
         "export-system": cmd_export_system,
+        "kanchay-build": cmd_kanchay_build,
         "validate-command-contract": cmd_validate_command_contract,
     }
 

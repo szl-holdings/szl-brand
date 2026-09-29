@@ -1,5 +1,7 @@
 # Series-A pre-commit hooks — Doctrine v6
 # Install: pip install pre-commit && pre-commit install
+# kanchay/ is a byte-pinned export (see kanchay/SOURCE.json); fixers must not rewrite it.
+exclude: '^kanchay/'
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0

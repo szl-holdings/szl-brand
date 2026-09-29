@@ -34,6 +34,10 @@ szl-brand inventory social-previews
 
 # Start live gallery server (port 8742)
 szl-brand serve
+
+# Regenerate, or check, the vendorable KANCHAY web export in kanchay/
+szl-brand kanchay-build
+szl-brand kanchay-build --check
 ```
 
 ### Running tests & lint
