@@ -1,108 +1,115 @@
 <!-- SPDX-License-Identifier: Apache-2.0
 (c) 2026 Lutar, Stephen P. - SZL Holdings - ORCID 0009-0001-0110-4173 -->
 
-# KANCHAY web export 1.0.0
+# KANCHAY vendor bundle 1.1.0
 
-This folder is the vendorable KANCHAY export that SZL web surfaces copy into their own
-repositories: every token as a CSS custom property, the component classes, the React bundle,
-local fonts, the SZL mark and an integrity manifest. `szl-holdings/szl-brand` at `kanchay/` is its
-canonical home.
+This folder is the ready-to-vendor bundle of KANCHAY v1.1.0, the founder-approved SZL Holdings
+design system. The source of truth is `kit/`. Every file here is a byte-for-byte copy of a kit file,
+pinned by sha256 in `SOURCE.json`. Nothing in this folder is generated or edited.
 
-| File | What it is |
-|---|---|
-| `kanchay.css` | Every token as a custom property (dark on `:root`, light under `[data-theme="light"]`), `@font-face` for Space Grotesk, Inter and JetBrains Mono from `./fonts/`, the `.kc-type-*` text styles and the reduced-motion rule. |
-| `kanchay-components.css` | Component classes: `kc-btn`, `kc-badge`, `kc-stat`, `kc-fcard`, `kc-input`, `kc-select`, `kc-sidebar`, `kc-site-header`, `kc-eyebrow`, `kc-output`, `kc-drawer` and the rest. Load after `kanchay.css`. |
-| `kanchay-components.js`, `.d.ts` | The React bundle. Reads `window.React` (React 18), assigns `window.Kanchay`. React surfaces only. |
-| `tokens.json` | The token source of truth. |
-| `fonts/` | Latin-subset WOFF2 files, with `OFL.txt` (Inter, JetBrains Mono, Space Grotesk) and `LICENSE-Syncopate.txt` (Syncopate, Apache-2.0). |
-| `marks/` | `szl-mark.svg`, `szl-mark-gold.svg`, `szl-mark-ink.svg`. |
-| `SOURCE.json` | Version and the sha256 of every payload file above. |
+| File | What it is | Kit source |
+|---|---|---|
+| `szl-design-system.css` | KANCHAY v1.1.0: tokens, both surfaces, base, type scale and components. | `kit/tokens/szl-design-system.css` |
+| `szl-console.css` | Operator console layer 1.0.0, additive, on the same tokens. | `kit/tokens/szl-console.css` |
+| `logos/` | The orbit mark suite: horizontal, primary, transparent, mono white and navy, favicons. | `kit/logos/`, `kit/logos/png/` |
+| `SOURCE.json` | Version, base, layers, `source_commit`, licenses and the sha256 of every file above. | built |
 
 ## Vendor it
 
-1. **Copy this folder** into the directory your surface serves static files from, keeping the
-   name `kanchay/` (for example `assets/kanchay/` or `static/kanchay/`). If two surfaces in one
-   repository serve from different roots, vendor once per root. To trim, keep `kanchay.css`,
-   `SOURCE.json` and the three `fonts/` files it loads plus `OFL.txt`; add
-   `kanchay-components.css` if you use any `kc-` class, `marks/` if you show the mark, and the
-   `.js`/`.d.ts` pair only on a React surface.
-2. **Link `kanchay.css` first**, then the components, then your own stylesheet. Fonts resolve
-   relative to `kanchay.css`, so keep the folder layout. Remove every Google Fonts or CDN font link.
+1. **Copy into one folder named `szl/`** where the surface serves static files, for example
+   `assets/szl/`. Copy `szl-design-system.css`, `SOURCE.json`, `szl-console.css` only if the surface
+   uses its classes, and only the logo files you use, under `szl/logos/`. Copy byte for byte. Never
+   edit a vendored file; override in your own stylesheet with tokens.
+2. **Stop Git from rewriting the bytes.** Add `assets/szl/** -text` to the surface's
+   `.gitattributes`.
+3. **Link it before the surface's own stylesheet**, the design system first:
 
    ```html
-   <link rel="stylesheet" href="/assets/kanchay/kanchay.css">
-   <link rel="stylesheet" href="/assets/kanchay/kanchay-components.css">
+   <link rel="stylesheet" href="/assets/szl/szl-design-system.css">
+   <link rel="stylesheet" href="/assets/szl/szl-console.css"> <!-- operator surfaces only -->
    <link rel="stylesheet" href="/assets/app.css">
    ```
 
-3. **Never edit vendored files.** Override in your own stylesheet with `var(--…)` tokens. To
-   upgrade, copy the folder again from a newer revision of this repository. Keep Git from
-   rewriting line endings (for example `assets/kanchay/** -text` in `.gitattributes`), then check
-   the copy against the manifest; files you did not vendor are skipped:
+4. **Remove every webfont.** Delete Google Fonts and other CDN font links, and any `@font-face`
+   for Inter, Space Grotesk, IBM Plex or Syncopate. Also remove files from the withdrawn `kanchay/`
+   1.0.0 export: its stylesheets, component bundle and WOFF2 files. The system uses the device's own
+   font stacks through `--font-body`, `--font-display` and `--font-mono`.
+5. **Check the copy against the manifest.** Files you did not vendor are skipped:
 
    ```bash
-   cd assets/kanchay && python -c "import hashlib,json,pathlib;m=json.load(open('SOURCE.json'))['sha256'];bad=[p for p,h in m.items() if pathlib.Path(p).exists() and hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()!=h];print('modified: '+', '.join(bad) if bad else 'ok')"
+   cd assets/szl && python -c "import hashlib,json,pathlib;m=json.load(open('SOURCE.json'))['sha256'];bad=[p for p,h in m.items() if pathlib.Path(p).exists() and hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()!=h];print('modified: '+', '.join(bad) if bad else 'ok')"
    ```
 
-4. **Dark is the default.** Tokens resolve to the dark theme on `:root`. A document-like tool
-   may set `<html data-theme="light">` (or `data-theme="light"` on a subtree) for the same roles
-   with light values. There is no third theme.
+## Two surfaces, one token set
 
-Syncopate (`fonts/Syncopate-400.woff2`, `fonts/Syncopate-700.woff2`) ships in `fonts/`, but
-`kanchay.css` 1.0.0 does not declare it; a surface that uses it adds its own `@font-face` and
-vendors `fonts/LICENSE-Syncopate.txt` with it.
+- **Dark operator is the default** on `:root`: consoles, dashboards, docs, bench and operator
+  Spaces.
+- **Light marketing** is `<html data-surface="light">`: the public site, landing pages, decks, the
+  blog, and document-like light tools. It uses the same roles with light values.
+- Code blocks stay dark on both surfaces. There is no third theme.
 
-## Token roles in short
+## Color, in short
 
-- **Ground and depth.** `--color-a11oy-bg` is the page; recess with `--color-a11oy-deep`, raise
-  with `--color-a11oy-surface`, and use `--color-a11oy-overlay` for hover and pressed fills.
-- **Text.** `--color-a11oy-text` for primary copy and numbers, `--color-a11oy-text-sub` for
-  paragraphs, `--color-a11oy-text-ghost` for metadata (14px or larger on surface). Never `--dim`
-  or `--color-gray-500` for text on dark.
-- **Gold is the only accent.** `--color-a11oy-gold` marks the primary action, eyebrows, active
-  navigation and card titles. One gold fill per view; its label is `--color-on-accent` and its
-  hover `--gold-bright`.
-- **Teal is proof.** `--color-focus` for focus rings, `--color-ink-signal` for verified hashes and
-  proof links, `--teal-line` for proof hairlines.
-- **Danger and status.** `--color-error` fills; `--color-ink-danger` and `--color-ink-caution`
-  are the text colors. Marks use `--color-success`, `--color-warning`, `--color-error` and
-  `--color-info`. Status is never color alone: pair it with a word.
-- **Edges.** `--color-a11oy-border-subtle` for cards, `--color-a11oy-border` between regions,
-  `--color-control-border` for every input and select.
-- **Type.** `--font-display` (Space Grotesk) for headlines, `--font-sans` (Inter) for what people
-  read and operate, `--font-mono` (JetBrains Mono) for labels, receipts, hashes and code. The
-  `.kc-type-*` classes carry the scale.
-- **Shape, depth and motion.** A 4px `--space-*` scale; `--radius-sm` for controls, `--radius-md`
-  for cards, `--radius-lg` for dialogs, `--radius-full` for pills. Hairline borders
-  (`--border-hairline`), shadows only on floating things (`--shadow-lg`, `--shadow-xl`),
-  `--duration-*` and `--ease-*` for motion.
-- **Focus and targets.** `outline: var(--border-focus) solid var(--color-focus); outline-offset: 2px`
-  on `:focus-visible`; tappable things at least `--szl-touch-target` (44px).
+- **One coral moment per view.** `--accent` marks one thing only: the single primary action
+  (`.btn-primary`), the one hero node, or the active-nav marker. Its hover is `--accent-hover`, its
+  press state `--accent-press`, and text on it `--accent-ink`. Coral is never a background, a large
+  fill, a heading color, a card border or decoration.
+- **Gold is premium only.** `--premium`, `.btn-premium`, `.badge-premium` and
+  `--shadow-glow-hatun` mark premium or investor emphasis, or the one important number.
+- **Teal is links and focus**: `--link`, `--link-hover`, `--focus` and `--shadow-focus`.
+- **Red is errors and destructive actions only.** Use `--color-error`, and `--ink-bad` from the
+  console layer for red text.
+- **Silver linework** (`--hairline`, `--color-silver-*`) draws the orbit, `.orbit-rule` dividers
+  and orbit arcs. It is never used for text.
+- **Neutrals carry everything else**: `--bg`, `--bg-deep`, `--surface`, `--surface-alt`,
+  `--surface-raised`, `--border`, `--border-subtle`, `--text`, `--text-sub` and `--text-ghost`.
+- **Status is never color alone.** Use the proof-status chips (`.chip-proven`,
+  `.chip-conjecture`, `.chip-sorry`, …) and status dots with a word.
+- **Use the component classes** instead of re-deriving them: `.btn`, `.card`, `.badge`,
+  `.chip-*`, `.receipt`, `.code`, `.nav`, `.hero`, `.orbit-rule`, `.evidence-card`, `.metric`,
+  `.table` and `.skip-link`.
 
-Measured with the WCAG 2 contrast formula on the token values in this version (dark / light):
-`--color-a11oy-text` on `--color-a11oy-bg` 17.79 / 17.07; `--color-a11oy-text-ghost` on
-`--color-a11oy-surface` 4.27 / 6.48 (hence the 14px floor on dark); `--color-on-accent` on
-`--color-a11oy-gold` 10.04 / 5.71; `--color-focus` on `--color-a11oy-surface` 5.67 / 5.75;
-`--color-ink-danger` on `--color-a11oy-bg` 6.39 / 6.73.
+These pairs were measured with the WCAG 2 formula on the token values. They fall below 4.5:1
+for normal text, so put small text where it passes rather than patching the vendored file:
+
+- Light surface, `--accent` as text on `--bg`: 4.17:1. Do not set coral text on light.
+- Light surface, white on `.btn-primary`: 4.48:1. On its hover: 3.11:1.
+- Dark surface, `--text-ghost` on `--surface`: 4.27:1. On `--bg` it reaches 5.07:1.
+- Dark surface, `--color-error` as text on `--bg`: 3.50:1. Use `--ink-bad` (9.48:1).
+
+## Where the rules live
+
+- [`docs/DESIGN_DIRECTION.md`](../docs/DESIGN_DIRECTION.md): the founder art direction. It governs.
+- [`kit/logos/LOGO_USAGE.md`](../kit/logos/LOGO_USAGE.md): clear space, minimum sizes and which
+  logo goes where.
+- [`kit/tokens/COLOR_CONTRAST_REPORT.md`](../kit/tokens/COLOR_CONTRAST_REPORT.md): measured
+  contrast for the scales.
+- [`kit/brand-bible.md`](../kit/brand-bible.md): voice, naming and banned claims.
+- [`docs/FRONTEND_HARDENING.md`](../docs/FRONTEND_HARDENING.md): responsive, accessibility and
+  state standard.
 
 ## Maintain it
 
-Edit `tokens.json` or the component source `kit/kanchay/components.css`, then regenerate and commit:
+Edit the kit source, never this folder, then rebuild and commit both:
 
 ```bash
-python -m szl_brand kanchay-build          # rewrites kanchay.css, kanchay-components.css, SOURCE.json
-python -m szl_brand kanchay-build --check  # fails if the committed export drifted
+python -m szl_brand kanchay-build --source-commit <szl-brand main SHA you built on>
+python -m szl_brand kanchay-build --check   # fails if kanchay/ differs from kit/
 ```
 
-`tests/test_kanchay.py` runs the same check in CI and fails when a generated file or a
-`SOURCE.json` hash drifts, or when a token reference in `tokens.json` does not resolve.
-`kanchay-components.js`, `.d.ts`, the fonts and the marks are committed as built and hashed, not
-rebuilt here. Change `VERSION` in `src/szl_brand/kanchay.py` whenever the payload changes.
-`README.md` and the license notices in `fonts/` are documentation, not payload, and are not hashed.
+`tests/test_kanchay.py` runs the same check in CI. It fails when any of these hold:
+
+- a bundle file is not byte-identical to its kit source;
+- a `SOURCE.json` hash is wrong, or a stray file sits in `kanchay/`;
+- a webfont or the withdrawn gold token appears in the bundle;
+- a `var(--…)` without a fallback is undefined in the two stylesheets.
+
+`source_commit` is the szl-brand main commit the bundle was cut from. For 1.1.0 that is
+`168c53a`. At that commit `kit/tokens/szl-design-system.css` and the logos already had these
+bytes. `szl-console.css` 1.0.0 was added to `kit/tokens/` in the change that created this bundle.
 
 ## Licenses
 
-`SOURCE.json` declares Apache-2.0 for the code, and the two stylesheets carry
-`SPDX-License-Identifier: Apache-2.0` headers. The fonts keep their own licenses (see `fonts/`).
-The SZL mark is a trademark of SZL Holdings and no code or font license grants it; see the
-repository [`NOTICE`](../NOTICE).
+Code is Apache-2.0 and brand assets are CC BY 4.0, as each stylesheet header says. The SZL
+Holdings name, wordmark and brand colors are trademarks of SZL Holdings and are not licensed by
+either. See the repository [`NOTICE`](../NOTICE).

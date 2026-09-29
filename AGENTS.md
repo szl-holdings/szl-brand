@@ -35,8 +35,8 @@ szl-brand inventory social-previews
 # Start live gallery server (port 8742)
 szl-brand serve
 
-# Regenerate, or check, the vendorable KANCHAY web export in kanchay/
-szl-brand kanchay-build
+# Rebuild, or check, kanchay/ (the vendor bundle of kit/tokens + kit/logos)
+szl-brand kanchay-build --source-commit <main SHA>
 szl-brand kanchay-build --check
 ```
 

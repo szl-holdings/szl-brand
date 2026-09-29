@@ -21,11 +21,9 @@ KANCHAY makes an SZL surface recognizable without letting presentation outrun ev
 | **Metadata** | Every public page declares its source, evidence URL, canonical URL, and honest status. |
 | **Adapters** | Deterministic framework bundles with SHA-256 integrity and an exact source revision. |
 
-The design system is calm, technical, and evidence-forward. In the `kit/` contract bundle, coral
-is the decision accent; teal is the interaction and focus color; gold is reserved for doctrine and
-premium emphasis. The vendorable web export in [`kanchay/`](./kanchay) uses the a11oy roles
-instead: gold is its only accent and teal marks proof. Status is always written in text and never
-communicated by color alone.
+The design system is calm, technical, and evidence-forward. Coral is the decision accent; teal
+is the interaction and focus color; gold is reserved for doctrine and premium emphasis. Status is
+always written in text and never communicated by color alone.
 
 ## Quickstart
 
@@ -62,23 +60,21 @@ asset blobs from the canonical repository's exact `HEAD`; wheel exports require 
 revision and per-asset hashes. Mutable refs, mismatched revisions, forks, abbreviated SHAs,
 uppercase SHAs, and path-like values are rejected.
 
-## Vendorable web export (`kanchay/`)
+## Vendor bundle (`kanchay/`)
 
-[`kanchay/`](./kanchay) is the KANCHAY web export that SZL web surfaces vendor, version 1.0.0:
-`tokens.json` (the token source of truth), `kanchay.css` (every token as a custom property, local
-`@font-face`, text styles, reduced motion), `kanchay-components.css`, the React bundle
-(`kanchay-components.js` and `.d.ts`), local WOFF2 fonts with their licenses, the SZL marks, and
-`SOURCE.json` with the sha256 of every payload file. Copy the folder into a surface's static root,
-link `kanchay.css` before any other stylesheet, and never edit the copy;
-[`kanchay/README.md`](./kanchay/README.md) has the steps and the token roles.
+KANCHAY has one token system: [`kit/tokens/szl-design-system.css`](./kit/tokens/szl-design-system.css)
+(v1.1.0, founder-approved) and its additive operator layer
+[`kit/tokens/szl-console.css`](./kit/tokens/szl-console.css) (v1.0.0).
+[`kanchay/`](./kanchay) is the ready-to-vendor bundle of that system: byte-for-byte copies of both
+stylesheets and the orbit logo suite, with `SOURCE.json` pinning each file's sha256. Surfaces copy
+it into a static folder named `szl/`, link `szl-design-system.css` before their own stylesheet, and
+load no webfonts. [`kanchay/README.md`](./kanchay/README.md) has the steps, the dark operator and
+light marketing surfaces, and the one-coral-moment rule. The art direction is
+[`docs/DESIGN_DIRECTION.md`](./docs/DESIGN_DIRECTION.md).
 
 ```bash
-python -m szl_brand kanchay-build          # regenerate kanchay.css, kanchay-components.css, SOURCE.json
-python -m szl_brand kanchay-build --check  # fail if the committed export drifted from its sources
+python -m szl_brand kanchay-build --check  # fail if kanchay/ differs from kit/
 ```
-
-The export sits beside the `export-system` bundle above (contract `szl.design-system/v1`, SDK
-1.1.0) and does not replace it.
 
 ## Use the system
 
@@ -109,9 +105,8 @@ runtime font or stylesheet dependency.
 
 | Path | Responsibility |
 |---|---|
-| [`kanchay`](./kanchay) | Vendorable KANCHAY web export 1.0.0 (tokens, CSS, components, fonts, marks). |
-| [`kit/kanchay`](./kit/kanchay) | Component stylesheet source for the `kanchay/` export. |
-| [`kit/tokens`](./kit/tokens) | Canonical typed tokens and component stylesheet. |
+| [`kanchay`](./kanchay) | Vendor bundle of KANCHAY v1.1.0: design system, console layer, logos, `SOURCE.json`. |
+| [`kit/tokens`](./kit/tokens) | Canonical typed tokens, component stylesheet, and operator console layer. |
 | [`kit/contracts`](./kit/contracts) | Public metadata and truth-label schemas. |
 | [`kit/adapters`](./kit/adapters) | Deterministic framework adapters. |
 | [`docs/FRONTEND_HARDENING.md`](./docs/FRONTEND_HARDENING.md) | Estate-wide responsive, accessibility, state, performance, and PR acceptance contract. |

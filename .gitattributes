@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
 # (c) 2026 Lutar, Stephen P. - SZL Holdings - ORCID 0009-0001-0110-4173
-# The KANCHAY web export is hashed byte-for-byte into kanchay/SOURCE.json, and its
-# generator reads kit/kanchay/ sources byte-for-byte. Never convert line endings there.
+# kanchay/ is a byte-for-byte copy of these kit sources, pinned by sha256 in
+# kanchay/SOURCE.json. Never convert line endings on either side.
 kanchay/** -text
-kit/kanchay/** -text
+kit/tokens/szl-design-system.css -text
+kit/tokens/szl-console.css -text
+kit/logos/** -text

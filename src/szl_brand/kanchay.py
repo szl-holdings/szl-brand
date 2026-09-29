@@ -1,22 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0
 # (c) 2026 Lutar, Stephen P. - SZL Holdings - ORCID 0009-0001-0110-4173
-"""Build and verify the vendorable KANCHAY web export in ``kanchay/``.
+"""Build and verify ``kanchay/``, the ready-to-vendor bundle of the KANCHAY design system.
 
-Inputs (edited by hand):
-
-* ``kanchay/tokens.json`` -- the token source of truth, also shipped as-is.
-* ``kit/kanchay/components.css`` -- the component stylesheet source.
-
-Outputs (regenerated, never hand-edited):
-
-* ``kanchay/kanchay.css`` -- every token as a CSS custom property, the local
-  ``@font-face`` rules, the ``.kc-type-*`` text styles and the reduced-motion rule.
-* ``kanchay/kanchay-components.css`` -- the component source under the export header.
-* ``kanchay/SOURCE.json`` -- the sha256 of every payload file.
-
-``kanchay-components.js``/``.d.ts``, the fonts and the marks are committed payload; they
-are hashed into ``SOURCE.json`` but not rebuilt here. Identical inputs produce
-byte-identical outputs on every platform.
+KANCHAY has one token system: the founder-approved ``kit/tokens/szl-design-system.css``
+(v1.1.0) plus the additive operator layer ``kit/tokens/szl-console.css``. The bundle is a
+byte-for-byte copy of those two files and the orbit logo suite from ``kit/logos``, with a
+``SOURCE.json`` that records the sha256 of every copied file. Nothing in the bundle is
+generated or edited; change the kit source and rebuild.
 """
 
 from __future__ import annotations
@@ -25,68 +15,38 @@ import hashlib
 import json
 import re
 from pathlib import Path
-from typing import Any, Final
+from typing import Final
 
-VERSION: Final = "1.0.0"
+VERSION: Final = "1.1.0"
 EXPORT_DIR: Final = "kanchay"
-COMPONENTS_SOURCE: Final = "kit/kanchay/components.css"
-GENERATED: Final = ("kanchay.css", "kanchay-components.css", "SOURCE.json")
 
-# Payload files hashed into SOURCE.json, in manifest order: these top-level files, then
-# fonts/*.woff2, then marks/*.svg, each sorted by name. Docs and licence notices are not
-# payload and are not hashed.
-_TOP_LEVEL: Final = (
-    "kanchay-components.css",
-    "kanchay-components.d.ts",
-    "kanchay-components.js",
-    "kanchay.css",
-    "tokens.json",
-)
-_PAYLOAD_GLOBS: Final = (("fonts", "*.woff2"), ("marks", "*.svg"))
-
-_HEADER: Final = """/* SZL Kanchay {what} v{ver}
-   SPDX-License-Identifier: Apache-2.0
-   (c) 2026 Lutar, Stephen P. - SZL Holdings - ORCID 0009-0001-0110-4173
-   Generated from the SZL Kanchay design system (tokens.json v1). Do not hand-edit:
-   change tokens.json in szl-holdings/szl-brand and regenerate. */
-"""
-_LATIN: Final = (
-    "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, "
-    "U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
-)
-_FONT_FACES: Final = (
-    ("Space Grotesk", "SpaceGrotesk-latin.woff2", "300 700"),
-    ("Inter", "Inter-latin.woff2", "400 600"),
-    ("JetBrains Mono", "JetBrainsMono-latin.woff2", "400 700"),
-)
-_SCALAR_FAMILIES: Final = (
-    "spacing",
-    "radius",
-    "shadow",
-    "borderWidth",
-    "zIndex",
-    "duration",
-    "easing",
-    "layout",
-)
-_UPPERCASE_STYLES: Final = frozenset({"eyebrow", "label-mono", "nav-section", "chip"})
-_REDUCED_MOTION: Final = (
-    "@media (prefers-reduced-motion: reduce) {\n"
-    "  *, *::before, *::after { animation-duration: .01ms !important;"
-    " transition-duration: .01ms !important; }\n"
-    "}"
-)
-_SOURCE_JSON_META: Final = {
-    "name": "szl-kanchay",
-    "canonical": "szl-holdings/szl-brand (kanchay/)",
-    "license": {
-        "code": "Apache-2.0",
-        "fonts": "SIL Open Font License 1.1 (Inter, JetBrains Mono, Space Grotesk)",
-    },
+# Bundle path -> kit source path. Order is the SOURCE.json manifest order.
+BUNDLE: Final = {
+    "szl-console.css": "kit/tokens/szl-console.css",
+    "szl-design-system.css": "kit/tokens/szl-design-system.css",
+    "logos/szl_favicon.svg": "kit/logos/szl_favicon.svg",
+    "logos/szl_favicon_180.png": "kit/logos/png/szl_favicon_180.png",
+    "logos/szl_favicon_32.png": "kit/logos/png/szl_favicon_32.png",
+    "logos/szl_favicon_512.png": "kit/logos/png/szl_favicon_512.png",
+    "logos/szl_favicon_square.svg": "kit/logos/szl_favicon_square.svg",
+    "logos/szl_logo_horizontal.svg": "kit/logos/szl_logo_horizontal.svg",
+    "logos/szl_logo_mono_navy.svg": "kit/logos/szl_logo_mono_navy.svg",
+    "logos/szl_logo_mono_white.svg": "kit/logos/szl_logo_mono_white.svg",
+    "logos/szl_logo_primary.svg": "kit/logos/szl_logo_primary.svg",
+    "logos/szl_logo_transparent.svg": "kit/logos/szl_logo_transparent.svg",
 }
-_ALIAS_RE: Final = re.compile(r"^\{([^{}]+)\}$")
+# Files in kanchay/ that are documentation or the manifest itself, not copied payload.
+NON_PAYLOAD: Final = frozenset({"README.md", "SOURCE.json"})
+
+_BASE: Final = (
+    "szl-holdings/szl-brand kit/tokens/szl-design-system.css (KANCHAY v1.1.0, founder-approved)"
+)
+_LAYERS: Final = {"szl-console.css": "1.0.0 (operator console, additive)"}
+_LICENSE: Final = {"code": "Apache-2.0", "brand_assets": "CC BY 4.0"}
+_COMMIT_RE: Final = re.compile(r"^[0-9a-f]{40}$")
 _CSS_DEFINITION_RE: Final = re.compile(r"--([A-Za-z0-9_-]+)\s*:")
-_CSS_REFERENCE_RE: Final = re.compile(r"var\(\s*--([A-Za-z0-9_-]+)")
+# A reference with a fallback (``var(--heat, 8%)``) is a per-element input, not a token.
+_CSS_REFERENCE_RE: Final = re.compile(r"var\(\s*--([A-Za-z0-9_-]+)\s*([,)])")
 
 
 def repo_root() -> Path:
@@ -95,261 +55,112 @@ def repo_root() -> Path:
     return Path(__file__).resolve().parents[2]
 
 
-def _css_value(value: Any) -> Any:
-    if isinstance(value, str) and value.startswith("{") and value.endswith("}"):
-        return f"var(--{value[1:-1]})"
-    return value
+def render_source_json(payload: dict[str, bytes], source_commit: str) -> str:
+    """Render ``SOURCE.json`` for the bundle bytes, in manifest order."""
+
+    if not _COMMIT_RE.fullmatch(source_commit):
+        raise ValueError("source_commit must be an exact lowercase 40-character Git SHA")
+    source = {
+        "name": "szl-kanchay",
+        "version": VERSION,
+        "base": _BASE,
+        "layers": _LAYERS,
+        "source_commit": source_commit,
+        "license": _LICENSE,
+        "sha256": {path: hashlib.sha256(data).hexdigest() for path, data in payload.items()},
+    }
+    return json.dumps(source, indent=2, ensure_ascii=False) + "\n"
 
 
-def _theme_value(token: dict[str, Any], theme: str, default_theme: str) -> Any:
-    value = token["value"]
-    if isinstance(value, dict):
-        return value.get(theme, value.get(default_theme))
-    return value
+def recorded_source_commit(root: Path | None = None) -> str:
+    """Return the ``source_commit`` recorded in the committed ``SOURCE.json``."""
+
+    root = repo_root() if root is None else root
+    source = json.loads((root / EXPORT_DIR / "SOURCE.json").read_bytes().decode("utf-8"))
+    commit = source.get("source_commit") if isinstance(source, dict) else None
+    if not isinstance(commit, str) or not _COMMIT_RE.fullmatch(commit):
+        raise ValueError("kanchay/SOURCE.json source_commit is not an exact Git SHA")
+    return commit
 
 
-def render_tokens_css(tokens: dict[str, Any]) -> str:
-    """Render ``kanchay.css`` from a parsed ``tokens.json``."""
+def build(root: Path | None = None, source_commit: str | None = None) -> dict[str, bytes]:
+    """Return every bundle file, keyed by its path inside ``kanchay/``.
 
-    themes = [theme["id"] for theme in tokens["color"]["themes"]]
-    default_theme = themes[0]
-    color_tokens = tokens["color"]["tokens"]
-
-    lines = [_HEADER.format(what="tokens", ver=VERSION)]
-    for family, filename, weight in _FONT_FACES:
-        lines.append(
-            f"@font-face {{ font-family: '{family}'; font-style: normal; font-weight: {weight};"
-            " font-display: swap;\n"
-            f"  src: url('./fonts/{filename}') format('woff2'); unicode-range: {_LATIN}; }}"
-        )
-    lines.append("")
-
-    root = [":root {", f"  color-scheme: {default_theme};"]
-    for token in color_tokens:
-        root.append(
-            f"  --{token['name']}: {_css_value(_theme_value(token, default_theme, default_theme))};"
-        )
-    for family in _SCALAR_FAMILIES:
-        for token in tokens[family]["tokens"]:
-            root.append(
-                f"  --{token['name']}: "
-                f"{_css_value(_theme_value(token, default_theme, default_theme))};"
-            )
-    for key, stack in tokens["type"]["families"].items():
-        root.append(f"  --font-{key}: {stack};")
-    root.append("}")
-    lines += root
-    lines.append("")
-
-    for theme in themes[1:]:
-        block = [
-            f':root[data-theme="{theme}"], [data-theme="{theme}"] {{',
-            f"  color-scheme: {theme};",
-        ]
-        for token in color_tokens:
-            if isinstance(token["value"], dict):
-                default_value = _theme_value(token, default_theme, default_theme)
-                themed_value = _theme_value(token, theme, default_theme)
-                if default_value != themed_value:
-                    block.append(f"  --{token['name']}: {_css_value(themed_value)};")
-        # Plain aliases must re-resolve inside the themed scope.
-        for token in color_tokens:
-            value = token["value"]
-            if isinstance(value, str) and value.startswith("{"):
-                block.append(f"  --{token['name']}: {_css_value(value)};")
-        block.append("}")
-        lines += block
-        lines.append("")
-
-    for group in tokens["type"]["groups"]:
-        for style in group["styles"]:
-            family = style.get("family", group["family"])
-            declarations = [
-                f"font-family: var(--font-{family})",
-                f"font-size: {style['fontSize']}",
-                f"font-weight: {style['fontWeight']}",
-            ]
-            if "lineHeight" in style:
-                declarations.append(f"line-height: {style['lineHeight']}")
-            if "letterSpacing" in style:
-                declarations.append(f"letter-spacing: {style['letterSpacing']}")
-            if style["name"] in _UPPERCASE_STYLES:
-                declarations.append("text-transform: uppercase")
-            if style["name"] == "stat-value":
-                declarations.append("font-variant-numeric: tabular-nums")
-            lines.append(f".kc-type-{style['name']} {{ {'; '.join(declarations)}; }}")
-    lines.append("")
-    lines.append(_REDUCED_MOTION)
-    return "\n".join(lines) + "\n"
-
-
-def render_components_css(source: str) -> str:
-    """Render ``kanchay-components.css`` from the component stylesheet source.
-
-    The source opens with its own SPDX comment; the build swaps that comment for the
-    versioned export header and keeps every other byte.
+    ``source_commit`` is the szl-brand main commit the bundle is cut from; it defaults
+    to the one already recorded in ``kanchay/SOURCE.json``.
     """
 
-    if "\r" in source:
-        raise ValueError(f"{COMPONENTS_SOURCE} must use LF line endings")
-    if not source.startswith("/* SPDX-License-Identifier:"):
-        raise ValueError(f"{COMPONENTS_SOURCE} must open with its SPDX comment")
-    end = source.find("*/\n")
-    if end < 0:
-        raise ValueError(f"{COMPONENTS_SOURCE} SPDX comment is not terminated")
-    return _HEADER.format(what="components", ver=VERSION) + source[end + len("*/\n") :]
-
-
-def payload_paths(export_dir: Path) -> list[str]:
-    """Return the payload paths hashed into ``SOURCE.json``, in manifest order."""
-
-    paths = list(_TOP_LEVEL)
-    for directory, pattern in _PAYLOAD_GLOBS:
-        names = sorted(path.name for path in (export_dir / directory).glob(pattern))
-        paths += [f"{directory}/{name}" for name in names]
-    return paths
-
-
-def render_source_json(payload: dict[str, bytes]) -> str:
-    """Render ``SOURCE.json`` for payload bytes given in manifest order."""
-
-    manifest = {path: hashlib.sha256(data).hexdigest() for path, data in payload.items()}
-    source = {
-        "name": _SOURCE_JSON_META["name"],
-        "version": VERSION,
-        "canonical": _SOURCE_JSON_META["canonical"],
-        "license": _SOURCE_JSON_META["license"],
-        "sha256": manifest,
-    }
-    return json.dumps(source, indent=2)
-
-
-def load_tokens(root: Path) -> dict[str, Any]:
-    return json.loads((root / EXPORT_DIR / "tokens.json").read_bytes().decode("utf-8"))
-
-
-def build(root: Path | None = None) -> dict[str, bytes]:
-    """Return the generated export files, keyed by path inside ``kanchay/``."""
-
     root = repo_root() if root is None else root
-    export_dir = root / EXPORT_DIR
-    tokens_css = render_tokens_css(load_tokens(root)).encode("utf-8")
-    components_source = (root / COMPONENTS_SOURCE).read_bytes().decode("utf-8")
-    components_css = render_components_css(components_source).encode("utf-8")
-
-    generated = {"kanchay.css": tokens_css, "kanchay-components.css": components_css}
-    payload = {
-        path: generated[path] if path in generated else (export_dir / path).read_bytes()
-        for path in payload_paths(export_dir)
-    }
-    generated["SOURCE.json"] = render_source_json(payload).encode("utf-8")
-    return generated
-
-
-def write(root: Path | None = None) -> dict[str, bytes]:
-    """Regenerate the export in place and return what was written."""
-
-    root = repo_root() if root is None else root
-    outputs = build(root)
-    for name, data in outputs.items():
-        (root / EXPORT_DIR / name).write_bytes(data)
+    commit = recorded_source_commit(root) if source_commit is None else source_commit
+    outputs = {path: (root / source).read_bytes() for path, source in BUNDLE.items()}
+    outputs["SOURCE.json"] = render_source_json(outputs, commit).encode("utf-8")
     return outputs
 
 
-def alias_errors(tokens: dict[str, Any]) -> list[str]:
-    """Return every token reference in ``tokens.json`` that does not resolve.
+def write(root: Path | None = None, source_commit: str | None = None) -> dict[str, bytes]:
+    """Rebuild the bundle in place, remove anything that is not part of it, and return it."""
 
-    A reference is a whole-value ``{token-name}``. It must name a defined token, resolve in
-    every theme to a literal without a cycle, and themed values may only use declared
-    themes. Type styles must name a declared font family.
-    """
+    root = repo_root() if root is None else root
+    outputs = build(root, source_commit)
+    export_dir = root / EXPORT_DIR
+    for path in _unexpected_files(export_dir, outputs):
+        (export_dir / path).unlink()
+    for path, data in outputs.items():
+        destination = export_dir / path
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(data)
+    return outputs
 
-    errors: list[str] = []
-    themes = [theme["id"] for theme in tokens["color"]["themes"]]
-    default_theme = themes[0]
-    table: dict[str, Any] = {}
-    for family in ("color", *_SCALAR_FAMILIES):
-        for token in tokens[family]["tokens"]:
-            name = token["name"]
-            if name in table:
-                errors.append(f"{name}: defined more than once")
-            table[name] = token["value"]
 
-    def value_in(name: str, theme: str) -> Any:
-        value = table[name]
-        if isinstance(value, dict):
-            return value.get(theme, value.get(default_theme))
-        return value
-
-    for name, raw in table.items():
-        if isinstance(raw, dict):
-            unknown = sorted(set(raw) - set(themes))
-            if unknown:
-                errors.append(f"{name}: unknown theme(s) {', '.join(unknown)}")
-            if default_theme not in raw:
-                errors.append(f"{name}: no value for the default theme {default_theme!r}")
-        for theme in themes:
-            chain = [name]
-            value = value_in(name, theme)
-            while isinstance(value, str) and "{" in value:
-                match = _ALIAS_RE.fullmatch(value)
-                if match is None:
-                    errors.append(f"{name} ({theme}): malformed reference {value!r}")
-                    break
-                target = match.group(1)
-                if target not in table:
-                    errors.append(f"{name} ({theme}): {{{target}}} is not a defined token")
-                    break
-                if target in chain:
-                    errors.append(
-                        f"{name} ({theme}): reference cycle {' -> '.join([*chain, target])}"
-                    )
-                    break
-                chain.append(target)
-                value = value_in(target, theme)
-            if value is None:
-                errors.append(f"{name} ({theme}): resolves to no value")
-
-    families = tokens["type"]["families"]
-    for group in tokens["type"]["groups"]:
-        for style in group["styles"]:
-            family = style.get("family", group["family"])
-            if family not in families:
-                errors.append(f"type style {style['name']}: font family {family!r} is not defined")
-    return errors
+def _unexpected_files(export_dir: Path, outputs: dict[str, bytes]) -> list[str]:
+    allowed = set(outputs) | NON_PAYLOAD
+    shipped = (path.relative_to(export_dir).as_posix() for path in export_dir.rglob("*"))
+    return sorted(path for path in shipped if (export_dir / path).is_file() and path not in allowed)
 
 
 def css_reference_errors(root: Path | None = None) -> list[str]:
-    """Return ``var(--x)`` references in the export CSS that no custom property defines."""
+    """Return ``var(--x)`` references without a fallback that neither stylesheet defines."""
 
     root = repo_root() if root is None else root
     export_dir = root / EXPORT_DIR
-    tokens_css = (export_dir / "kanchay.css").read_bytes().decode("utf-8")
-    components_css = (export_dir / "kanchay-components.css").read_bytes().decode("utf-8")
-    defined = set(_CSS_DEFINITION_RE.findall(tokens_css))
-    defined |= set(_CSS_DEFINITION_RE.findall(components_css))
+    sheets = {
+        name: (export_dir / name).read_bytes().decode("utf-8")
+        for name in ("szl-design-system.css", "szl-console.css")
+    }
+    defined: set[str] = set()
+    for css in sheets.values():
+        defined |= set(_CSS_DEFINITION_RE.findall(css))
     errors = []
-    for filename, css in (("kanchay.css", tokens_css), ("kanchay-components.css", components_css)):
-        for name in sorted(set(_CSS_REFERENCE_RE.findall(css)) - defined):
-            errors.append(f"{filename}: var(--{name}) is not defined")
+    for name, css in sheets.items():
+        missing = {ref for ref, end in _CSS_REFERENCE_RE.findall(css) if end == ")"} - defined
+        errors += [f"{name}: var(--{ref}) is not defined" for ref in sorted(missing)]
     return errors
 
 
 def check(root: Path | None = None) -> list[str]:
-    """Return fail-closed errors when the committed export drifts from its sources."""
+    """Return fail-closed errors when ``kanchay/`` differs from the kit it bundles."""
 
     root = repo_root() if root is None else root
     export_dir = root / EXPORT_DIR
-    errors = [f"tokens.json: {error}" for error in alias_errors(load_tokens(root))]
-    for name, data in build(root).items():
-        path = export_dir / name
-        if not path.is_file():
-            errors.append(f"{EXPORT_DIR}/{name} is missing")
-        elif path.read_bytes() != data:
+    try:
+        outputs = build(root)
+    except (OSError, ValueError) as exc:
+        return [str(exc)]
+    errors = []
+    for path, data in outputs.items():
+        destination = export_dir / path
+        if not destination.is_file():
+            errors.append(f"{EXPORT_DIR}/{path} is missing")
+        elif destination.read_bytes() != data:
+            source = BUNDLE.get(path, "its kit sources")
             errors.append(
-                f"{EXPORT_DIR}/{name} drifted from its sources; "
+                f"{EXPORT_DIR}/{path} differs from {source}; "
                 "run `python -m szl_brand kanchay-build` and commit the result"
             )
+    errors += [
+        f"{EXPORT_DIR}/{path} is not part of the bundle"
+        for path in _unexpected_files(export_dir, outputs)
+    ]
     if not errors:
         errors += css_reference_errors(root)
     return errors
