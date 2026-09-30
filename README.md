@@ -1,68 +1,168 @@
-# SZL-MARKETING-1.1 - completed marketing payload (verified, corrected)
+<div align="center">
 
-Shipped by the house desk on Rosa's order, 2026-09-30. Every number below was fetched
-live from GitHub and Hugging Face APIs at generation time - none typed from memory.
+![SZL Brand](./social-previews/szl-brand.png)
 
-## The estate, measured this hour
+# KANCHAY design system
 
-| Metric | Value | Label |
-|---|---|---|
-| Public repos (szl-holdings) | 120 | MEASURED |
-| Honestly archived | 28 | MEASURED |
-| HF models | 50 | MEASURED |
-| HF datasets | 34 | MEASURED |
-| HF Spaces | 27 | MEASURED |
-| Most-downloaded artifact | SZLHOLDINGS/killinchu-osint-corpus | MEASURED |
-| Crown downloads | 74,157 | MEASURED |
-| Total estate downloads | 112,569 | MEASURED |
+The versioned visual and public-claim system for SZL Holdings.
 
-## What is in this directory
+[Documentation](https://holdings.a-11-oy.com/docs-site/brand.html) · [GitHub organization](https://github.com/szl-holdings) · [Hugging Face](https://huggingface.co/SZLHOLDINGS) · [Security](./SECURITY.md)
 
-| File | Purpose |
+</div>
+
+## One system, four guarantees
+
+KANCHAY makes an SZL surface recognizable without letting presentation outrun evidence.
+
+| Contract | What it guarantees |
 |---|---|
-| `SZL-MARKETING-1.1-2026-09-30.md` | Full payload: vision, guardrails, 30-day calendar, 12-story backlog, code, strategy, upgrades |
-| `factbase_pipeline.py` | Runnable pipeline: live fact pull + compliance linter + A/B draft assembly |
-| `factbase.json` | The live factbase the pipeline produced (crown, counts, totals) |
+| **Tokens** | A single color, type, spacing, radius, elevation, and motion vocabulary. |
+| **Components** | Accessible buttons, cards, status chips, receipts, control docks, navigation, and evidence panels. |
+| **Metadata** | Every public page declares its source, evidence URL, canonical URL, and honest status. |
+| **Adapters** | Deterministic framework bundles with SHA-256 integrity and an exact source revision. |
 
-## Four defects found and fixed in the payload's Part 5 code
+The design system is calm, technical, and evidence-forward. Coral is the decision accent; teal
+is the interaction and focus color; gold is reserved for doctrine and premium emphasis. Status is
+always written in text and never communicated by color alone.
 
-1. Crown sweep was models-only. It ranked only the models endpoint, so a dataset could
-   never win. It crowned a 3,070-download model while the real top artifact is a dataset
-   at 74,157 - a 24x undercount of the estate in every piece of marketing copy. Fixed:
-   the sweep covers models and datasets and records its own provenance in the output.
-2. A/B subject lines rendered identical. A string slice was applied where a list index
-   was intended, so both subject slots emitted the same literal and no A/B test existed.
-   Fixed: a real pair, and the list representation never reaches output.
-3. No backup before overwrite. A bad run destroyed the factbase with no way back.
-   Fixed: a timestamped backup is taken on every write.
-4. The compliance linter did not enforce two of the payload's own Part 2 rules. The
-   Lambda-discipline rule names a banned two-word trust phrase that had no pattern at
-   all; the quant rule only caught one literal numeric form, so bare performance nouns
-   for the advisory-only lane passed clean; and the defense-capability rule matched only
-   the number-before-keyword order, so the phrasing people actually write passed clean.
-   Fixed: additive patterns, plus a context gate so ordinary prose about distances and
-   venues stays compliant while sensor claims do not.
+## Quickstart
 
-Canonical file now carries 10 banned patterns and passes 8/8 compliance tests. The house
-copy carries 11 and passes 12/12, including two dead-door traps (a DNS-absent hostname
-and an unhyphenated verify domain).
+The SDK requires Python 3.12 or newer.
 
-### One linter design gap found while shipping this file
+```bash
+git clone https://github.com/szl-holdings/szl-brand.git
+cd szl-brand
+python -m pip install -e ".[dev]"
+python -m pytest tests -q
+```
 
-This README was blocked on its first attempt - by its own linter - because it quoted the
-banned phrases as documentation of what the linter catches. The guardrails have no
-quotation or documentation exemption, so any file that explains them self-trips.
-Fail-closed behavior was correct and it caught the author, which is the doctrine working.
-But the exemption is missing and should be added deliberately rather than worked around
-by rewording, which is what this file does. Flagged for the marketing lane.
+Export a byte-deterministic design-system bundle from an immutable source revision:
 
-## Part 1 prose still carries typed numbers
+```bash
+python -m szl_brand export-system \
+  --source-revision "$(git rev-parse HEAD)" \
+  --output ./dist/kanchay
+```
 
-The payload's Part 1 states 130 repos / 49 models / 44 datasets / 36 Spaces. Live is
-120 / 50 / 34 / 27. The pipeline corrects these on every run; the prose has not been
-rewritten here because the marketing lane owns the essay voice. Flagged, not fixed.
+The export contains:
 
-## Doctrine
+```text
+dist/kanchay/
+├── manifest.json          # contract, version, exact source, per-file hashes, root hash
+├── system.css             # tokens + accessible components + reduced-motion behavior
+├── tokens.json            # typed token source and measured contrast pairs
+├── metadata.schema.json   # fail-closed public metadata convention
+└── vitepress.css          # first framework adapter
+```
 
-Labels stay. The trust ceiling stays 0.97. Lambda stays Conjecture 1, advisory.
-Nothing ships that cannot be verified.
+Identical inputs and the same source SHA produce byte-identical outputs. Checkout exports read the
+asset blobs from the canonical repository's exact `HEAD`; wheel exports require build-embedded
+revision and per-asset hashes. Mutable refs, mismatched revisions, forks, abbreviated SHAs,
+uppercase SHAs, and path-like values are rejected.
+
+## Vendor bundle (`kanchay/`)
+
+KANCHAY has one token system: [`kit/tokens/szl-design-system.css`](./kit/tokens/szl-design-system.css)
+(v1.1.1, founder-approved) and its additive operator layer
+[`kit/tokens/szl-console.css`](./kit/tokens/szl-console.css) (v1.0.0).
+[`kanchay/`](./kanchay) is the ready-to-vendor bundle of that system: byte-for-byte copies of both
+stylesheets and the orbit logo suite, with `SOURCE.json` pinning each file's sha256. Surfaces copy
+it into a static folder named `szl/`, link `szl-design-system.css` before their own stylesheet, and
+load no webfonts. [`kanchay/README.md`](./kanchay/README.md) has the steps, the dark operator and
+light marketing surfaces, and the one-coral-moment rule. The art direction is
+[`docs/DESIGN_DIRECTION.md`](./docs/DESIGN_DIRECTION.md).
+
+```bash
+python -m szl_brand kanchay-build --check  # fail if kanchay/ differs from kit/
+```
+
+## Use the system
+
+For a plain web surface:
+
+```html
+<link rel="stylesheet" href="/brand/system.css">
+```
+
+```html
+<article class="evidence-card">
+  <header class="evidence-card__header">
+    <h2 class="evidence-card__title">Runtime readiness</h2>
+    <span class="chip chip-proven">REAL</span>
+  </header>
+  <dl class="evidence-card__meta">
+    <div><dt>Source</dt><dd><code>cad529a2...</code></dd></div>
+    <div><dt>Evidence</dt><dd><a href="/evidence">Open verification</a></dd></div>
+  </dl>
+</article>
+```
+
+For VitePress, keep `vitepress.css`, `system.css`, and the manifest together, then import the
+adapter from the theme entry point. The adapter consumes only canonical KANCHAY tokens and has no
+runtime font or stylesheet dependency.
+
+## Repository map
+
+| Path | Responsibility |
+|---|---|
+| [`kanchay`](./kanchay) | Vendor bundle of KANCHAY v1.1.1: design system, console layer, logos, `SOURCE.json`. |
+| [`kit/tokens`](./kit/tokens) | Canonical typed tokens, component stylesheet, and operator console layer. |
+| [`kit/contracts`](./kit/contracts) | Public metadata and truth-label schemas. |
+| [`kit/adapters`](./kit/adapters) | Deterministic framework adapters. |
+| [`docs/FRONTEND_HARDENING.md`](./docs/FRONTEND_HARDENING.md) | Estate-wide responsive, accessibility, state, performance, and PR acceptance contract. |
+| [`src/szl_brand`](./src/szl_brand) | Export, integrity, validation, preview, and CLI implementation. |
+| [`tests`](./tests) | Determinism, tamper, accessibility, metadata, CLI, palette, and asset gates. |
+| [`social-previews`](./social-previews) | Deterministically generated GitHub preview assets. |
+| [`anatomy`](./anatomy) | Visual anatomy source and rendered figures. |
+| [`motion`](./motion) | Governed motion studies and exports. |
+
+## Truth and accessibility contract
+
+- Public status vocabulary is exactly `REAL`, `MEASURED`, `MODELED`, `ROADMAP`, or `UNAVAILABLE`.
+- Every metadata record requires source and evidence URLs.
+- Focus is visible, status has a text label, and forced-colors mode keeps state indicators legible.
+- `prefers-reduced-motion: reduce` collapses nonessential animation and transition duration.
+- The exported VitePress adapter has no runtime CDN or font download.
+- The current supply-chain posture is SLSA L1; stronger levels are not claimed here.
+- Front-end consumers follow the [`KANCHAY hardening standard`](./docs/FRONTEND_HARDENING.md),
+  including control-dock ownership, safe areas, truthful runtime states, and Core Web Vitals budgets.
+
+See [`kit/brand-bible.md`](./kit/brand-bible.md) for voice and naming, and
+[`kit/tokens/COLOR_CONTRAST_REPORT.md`](./kit/tokens/COLOR_CONTRAST_REPORT.md) for measured contrast
+pairs.
+
+## Generate and validate social previews
+
+```bash
+python -m szl_brand generate --output social-previews
+python -m szl_brand validate social-previews
+python -m szl_brand manifest social-previews --output brand-manifest.json
+python -m szl_brand drift --manifest brand-manifest.json social-previews
+```
+
+The GitHub social preview is a repository setting, so generated images remain reviewable artifacts;
+this repository does not silently mutate other repositories.
+
+## Governance
+
+Changes use protected pull requests, executable tests, and normal branch
+protection. Brand doctrine is additive to the locked proof register and does not change theorem,
+axiom, or `sorry` counts.
+
+- Repository content: CC BY 4.0 under [`LICENSE`](./LICENSE) and [`NOTICE`](./NOTICE).
+- Trademark reservation: the SZL Holdings name, wordmark, and brand colors are not granted by CC BY 4.0; see [`NOTICE`](./NOTICE).
+- Some individual files carry additional SPDX notices; those notices are preserved as file-specific metadata and are not silently recharacterized here.
+- Attribution: SZL Holdings, ORCID `0009-0001-0110-4173`.
+
+## Citation
+
+```bibtex
+@software{szl_holdings_kanchay_2026,
+  title   = {KANCHAY: the SZL Holdings design system},
+  author  = {{SZL Holdings}},
+  year    = {2026},
+  version = {1.1.1},
+  doi     = {10.5281/zenodo.20434276},
+  url     = {https://github.com/szl-holdings/szl-brand}
+}
+```
