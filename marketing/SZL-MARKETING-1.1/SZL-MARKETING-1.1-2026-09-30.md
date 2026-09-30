@@ -17,7 +17,7 @@ is **0.97, never 100%** — the company would rather show a truthful BLOCKED tha
 Real numbers only (fetched live, never typed from memory):
 - **8** machine-checked Lean 4 theorems; Λ is always "Conjecture 1" — never "proven"
 - **130** GitHub repos total = **120 public** + **10 private**; 28 archived, 102 not archived (live pull 2026-09-30). Correction from Stephen Lutar: 130 is the real org total, not drift. The earlier “12 live repos” figure was the hash-frozen tree set, not the estate. — a11oy (flagship), killinchu (defense vertical), Forge (training), lutar-lean (formal core), governed-receipt-spec (open standard)
-- HF estate, labelled public vs total per Stephen’s rule (live API pull 2026-09-30T22:0xZ): models **50 public / 50 total**; datasets **35 public / 44 total** (9 private); Spaces **32 public / 38 total** (6 private). killinchu-osint-corpus = 74,157 downloads (a **dataset**, not a model). Downloads 112,569 = models 12,149 + public datasets 100,420.
+- HF estate, labelled public vs total per Stephen’s rule (live API pull 2026-09-30T22:0xZ): models **50 public / 50 total**; datasets **35 public / 44 total** (9 private); Spaces **31 public / 38 total** (6 private; the 32nd auth-visible entry is the `SZLHOLDINGS/README` placeholder, not a stranger-visible Space). killinchu-osint-corpus = 74,157 downloads (a **dataset**, not a model). Downloads 112,569 = models 12,149 + public datasets 100,420.
 - **Two domains, two jobs:** a-11-oy.com = product experience; a11oy.net = proof registry
 - Doctrine v11 CI gates that **machine-ban overclaims in the codebase**
 
