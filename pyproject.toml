@@ -21,6 +21,12 @@ dev = [
     "pytest-cov>=5.0",
     "jsonschema>=4.23",
 ]
+publish = [
+    "huggingface_hub>=1.0,<2",
+]
+space = [
+    "gradio>=5.9,<7",
+]
 
 [project.scripts]
 szl-brand = "szl_brand.cli:app"
@@ -28,6 +34,7 @@ szl-surface = "szl_brand.surface:main"
 szl-capability = "szl_brand.capability:main"
 szl-estate-plan = "szl_brand.estate:main"
 szl-motif = "szl_brand.motif:main"
+szl-marketing = "szl_brand.marketing.cli:main"
 
 [build-system]
 requires = ["hatchling"]

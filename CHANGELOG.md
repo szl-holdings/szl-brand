@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Add the `szl_brand.marketing` engine (`szl-marketing` CLI): a live, labeled estate factbase
+  (anonymous GitHub and Hugging Face pulls, models+datasets crown sweep, UNAVAILABLE over guessed,
+  backup before overwrite), the Part 2 compliance linter as code (sentence-scoped, disclaimer
+  aware, context-gated capability rules; one violation blocks a draft, no override), channel
+  drafts with two real A/B subject lines (Substack, Medium, X within 280 characters, LinkedIn),
+  the operating plan as data (guardrails, 30-day calendar, 12-story backlog, KPIs, investor
+  loop), and exact-projection packages with `PUBLICATION_RECEIPT.json` for the two public
+  marketing Spaces. 57 tests. `marketing/space/` is the source of `SZLHOLDINGS/szl-marketing-1.1`
+  (Gradio fact factory with a vendored, hashed copy of the engine) and
+  `SZLHOLDINGS/szl-brand-campaign` (static hub whose numbers are fetched live in the visitor's
+  browser). `hf-marketing-spaces.yml` publishes exactly the tested `main` commit and reads the
+  Hub back; `marketing-copy-guard.yml` lints `marketing/` and `posts/` on every pull request.
+  `marketing/SZL-MARKETING-1.1/factbase_pipeline.py` becomes a shim over the engine (no more
+  absolute `/opt` output path).
+
 - KANCHAY 1.1.1: the base `:focus-visible` rule in `kit/tokens/szl-design-system.css` now draws a
   solid focus outline, `outline:2px solid var(--focus); outline-offset:2px`, and keeps the
   `--shadow-focus` halo and `--radius-sm`. The halo alone (`--focus` at 55%) measured 2.81:1 on
