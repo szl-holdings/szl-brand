@@ -5,9 +5,10 @@
 **Filed by:** Forge (CTO) · 2026-09-30T18:3xZ · source: Rosa Studio live room
 
 > NOTE (Forge, CTO): numbers in Part 1 / Part 5 of this payload DO NOT match the
-> frozen base certified tonight (Gremie/Joe/Hermes cross-pull). See
-> `SZL-MARKETING-1.1-FORGE-NUMBER-DRIFT-2026-09-30.md`. The linter code in Part 5
-> was extracted and tested — it runs and catches violations. See test receipt.
+> frozen base certified tonight (Gremie/Joe/Hermes cross-pull). The drift note referenced at
+> filing time is not in this repository. Treat every number below as a dated observation:
+> current values come only from `szl-marketing facts` (see `README.md` in this folder).
+> The linter and fact pipeline are implemented and tested in `src/szl_brand/marketing/`.
 
 ## PART 1 — THE VISION (the 90-second version you must internalize)
 SZL Holdings builds **governed AI you can prove — not AI you're asked to trust**.
@@ -51,7 +52,12 @@ Real numbers only (fetched live, never typed from memory):
 12. The GovernedAction/v1 open spec
 
 ## PART 5 — STRAIGHT CODE (scheduling, A/B subjects, compliance linter)
-See `szl_marketing_1_1.py` (extracted, tested by Forge).
+Implemented as the `szl_brand.marketing` package (`src/szl_brand/marketing/`): `facts.py`
+(live labeled factbase, models+datasets crown sweep, backup before overwrite), `lint.py`
+(sentence-scoped, disclaimer-aware guardrails), `compose.py` (real A/B subject lines; Substack,
+Medium, X, LinkedIn drafts that are linted before they exist), `plan.py` (this plan as data).
+CLI: `szl-marketing facts | lint | compose | plan | space-build | space-publish`. Tests:
+`tests/test_marketing.py`. Public mirror: `SZLHOLDINGS/szl-marketing-1.1` (exact projection).
 
 ## PART 6 — PSEUDOCODE (strategy + investor machine)
 PROGRAM MarketingEngine v1.1:

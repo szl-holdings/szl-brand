@@ -1,0 +1,121 @@
+name: hf-marketing-spaces
+
+# Exact projection of the two public marketing Spaces from the tested main commit.
+# Pattern borrowed from szl-atelier/hf-space.yml: build a hashed, secret-free package with a
+# PUBLICATION_RECEIPT, publish exactly that package, read the Hub back, record convergence.
+# Without a credential the publish step records UNAVAILABLE and fails closed; nothing is written.
+on:
+  workflow_run:
+    workflows: [Tests]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type PUBLISH-SZL-MARKETING-SPACES to authorize the exact main projection
+        required: true
+        type: string
+      target:
+        description: Which Space to project
+        required: true
+        type: choice
+        default: all
+        options: [all, szl-marketing-1.1, szl-brand-campaign]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hf-write/space/SZLHOLDINGS/marketing
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: hf-marketing-spaces/publish-exact
+    if: >-
+      (github.event_name == 'workflow_dispatch' &&
+       github.ref == 'refs/heads/main' &&
+       inputs.confirmation == 'PUBLISH-SZL-MARKETING-SPACES') ||
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.head_repository.full_name == github.repository)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      HF_TOKEN: ${{ secrets.HF_ORG_TOKEN || secrets.HF_TOKEN }}
+      PUBLISH_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+      TARGET: ${{ github.event_name == 'workflow_dispatch' && inputs.target || 'all' }}
+    steps:
+      - name: Checkout exact tested main commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.PUBLISH_SHA }}
+          fetch-depth: 1
+          persist-credentials: false
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Prove immutable source and current protected main
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${PUBLISH_SHA}"
+          test "${GITHUB_REPOSITORY}" = "szl-holdings/szl-brand"
+          git fetch --no-tags --depth=1 origin +refs/heads/main:refs/remotes/origin/main
+          observed_main="$(git rev-parse refs/remotes/origin/main)"
+          if [ "${observed_main}" != "${PUBLISH_SHA}" ]; then
+            echo "::error::Source moved: approved ${PUBLISH_SHA}, current main ${observed_main}."
+            exit 1
+          fi
+
+      - name: Install engine with publication dependencies
+        run: python -m pip install --disable-pip-version-check -e ".[dev,publish,space]"
+
+      - name: Requalify the engine and the Space sources
+        run: python -m pytest tests/test_marketing.py -q
+
+      - name: Build exact secret-free packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf dist/spaces reports/spaces
+          mkdir -p dist/spaces reports/spaces
+          if [ "${TARGET}" = "all" ]; then targets="szl-marketing-1.1 szl-brand-campaign"; else targets="${TARGET}"; fi
+          echo "${targets}" > dist/spaces/TARGETS
+          for t in ${targets}; do
+            szl-marketing space-build --target "${t}" --source-sha "${PUBLISH_SHA}" --output "dist/spaces/${t}" > "reports/spaces/${t}-build.json"
+            python - "${t}" <<'PY'
+          import json, os, sys
+          t = sys.argv[1]
+          receipt = json.load(open(f"dist/spaces/{t}/PUBLICATION_RECEIPT.json"))
+          assert receipt["state"] == "PACKAGE_BUILT_NOT_PUBLISHED"
+          assert receipt["source"]["sha"] == os.environ["PUBLISH_SHA"]
+          assert receipt["secrets_recorded"] is False
+          print(f"{t}: package PASS root {receipt['root_sha256'][:12]}")
+          PY
+          done
+
+      - name: Publish each exact package and prove Hub convergence
+        shell: bash
+        run: |
+          set -euo pipefail
+          status=0
+          for t in $(cat dist/spaces/TARGETS); do
+            if ! szl-marketing space-publish --package "dist/spaces/${t}" --report "reports/spaces/${t}-publish.json"; then
+              echo "::error::${t} did not converge (see reports/spaces/${t}-publish.json)"
+              status=1
+            fi
+          done
+          exit "${status}"
+
+      - name: Upload secret-free receipts
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v5.0.0
+        with:
+          name: marketing-spaces-receipts-${{ env.PUBLISH_SHA }}
+          path: reports/spaces/
+          if-no-files-found: warn
+          retention-days: 30

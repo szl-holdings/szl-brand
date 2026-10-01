@@ -1,0 +1,33 @@
+name: Marketing copy guard
+
+# The Part 2 guardrails as a CI gate. Every pull request runs the compliance linter over the
+# public marketing copy in this repository (marketing/, posts/). One violation fails the job.
+# There is no override input by design: fix the sentence or label it.
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint-copy:
+    name: Lint public marketing copy
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - name: Install the engine
+        run: python -m pip install --disable-pip-version-check -e .
+      - name: Lint marketing/ and posts/ (fail closed)
+        run: szl-marketing lint marketing posts
+      - name: Lint the operating plan and the machine-written templates
+        run: python -m pytest tests/test_marketing.py -q -k "plan or template or checked_in"

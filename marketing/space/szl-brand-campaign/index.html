@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SZL Holdings — receipts, not vibes</title>
+    <meta
+      name="description"
+      content="SZL Holdings builds the verification layer for AI: signed, tamper-evident receipts you can check yourself. Every number on this page is fetched live in your browser and labeled."
+    />
+    <link rel="stylesheet" href="szl-design-system.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="container campaign">
+      <header class="stack">
+        <p class="eyebrow">SZL Holdings · brand campaign hub</p>
+        <h1 class="display">Receipts, not vibes.</h1>
+        <p class="lead">
+          SZL Holdings builds the verification layer for AI: signed, tamper-evident receipts,
+          checkable in the open by anyone. The trust ceiling is 0.97, never 1.0. Λ stays
+          Conjecture 1, advisory. When a check does not run, the label says UNAVAILABLE.
+        </p>
+      </header>
+
+      <section class="card" aria-labelledby="live-heading">
+        <h2 id="live-heading" class="card-title">The estate, measured in your browser</h2>
+        <p class="muted">
+          Nothing below is typed into this page. Your browser asks the public GitHub and
+          Hugging Face APIs when the page loads, then labels what came back. A source that
+          does not answer is printed as UNAVAILABLE.
+        </p>
+        <table class="facts" id="facts">
+          <thead>
+            <tr><th scope="col">Metric</th><th scope="col">Value</th><th scope="col">Label</th></tr>
+          </thead>
+          <tbody>
+            <tr data-fact="gh_repos"><td>GitHub public repositories</td><td class="mono tabular">…</td><td><span class="chip chip-unavailable">PENDING</span></td></tr>
+            <tr data-fact="hf_models"><td>Hugging Face models</td><td class="mono tabular">…</td><td><span class="chip chip-unavailable">PENDING</span></td></tr>
+            <tr data-fact="hf_datasets"><td>Hugging Face datasets</td><td class="mono tabular">…</td><td><span class="chip chip-unavailable">PENDING</span></td></tr>
+            <tr data-fact="hf_spaces"><td>Hugging Face Spaces</td><td class="mono tabular">…</td><td><span class="chip chip-unavailable">PENDING</span></td></tr>
+            <tr data-fact="crown"><td>Most-downloaded public artifact (models + datasets)</td><td class="mono tabular">…</td><td><span class="chip chip-unavailable">PENDING</span></td></tr>
+            <tr data-fact="downloads"><td>Estate downloads (models + datasets)</td><td class="mono tabular">…</td><td><span class="chip chip-unavailable">PENDING</span></td></tr>
+          </tbody>
+        </table>
+        <p class="ghost mono" id="measured-at">Measured: pending…</p>
+      </section>
+
+      <section class="card" aria-labelledby="laws-heading">
+        <h2 id="laws-heading" class="card-title">House laws baked into every channel</h2>
+        <ul class="laws">
+          <li>Every number is pulled from a public API at publish time and labeled; nothing is typed from memory.</li>
+          <li>Capabilities of the defense vertical are never quantified in public copy.</li>
+          <li>Every claim carries its label: MEASURED, REPORTED, ROADMAP, or UNAVAILABLE.</li>
+          <li>Λ is Conjecture 1, advisory. The words a marketer would reach for are banned by a linter that runs in CI.</li>
+        </ul>
+      </section>
+
+      <section class="card" aria-labelledby="doors-heading">
+        <h2 id="doors-heading" class="card-title">Two domains, two jobs</h2>
+        <div class="cluster">
+          <a class="btn btn-primary" href="https://a-11-oy.com/verify" rel="noopener">Verify a receipt yourself</a>
+          <a class="btn btn-secondary" href="https://a11oy.net" rel="noopener">Proof registry: a11oy.net</a>
+          <a class="btn btn-ghost" href="https://github.com/szl-holdings" rel="noopener">GitHub organization</a>
+          <a class="btn btn-ghost" href="https://huggingface.co/SZLHOLDINGS" rel="noopener">Hugging Face organization</a>
+        </div>
+        <p class="muted">
+          a-11-oy.com is the product. a11oy.net is the dated, checkable diligence path. The
+          fact factory behind this page runs at
+          <a href="https://huggingface.co/spaces/SZLHOLDINGS/szl-marketing-1.1" rel="noopener">SZLHOLDINGS/szl-marketing-1.1</a>.
+        </p>
+      </section>
+
+      <footer class="ghost">
+        <p>
+          Exact projection of
+          <a href="https://github.com/szl-holdings/szl-brand" rel="noopener">szl-holdings/szl-brand</a>
+          (<code class="mono" id="source-sha">source: see PUBLICATION_RECEIPT.json</code>).
+          Brand assets CC BY 4.0 · code Apache-2.0 · ORCID 0009-0001-0110-4173.
+        </p>
+      </footer>
+    </main>
+    <script src="live.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+/* Campaign hub — additive page styles over the KANCHAY design system (dark operator default). */
+.campaign { padding-block: 3rem 4rem; display: grid; gap: 1.75rem; max-width: 60rem; }
+.campaign h1.display { margin: 0.25rem 0 0.5rem; }
+.campaign .lead { max-width: 52rem; }
+.campaign .card { display: grid; gap: 0.9rem; }
+.facts { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+.facts th, .facts td { text-align: left; padding: 0.55rem 0.5rem; border-bottom: 1px solid var(--border-subtle); vertical-align: top; }
+.facts th { color: var(--text-sub); font-weight: 600; }
+.facts td:nth-child(2) { word-break: break-all; }
+.laws { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.5rem; color: var(--text-sub); }
+.cluster { gap: 0.6rem; }
+footer p { font-size: var(--text-xs); }

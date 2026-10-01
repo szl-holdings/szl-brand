@@ -9,3 +9,5 @@ build/
 .ruff_cache/
 *.egg
 brand-manifest.json
+marketing-out/
+reports/spaces/
