@@ -7,6 +7,7 @@ import os
 import re
 import subprocess
 import sys
+import urllib.parse
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -299,7 +300,7 @@ def test_x_thread_respects_limit_and_cta_availability():
     def dead(url):
         hub = FakeHub()
         status, body, headers = hub(url)
-        if url.startswith("https://a-11-oy.com") or url.startswith("https://a11oy.net"):
+        if urllib.parse.urlsplit(url).hostname in {"a-11-oy.com", "a11oy.net"}:
             return 0, None, {}
         return status, body, headers
 

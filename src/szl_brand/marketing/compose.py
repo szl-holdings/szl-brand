@@ -69,22 +69,38 @@ def fact_block(facts: dict[str, Any]) -> str:
     kind_word = {"models": "model", "datasets": "dataset"}.get(crown_kind, UNAVAILABLE)
     locked = fact(facts, "product.locked_formula_count")
     lam = fact(facts, "product.lambda")
+    gh_line = (
+        f"- GitHub: {_num(fact(facts, 'github.repos'))} public repositories, "
+        f"{_num(fact(facts, 'github.archived'))} honestly archived [{gh_label}]"
+    )
+    hf_line = (
+        f"- Hugging Face: {_num(fact(facts, 'hf.models'))} models, "
+        f"{_num(fact(facts, 'hf.datasets'))} datasets, {_num(fact(facts, 'hf.spaces'))} Spaces "
+        f"[{hf_label}]"
+    )
+    crown_line = (
+        f"- Most-downloaded public artifact: {crown_id} ({_num(crown_dl)} downloads; "
+        f"a {kind_word}, swept across models and datasets) [{hf_label}]"
+    )
+    downloads_line = f"- Estate downloads: {_num(fact(facts, 'hf.downloads.total'))} [{hf_label}]"
+    product_line = (
+        f"- Locked formulas in the product's honesty manifest: {_num(locked)}; "
+        f"Λ status: {lam} [{fact(facts, 'product.label')}]"
+    )
+    footer = (
+        "Every number above was fetched from a public API at generation time. "
+        "A source that did not answer is printed as UNAVAILABLE, not estimated."
+    )
     lines = [
         f"## The estate, measured (fetched {generated})",
         "",
-        f"- GitHub: {_num(fact(facts, 'github.repos'))} public repositories, "
-        f"{_num(fact(facts, 'github.archived'))} honestly archived [{gh_label}]",
-        f"- Hugging Face: {_num(fact(facts, 'hf.models'))} models, "
-        f"{_num(fact(facts, 'hf.datasets'))} datasets, {_num(fact(facts, 'hf.spaces'))} Spaces "
-        f"[{hf_label}]",
-        f"- Most-downloaded public artifact: {crown_id} ({_num(crown_dl)} downloads; "
-        f"a {kind_word}, swept across models and datasets) [{hf_label}]",
-        f"- Estate downloads: {_num(fact(facts, 'hf.downloads.total'))} [{hf_label}]",
-        f"- Locked formulas in the product's honesty manifest: {_num(locked)}; "
-        f"Λ status: {lam} [{fact(facts, 'product.label')}]",
+        gh_line,
+        hf_line,
+        crown_line,
+        downloads_line,
+        product_line,
         "",
-        "Every number above was fetched from a public API at generation time. "
-        "A source that did not answer is printed as UNAVAILABLE, not estimated.",
+        footer,
     ]
     return "\n".join(lines)
 
