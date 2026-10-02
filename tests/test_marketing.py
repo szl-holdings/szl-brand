@@ -11,7 +11,7 @@ import sys
 import urllib.parse
 from datetime import UTC, datetime
 from pathlib import Path
-from types import SimpleNamespace
+from types import ModuleType, SimpleNamespace
 
 import pytest
 
@@ -459,8 +459,6 @@ def test_publish_refuses_drifted_package(tmp_path, monkeypatch):
 def test_publish_records_safe_provider_failure(
     tmp_path, monkeypatch, failure_phase, expected_write_state, expected_uploads
 ):
-    import huggingface_hub
-
     canary = "TOKEN-CANARY-DO-NOT-RECORD"
     package = tmp_path / "pkg"
     build_package("szl-brand-campaign", REPO_ROOT, SHA, package)
@@ -499,7 +497,9 @@ def test_publish_records_safe_provider_failure(
                 raise ProviderFailure()
             return SimpleNamespace(commit_url="https://huggingface.co/spaces/example/commit/test")
 
-    monkeypatch.setattr(huggingface_hub, "HfApi", FakeApi)
+    fake_hub = ModuleType("huggingface_hub")
+    fake_hub.HfApi = FakeApi
+    monkeypatch.setitem(sys.modules, "huggingface_hub", fake_hub)
     report_path = tmp_path / "report.json"
     report = publish_package(package, report_path, token=canary)
 
