@@ -8,7 +8,7 @@ sdk_version: 6.29.0
 app_file: app.py
 pinned: false
 license: apache-2.0
-short_description: Live labeled estate facts + a compliance linter. Nothing typed.
+short_description: Live estate facts and a compliance linter.
 tags:
 - governed-ai
 - compliance

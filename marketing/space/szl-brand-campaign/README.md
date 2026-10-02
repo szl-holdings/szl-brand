@@ -6,7 +6,7 @@ colorTo: gray
 sdk: static
 pinned: false
 license: apache-2.0
-short_description: SZL Holdings — the verification layer for AI. Receipts, not vibes.
+short_description: Signed AI receipts you can check yourself.
 tags:
 - governed-ai
 - szl-holdings

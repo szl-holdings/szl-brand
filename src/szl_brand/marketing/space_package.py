@@ -76,6 +76,27 @@ def _copy_tree(source: Path, dest: Path) -> None:
             shutil.copy2(path, target)
 
 
+def _space_metadata_violations(text: str) -> list[str]:
+    """Check the Hub's short-description limit before attempting publication."""
+    lines = text.splitlines()
+    if not lines or lines[0] != "---":
+        return ["Space README must start with YAML front matter"]
+    try:
+        end = lines.index("---", 1)
+    except ValueError:
+        return ["Space README front matter is not closed"]
+    descriptions = [
+        line.partition(":")[2].strip()
+        for line in lines[1:end]
+        if line.startswith("short_description:")
+    ]
+    if len(descriptions) != 1 or not descriptions[0]:
+        return ["Space README needs one nonempty short_description"]
+    if len(descriptions[0]) > 60:
+        return ["Space short_description exceeds the Hugging Face 60-character limit"]
+    return []
+
+
 def build_package(target: str, repo_root: Path, source_sha: str, output: Path) -> dict[str, Any]:
     """Assemble ``output`` for ``target`` from ``repo_root`` and write the receipt."""
     if target not in TARGETS:
@@ -113,8 +134,11 @@ def build_package(target: str, repo_root: Path, source_sha: str, output: Path) -
         if path.suffix.lower() in {".html", ".htm"}:
             text = strip_html(text)
         found = lint(text)
-        if found:
-            violations[rel] = [str(v) for v in found]
+        errors = [str(v) for v in found]
+        if rel == "README.md":
+            errors.extend(_space_metadata_violations(text))
+        if errors:
+            violations[rel] = errors
     if violations:
         shutil.rmtree(output)
         raise ValueError("package blocked by compliance linter: " + json.dumps(violations))
