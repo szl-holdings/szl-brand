@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import urllib.parse
@@ -379,6 +380,35 @@ def test_space_package_rejects_bad_sha_and_unknown_target(tmp_path):
         build_package("szl-marketing-1.1", REPO_ROOT, "main", tmp_path / "x")
     with pytest.raises(ValueError):
         build_package("nope", REPO_ROOT, SHA, tmp_path / "y")
+
+
+@pytest.mark.parametrize("target", sorted(TARGETS))
+def test_space_package_rejects_hub_short_description_over_60_chars(tmp_path, target):
+    root = tmp_path / "repo"
+    spec = TARGETS[target]
+    source = root / spec["source_dir"]
+    shutil.copytree(REPO_ROOT / spec["source_dir"], source)
+    for extra in spec["extra_files"]:
+        path = root / extra
+        path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(REPO_ROOT / extra, path)
+    readme = source / "README.md"
+    original = readme.read_text(encoding="utf-8")
+    output = tmp_path / "package"
+
+    readme.write_text(
+        re.sub(r"(?m)^short_description:.*$", "short_description: " + "x" * 60, original),
+        encoding="utf-8",
+    )
+    assert build_package(target, root, SHA, output)["state"] == "PACKAGE_BUILT_NOT_PUBLISHED"
+
+    readme.write_text(
+        re.sub(r"(?m)^short_description:.*$", "short_description: " + "x" * 61, original),
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="short_description exceeds"):
+        build_package(target, root, SHA, output)
+    assert not output.exists()
 
 
 def test_space_package_blocks_banned_copy(tmp_path):
