@@ -11,6 +11,7 @@ import sys
 import urllib.parse
 from datetime import UTC, datetime
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -443,6 +444,78 @@ def test_publish_refuses_drifted_package(tmp_path, monkeypatch):
     (package / "index.html").write_text("tampered", "utf-8")
     with pytest.raises(ValueError, match="drifted"):
         publish_package(package, tmp_path / "report.json")
+
+
+@pytest.mark.parametrize(
+    ("failure_phase", "expected_write_state", "expected_uploads"),
+    [
+        ("client_initialization", "NOT_ATTEMPTED", 0),
+        ("token_identity", "NOT_ATTEMPTED", 0),
+        ("pre_upload_file_inventory", "NOT_ATTEMPTED", 0),
+        ("upload_folder", "UNKNOWN", 1),
+        ("post_upload_file_inventory", "COMMIT_RETURNED", 1),
+    ],
+)
+def test_publish_records_safe_provider_failure(
+    tmp_path, monkeypatch, failure_phase, expected_write_state, expected_uploads
+):
+    import huggingface_hub
+
+    canary = "TOKEN-CANARY-DO-NOT-RECORD"
+    package = tmp_path / "pkg"
+    build_package("szl-brand-campaign", REPO_ROOT, SHA, package)
+    uploads = []
+    inventories = []
+
+    class ProviderFailure(Exception):
+        def __init__(self):
+            super().__init__(f"response body includes {canary}")
+            self.response = SimpleNamespace(
+                status_code=400, text=canary, headers={"Authorization": canary}
+            )
+
+    class FakeApi:
+        def __init__(self, token):
+            assert token == canary
+            if failure_phase == "client_initialization":
+                raise ProviderFailure()
+
+        def whoami(self):
+            if failure_phase == "token_identity":
+                raise ProviderFailure()
+            return {"name": "publisher"}
+
+        def list_repo_files(self, *_args, **_kwargs):
+            inventories.append(True)
+            if failure_phase == "pre_upload_file_inventory" or (
+                failure_phase == "post_upload_file_inventory" and len(inventories) == 2
+            ):
+                raise ProviderFailure()
+            return ["README.md"]
+
+        def upload_folder(self, **_kwargs):
+            uploads.append(True)
+            if failure_phase == "upload_folder":
+                raise ProviderFailure()
+            return SimpleNamespace(commit_url="https://huggingface.co/spaces/example/commit/test")
+
+    monkeypatch.setattr(huggingface_hub, "HfApi", FakeApi)
+    report_path = tmp_path / "report.json"
+    report = publish_package(package, report_path, token=canary)
+
+    assert report["state"] == "FAILED"
+    assert report["failure_phase"] == failure_phase
+    assert report["failure_type"] == "ProviderFailure"
+    assert report["failure_http_status"] == 400
+    assert report["hub_write_state"] == expected_write_state
+    assert len(report["reason"]) <= 400
+    assert len(uploads) == expected_uploads
+    assert report.get("publisher") == (
+        None if failure_phase in {"client_initialization", "token_identity"} else "publisher"
+    )
+    assert canary not in report_path.read_text(encoding="utf-8")
+    assert "response body" not in report_path.read_text(encoding="utf-8")
+    assert "Authorization" not in report_path.read_text(encoding="utf-8")
 
 
 def test_vendored_space_app_imports_without_network(tmp_path):

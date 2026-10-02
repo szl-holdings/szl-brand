@@ -211,13 +211,20 @@ def publish_package(package: Path, report: Path, token: str | None = None) -> di
         out.update(state="UNAVAILABLE", reason="huggingface_hub not installed; nothing written")
         _write(report, out)
         return out
-    api = HfApi(token=token)
+    phase = "client_initialization"
+    hub_write_state = "NOT_ATTEMPTED"
     try:
+        api = HfApi(token=token)
+        phase = "token_identity"
         identity = api.whoami()
         out["publisher"] = str(identity.get("name", "UNAVAILABLE"))
+        phase = "pre_upload_file_inventory"
         existing = set(api.list_repo_files(repo_id, repo_type="space"))
         wanted = set(receipt["files"]) | {RECEIPT_NAME}
         stale = sorted(f for f in existing - wanted if f != ".gitattributes")
+        phase = "upload_folder"
+        # A failed upload call may have written to the Hub before returning an error.
+        hub_write_state = "UNKNOWN"
         commit = api.upload_folder(
             repo_id=repo_id,
             repo_type="space",
@@ -225,11 +232,14 @@ def publish_package(package: Path, report: Path, token: str | None = None) -> di
             commit_message=f"exact projection of szl-brand@{receipt['source']['sha'][:12]}",
             delete_patterns=stale or None,
         )
+        hub_write_state = "COMMIT_RETURNED"
         out["commit_url"] = str(getattr(commit, "commit_url", commit))
         out["removed_stale_files"] = stale
+        phase = "post_upload_file_inventory"
         remote = set(api.list_repo_files(repo_id, repo_type="space"))
         missing = sorted(wanted - remote)
         extra = sorted(f for f in remote - wanted if f != ".gitattributes")
+        phase = "receipt_readback"
         remote_receipt = api.hf_hub_download(
             repo_id, RECEIPT_NAME, repo_type="space", force_download=True
         )
@@ -239,6 +249,7 @@ def publish_package(package: Path, report: Path, token: str | None = None) -> di
         converged = not missing and not extra and remote_root == receipt["root_sha256"]
         out.update(
             state="PUBLISHED_CONVERGED" if converged else "PUBLISHED_DIVERGED",
+            hub_write_state=hub_write_state,
             readback={"missing": missing, "extra": extra, "remote_root_sha256": remote_root},
         )
         try:
@@ -247,7 +258,23 @@ def publish_package(package: Path, report: Path, token: str | None = None) -> di
         except Exception as exc:  # noqa: BLE001 - runtime stage is informational
             out["runtime_stage"] = f"UNAVAILABLE: {type(exc).__name__}"
     except Exception as exc:  # noqa: BLE001 - every provider failure must land in the receipt
-        out.update(state="FAILED", reason=f"{type(exc).__name__}: {exc}"[:400])
+        # Provider exception strings can contain response bodies, headers, or credentials.
+        # Record only bounded, structural diagnostics in the public Actions artifact.
+        status = getattr(getattr(exc, "response", None), "status_code", None)
+        status = status if isinstance(status, int) and 100 <= status <= 599 else None
+        error_type = type(exc).__name__[:120]
+        out.update(
+            state="FAILED",
+            failure_phase=phase,
+            failure_type=error_type,
+            failure_http_status=status,
+            hub_write_state=hub_write_state,
+            reason=(
+                f"{error_type} HTTP {status} at {phase}"
+                if status is not None
+                else f"{error_type} at {phase}"
+            )[:400],
+        )
     _write(report, out)
     return out
 
