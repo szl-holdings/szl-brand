@@ -38,7 +38,16 @@ def _write(path: Path, value: dict[str, Any]) -> None:
 
 def _git_env() -> dict[str, str]:
     env = os.environ.copy()
-    for name in ("HF_TOKEN", "HF_TOKEN_SOURCE", "HF_ORG_TOKEN", "HUGGING_FACE_HUB_TOKEN"):
+    for name in (
+        "HF_TOKEN",
+        "HF_TOKEN_SOURCE",
+        "HF_ORG_TOKEN",
+        "HUGGING_FACE_HUB_TOKEN",
+        "HF_OIDC_RESOURCE",
+        "HF_OIDC_ID_TOKEN",
+        "ACTIONS_ID_TOKEN_REQUEST_URL",
+        "ACTIONS_ID_TOKEN_REQUEST_TOKEN",
+    ):
         env.pop(name, None)
     env["GIT_TERMINAL_PROMPT"] = "0"
     return env

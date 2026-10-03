@@ -15,6 +15,7 @@ import json
 import os
 import re
 import shutil
+import subprocess
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Final
@@ -188,6 +189,40 @@ def _load_receipt(package: Path) -> dict[str, Any]:
     return receipt
 
 
+def _exchange_oidc_token(resource: str) -> str | None:
+    """Exchange this GitHub job's OIDC identity without exposing token bytes."""
+    if (
+        os.environ.get("GITHUB_ACTIONS") != "true"
+        or not os.environ.get("ACTIONS_ID_TOKEN_REQUEST_URL")
+        or not os.environ.get("ACTIONS_ID_TOKEN_REQUEST_TOKEN")
+    ):
+        return None
+    env = os.environ.copy()
+    for name in ("HF_TOKEN", "HF_ORG_TOKEN", "HUGGING_FACE_HUB_TOKEN"):
+        env.pop(name, None)
+    env["HF_OIDC_RESOURCE"] = resource
+    try:
+        result = subprocess.run(
+            ["hf", "auth", "token"],
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            text=True,
+            timeout=30,
+            env=env,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    token = result.stdout.strip()
+    return (
+        token
+        if result.returncode == 0
+        and token.startswith("hf_")
+        and not any(char.isspace() for char in token)
+        else None
+    )
+
+
 def publish_package(package: Path, report: Path, token: str | None = None) -> dict[str, Any]:
     """Publish exactly one package and prove Hub convergence. Fails closed without a token."""
     receipt = _load_receipt(package)
@@ -200,8 +235,32 @@ def publish_package(package: Path, report: Path, token: str | None = None) -> di
         "secrets_recorded": False,
         "attempted_at": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
     }
+    oidc_selected = "HF_OIDC_RESOURCE" in os.environ
+    oidc_resource = os.environ.get("HF_OIDC_RESOURCE", "")
     explicit_token = bool(token)
-    token = token or os.environ.get("HF_TOKEN")
+    if oidc_selected:
+        out["auth_mode"] = "HF_OIDC"
+        if explicit_token or oidc_resource != f"spaces/{repo_id}":
+            out.update(
+                state="UNAVAILABLE",
+                reason="OIDC_RESOURCE_MISMATCH: no Hub write attempted",
+                failure_phase="oidc_exchange",
+                hub_write_state="NOT_ATTEMPTED",
+            )
+            _write(report, out)
+            return out
+        token = _exchange_oidc_token(oidc_resource)
+        if not token:
+            out.update(
+                state="UNAVAILABLE",
+                reason="OIDC_EXCHANGE_UNAVAILABLE: no Hub write attempted",
+                failure_phase="oidc_exchange",
+                hub_write_state="NOT_ATTEMPTED",
+            )
+            _write(report, out)
+            return out
+    else:
+        token = token or os.environ.get("HF_TOKEN")
     if not token:
         out.update(state="UNAVAILABLE", reason="NO_TOKEN: HF_TOKEN not supplied; nothing written")
         _write(report, out)
@@ -216,9 +275,14 @@ def publish_package(package: Path, report: Path, token: str | None = None) -> di
     hub_write_state = "NOT_ATTEMPTED"
     try:
         api = HfApi(token=token)
-        phase = "token_identity"
-        identity = api.whoami()
-        out["publisher"] = str(identity.get("name", "UNAVAILABLE"))
+        if oidc_selected:
+            phase = "target_write_authorization"
+            api.auth_check(repo_id, repo_type="space", write=True)
+            out["publisher"] = "HF_OIDC"
+        else:
+            phase = "token_identity"
+            identity = api.whoami()
+            out["publisher"] = str(identity.get("name", "UNAVAILABLE"))
         phase = "pre_upload_file_inventory"
         existing = set(api.list_repo_files(repo_id, repo_type="space"))
         wanted = set(receipt["files"]) | {RECEIPT_NAME}
@@ -279,17 +343,20 @@ def publish_package(package: Path, report: Path, token: str | None = None) -> di
         if phase == "token_identity":
             # Only fixed labels and booleans enter the public receipt. Never
             # record token bytes, length, a fingerprint, or provider content.
-            binding = os.environ.get("HF_TOKEN_SOURCE", "")
-            if explicit_token:
-                binding = "EXPLICIT_ARGUMENT"
-            elif binding not in {"HF_ORG_TOKEN", "HF_TOKEN"}:
-                binding = "UNDECLARED"
-            out["credential_diagnostic"] = {
-                "selected_binding": binding,
-                "starts_with_hf_prefix": token.startswith("hf_"),
-                "contains_whitespace": any(char.isspace() for char in token),
-                "contains_non_ascii": not token.isascii(),
-            }
+            if oidc_selected:
+                out["credential_diagnostic"] = {"selected_binding": "HF_OIDC"}
+            else:
+                binding = os.environ.get("HF_TOKEN_SOURCE", "")
+                if explicit_token:
+                    binding = "EXPLICIT_ARGUMENT"
+                elif binding not in {"HF_ORG_TOKEN", "HF_TOKEN"}:
+                    binding = "UNDECLARED"
+                out["credential_diagnostic"] = {
+                    "selected_binding": binding,
+                    "starts_with_hf_prefix": token.startswith("hf_"),
+                    "contains_whitespace": any(char.isspace() for char in token),
+                    "contains_non_ascii": not token.isascii(),
+                }
     _write(report, out)
     return out
 

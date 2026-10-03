@@ -1,9 +1,11 @@
 name: hf-marketing-spaces
 
 # Exact projection of the two public marketing Spaces from the tested main commit.
-# Pattern borrowed from szl-atelier/hf-space.yml: build a hashed, secret-free package with a
-# PUBLICATION_RECEIPT, publish exactly that package, read the Hub back, record convergence.
-# Without a credential the publish step records UNAVAILABLE and fails closed; nothing is written.
+# A credential-free job qualifies packages and wheels. Each selected Space gets
+# its own short-lived, repo-scoped Trusted Publisher exchange after source gates.
+# Register a GitHub Actions Trusted Publisher on each target Space first:
+# repository=szl-holdings/szl-brand, branch=main, workflow=hf-marketing-spaces.yml.
+# Without either registration, that target records UNAVAILABLE before any Hub write.
 on:
   workflow_run:
     workflows: [Tests]
@@ -29,8 +31,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  publish:
-    name: hf-marketing-spaces/publish-exact
+  build:
+    name: hf-marketing-spaces/build-exact
     if: >-
       (github.event_name == 'workflow_dispatch' &&
        github.ref == 'refs/heads/main' &&
@@ -42,6 +44,11 @@ jobs:
        github.event.workflow_run.head_repository.full_name == github.repository)
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: read
+    outputs:
+      publish_sha: ${{ steps.source.outputs.publish_sha }}
+      targets_json: ${{ steps.selection.outputs.targets_json }}
     env:
       PUBLISH_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
       TARGET: ${{ github.event_name == 'workflow_dispatch' && inputs.target || 'all' }}
@@ -58,6 +65,7 @@ jobs:
           python-version: "3.12"
 
       - name: Prove immutable source and current protected main
+        id: source
         shell: bash
         run: |
           set -euo pipefail
@@ -66,25 +74,43 @@ jobs:
           git fetch --no-tags --depth=1 origin +refs/heads/main:refs/remotes/origin/main
           observed_main="$(git rev-parse refs/remotes/origin/main)"
           if [ "${observed_main}" != "${PUBLISH_SHA}" ]; then
-            echo "::error::Source moved: approved ${PUBLISH_SHA}, current main ${observed_main}."
+            echo "::error::Source moved before packaging."
             exit 1
           fi
+          echo "publish_sha=${PUBLISH_SHA}" >> "${GITHUB_OUTPUT}"
 
-      - name: Install engine with publication dependencies
+      - name: Install engine with qualification dependencies
         run: python -m pip install --disable-pip-version-check -e ".[dev,publish,space]"
 
       - name: Requalify the engine and the Space sources
         run: python -m pytest tests/test_marketing.py tests/test_marketing_source_gate.py -q
 
+      - name: Select exact Space targets
+        id: selection
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist/spaces reports/spaces
+          case "${TARGET}" in
+            all)
+              targets="szl-marketing-1.1 szl-brand-campaign"
+              targets_json='["szl-marketing-1.1","szl-brand-campaign"]'
+              ;;
+            szl-marketing-1.1|szl-brand-campaign)
+              targets="${TARGET}"
+              targets_json='["'"${TARGET}"'"]'
+              ;;
+            *) exit 1 ;;
+          esac
+          echo "${targets}" > dist/spaces/TARGETS
+          echo "targets_json=${targets_json}" >> "${GITHUB_OUTPUT}"
+
       - name: Build exact secret-free packages
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf dist/spaces reports/spaces
-          mkdir -p dist/spaces reports/spaces
-          if [ "${TARGET}" = "all" ]; then targets="szl-marketing-1.1 szl-brand-campaign"; else targets="${TARGET}"; fi
-          echo "${targets}" > dist/spaces/TARGETS
-          for t in ${targets}; do
+          read -ra targets < dist/spaces/TARGETS
+          for t in "${targets[@]}"; do
             szl-marketing space-build --target "${t}" --source-sha "${PUBLISH_SHA}" --output "dist/spaces/${t}" > "reports/spaces/${t}-build.json"
             python - "${t}" <<'PY'
           import json, os, sys
@@ -97,45 +123,102 @@ jobs:
           PY
           done
 
-      - name: Publish each exact package and prove Hub convergence
-        env:
-          HF_TOKEN: ${{ secrets.HF_ORG_TOKEN || secrets.HF_TOKEN }}
-          # Record only which secret binding won the same selection expression.
-          HF_TOKEN_SOURCE: ${{ secrets.HF_ORG_TOKEN != '' && 'HF_ORG_TOKEN' || secrets.HF_TOKEN != '' && 'HF_TOKEN' || 'NONE' }}
+      - name: Build offline publisher wheelhouse without OIDC access
+        run: python -m pip wheel --disable-pip-version-check --wheel-dir dist/publisher-wheels ".[publish]"
+
+      - name: Transfer exact packages and offline wheels
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: marketing-spaces-package-${{ env.PUBLISH_SHA }}
+          path: |
+            dist/spaces/
+            dist/publisher-wheels/
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Upload build receipts
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: marketing-spaces-build-receipts-${{ env.PUBLISH_SHA }}
+          path: reports/spaces/
+          if-no-files-found: warn
+          retention-days: 30
+
+  publish:
+    name: hf-marketing-spaces/publish-${{ matrix.target }}
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.build.outputs.targets_json) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      PUBLISH_SHA: ${{ needs.build.outputs.publish_sha }}
+    steps:
+      - name: Checkout exact qualified main commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.PUBLISH_SHA }}
+          fetch-depth: 1
+          persist-credentials: false
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Download exact package and publisher wheels
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        with:
+          name: marketing-spaces-package-${{ env.PUBLISH_SHA }}
+          path: dist/
+
+      - name: Install qualified publisher offline
         shell: bash
         run: |
           set -euo pipefail
+          python -m pip install --disable-pip-version-check --no-index --find-links dist/publisher-wheels dist/publisher-wheels/szl_brand-*.whl
+
+      - name: Publish exact package with target-scoped OIDC and Hub readback
+        env:
+          HF_OIDC_RESOURCE: spaces/SZLHOLDINGS/${{ matrix.target }}
+          TARGET: ${{ matrix.target }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REPOSITORY}" = "szl-holdings/szl-brand"
+          test "$(git rev-parse HEAD)" = "${PUBLISH_SHA}"
+          mkdir -p reports/spaces
+          if ! env -u HF_TOKEN -u HF_TOKEN_SOURCE python -m szl_brand.marketing.source_gate \
+            --phase before --package "dist/spaces/${TARGET}" --expected-sha "${PUBLISH_SHA}" \
+            --publish-report "reports/spaces/${TARGET}-publish.json" \
+            --gate-report "reports/spaces/${TARGET}-source-gate.json"; then
+            echo "::error::${TARGET} source moved or could not be verified before upload"
+            exit 1
+          fi
           status=0
-          read -ra targets < dist/spaces/TARGETS
-          for t in "${targets[@]}"; do
-            if ! env -u HF_TOKEN -u HF_TOKEN_SOURCE python -m szl_brand.marketing.source_gate \
-              --phase before --package "dist/spaces/${t}" --expected-sha "${PUBLISH_SHA}" \
-              --publish-report "reports/spaces/${t}-publish.json" \
-              --gate-report "reports/spaces/${t}-source-gate.json"; then
-              echo "::error::${t} source moved or could not be verified before upload"
-              status=1
-              break
-            fi
-            if ! szl-marketing space-publish --package "dist/spaces/${t}" --report "reports/spaces/${t}-publish.json"; then
-              echo "::error::${t} did not converge (see reports/spaces/${t}-publish.json)"
-              status=1
-            fi
-            if ! env -u HF_TOKEN -u HF_TOKEN_SOURCE python -m szl_brand.marketing.source_gate \
-              --phase after --package "dist/spaces/${t}" --expected-sha "${PUBLISH_SHA}" \
-              --publish-report "reports/spaces/${t}-publish.json" \
-              --gate-report "reports/spaces/${t}-source-gate.json"; then
-              echo "::error::${t} source moved or could not be verified after upload; Hub writes may have occurred"
-              status=1
-              break
-            fi
-          done
+          if ! szl-marketing space-publish --package "dist/spaces/${TARGET}" --report "reports/spaces/${TARGET}-publish.json"; then
+            echo "::error::${TARGET} did not converge (see receipt artifact)"
+            status=1
+          fi
+          if ! env -u HF_TOKEN -u HF_TOKEN_SOURCE python -m szl_brand.marketing.source_gate \
+            --phase after --package "dist/spaces/${TARGET}" --expected-sha "${PUBLISH_SHA}" \
+            --publish-report "reports/spaces/${TARGET}-publish.json" \
+            --gate-report "reports/spaces/${TARGET}-source-gate.json"; then
+            echo "::error::${TARGET} source moved or could not be verified after upload; Hub writes may have occurred"
+            status=1
+          fi
           exit "${status}"
 
-      - name: Upload secret-free receipts
+      - name: Upload secret-free per-target receipts
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v5.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: marketing-spaces-receipts-${{ env.PUBLISH_SHA }}
+          name: marketing-space-${{ matrix.target }}-receipts-${{ env.PUBLISH_SHA }}
           path: reports/spaces/
           if-no-files-found: warn
           retention-days: 30

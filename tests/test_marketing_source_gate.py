@@ -150,10 +150,19 @@ def test_git_children_do_not_inherit_hub_credentials(monkeypatch: pytest.MonkeyP
     monkeypatch.setenv("HF_TOKEN_SOURCE", "HF_ORG_TOKEN")
     monkeypatch.setenv("HF_ORG_TOKEN", "TOKEN-CANARY")
     monkeypatch.setenv("HUGGING_FACE_HUB_TOKEN", "TOKEN-CANARY")
+    monkeypatch.setenv("HF_OIDC_RESOURCE", "spaces/TOKEN-CANARY")
+    monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN", "TOKEN-CANARY")
     safe = source_gate._git_env()
     assert all(
         name not in safe
-        for name in ("HF_TOKEN", "HF_TOKEN_SOURCE", "HF_ORG_TOKEN", "HUGGING_FACE_HUB_TOKEN")
+        for name in (
+            "HF_TOKEN",
+            "HF_TOKEN_SOURCE",
+            "HF_ORG_TOKEN",
+            "HUGGING_FACE_HUB_TOKEN",
+            "HF_OIDC_RESOURCE",
+            "ACTIONS_ID_TOKEN_REQUEST_TOKEN",
+        )
     )
     assert safe["GIT_TERMINAL_PROMPT"] == "0"
 
@@ -162,17 +171,16 @@ def test_workflow_scopes_credential_and_checks_each_side_of_upload() -> None:
     workflow = (
         Path(__file__).resolve().parents[1] / ".github/workflows/hf-marketing-spaces.yml"
     ).read_text(encoding="utf-8")
-    before_publish, publish_and_after = workflow.split(
-        "      - name: Publish each exact package and prove Hub convergence", 1
-    )
-    publish_step = publish_and_after.split("      - name: Upload secret-free receipts", 1)[0]
-    assert "secrets.HF_ORG_TOKEN" not in before_publish
-    assert "secrets.HF_TOKEN" not in before_publish
-    assert "HF_TOKEN:" not in before_publish
-    assert "HF_TOKEN_SOURCE:" not in before_publish
-    assert "tests/test_marketing_source_gate.py" in before_publish
-    assert "HF_TOKEN: ${{ secrets.HF_ORG_TOKEN || secrets.HF_TOKEN }}" in publish_step
-    assert "HF_TOKEN_SOURCE: ${{ secrets.HF_ORG_TOKEN != ''" in publish_step
+    build_job, publish_job = workflow.split("  publish:\n", 1)
+    publish_step = publish_job.split("      - name: Upload secret-free per-target receipts", 1)[0]
+    assert "secrets.HF_ORG_TOKEN" not in workflow
+    assert "secrets.HF_TOKEN" not in workflow
+    assert "id-token: write" not in build_job
+    assert "tests/test_marketing_source_gate.py" in build_job
+    assert "--no-index --find-links dist/publisher-wheels" in publish_job
+    assert "id-token: write" in publish_job
+    assert "HF_OIDC_RESOURCE: spaces/SZLHOLDINGS/${{ matrix.target }}" in publish_step
+    assert "matrix.target" in publish_job
     assert publish_step.count("env -u HF_TOKEN -u HF_TOKEN_SOURCE python -m") == 2
     first_gate = publish_step.index("--phase before")
     upload = publish_step.index("szl-marketing space-publish")
