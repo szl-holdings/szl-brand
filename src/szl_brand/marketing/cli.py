@@ -2,7 +2,7 @@
 
 Exit codes: 0 clean, 1 blocked by the linter or by drift, 2 unavailable (network, token,
 missing input). Nothing here writes to GitHub, Hugging Face or DNS except ``space-publish``,
-which needs ``HF_TOKEN`` in the environment and records what it did in a secret-free report.
+which needs a target-bound GitHub OIDC exchange or ``HF_TOKEN`` and writes a secret-free report.
 """
 
 from __future__ import annotations
@@ -147,7 +147,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--output", required=True)
     p.set_defaults(func=cmd_space_build)
 
-    p = sub.add_parser("space-publish", help="publish a built package (needs HF_TOKEN)")
+    p = sub.add_parser("space-publish", help="publish a built package (OIDC or HF_TOKEN)")
     p.add_argument("--package", required=True)
     p.add_argument("--report", required=True)
     p.set_defaults(func=cmd_space_publish)

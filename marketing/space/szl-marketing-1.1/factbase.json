@@ -1,0 +1,28 @@
+{
+  "generated": "2026-09-30",
+  "github": {
+    "repos": 120,
+    "archived": 28
+  },
+  "hf": {
+    "models": 50,
+    "datasets": 34,
+    "spaces": 27,
+    "top": {
+      "id": "SZLHOLDINGS/killinchu-osint-corpus",
+      "kind": "datasets",
+      "downloads": 74157,
+      "sweep": "models+datasets"
+    },
+    "top_models_only_DO_NOT_PRINT": {
+      "id": "SZLHOLDINGS/chaski",
+      "downloads": 3070,
+      "note": "wrong crown \u2014 recorded only so the models-only bug can never hide again"
+    },
+    "downloads": {
+      "models": 12149,
+      "datasets": 100420,
+      "total": 112569
+    }
+  }
+}

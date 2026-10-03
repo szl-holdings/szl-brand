@@ -45,4 +45,9 @@ This Space is an exact projection of
 plus a vendored, hashed copy of `szl_brand.marketing`). `PUBLICATION_RECEIPT.json` names the
 source commit and every file hash. Edit the GitHub source; do not edit the Space.
 
+The 2026-09-30 `PAYLOAD-SZL-MARKETING-1.1.md`, `factbase.json`, and
+`factbase_pipeline.py` are retained byte for byte from the earlier public Space revision
+`77b3e70533e0116ba6b6b434c18e34e322ef3b3b` for provenance. They are historical
+snapshots; the active app uses the vendored engine and fetches fresh facts.
+
 Doctrine: labels stay. The trust ceiling stays 0.97, never 1.0. Λ stays Conjecture 1, advisory.

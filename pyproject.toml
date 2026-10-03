@@ -22,7 +22,7 @@ dev = [
     "jsonschema>=4.23",
 ]
 publish = [
-    "huggingface_hub>=1.0,<2",
+    "huggingface_hub>=1.19,<2",
 ]
 space = [
     "gradio>=5.9,<7",

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -31,6 +32,7 @@ from szl_brand.marketing import (
     plan_text,
     product_facts,
     render_plan,
+    space_package,
     strip_html,
     substack_draft,
     surface_facts,
@@ -353,6 +355,20 @@ def test_checked_in_marketing_copy_is_clean():
 
 
 # --------------------------------------------------------------------------- space packages
+def test_marketing_space_preserves_historical_hub_files(tmp_path):
+    """Keep the original public Hub files byte-identical during exact projection."""
+    expected = {
+        "PAYLOAD-SZL-MARKETING-1.1.md": "26167cbea6336dada15c833c94847e6cd6c434561f70b84bb015a753cabd2f00",
+        "factbase.json": "0af2335e28eff80bc8f1be1433f90ebe7eb835e129ddfdefb540d907a7966914",
+        "factbase_pipeline.py": "b49cb92586ceff800667f5d68157104e983493d7dd3cb37bca3d26180c74fef9",
+    }
+    out = tmp_path / "szl-marketing-1.1"
+    receipt = build_package("szl-marketing-1.1", REPO_ROOT, SHA, out)
+    for name, digest in expected.items():
+        assert hashlib.sha256((out / name).read_bytes()).hexdigest() == digest
+        assert receipt["files"][name] == digest
+
+
 @pytest.mark.parametrize("target", sorted(TARGETS))
 def test_space_package_builds_with_receipt(tmp_path, target):
     out = tmp_path / target
@@ -435,6 +451,108 @@ def test_publish_fails_closed_without_token(tmp_path, monkeypatch):
     assert report["reason"].startswith("NO_TOKEN")
     assert report["secrets_recorded"] is False
     assert json.loads(report_path.read_text("utf-8"))["state"] == UNAVAILABLE
+
+
+def test_oidc_fails_closed_without_job_identity_even_with_ambient_pat(tmp_path, monkeypatch):
+    package = tmp_path / "pkg"
+    build_package("szl-brand-campaign", REPO_ROOT, SHA, package)
+    monkeypatch.setenv("HF_OIDC_RESOURCE", "spaces/SZLHOLDINGS/szl-brand-campaign")
+    monkeypatch.setenv("HF_TOKEN", "TOKEN-CANARY-DO-NOT-RECORD")
+    monkeypatch.delenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN", raising=False)
+    report_path = tmp_path / "report.json"
+
+    report = publish_package(package, report_path)
+
+    assert report["state"] == UNAVAILABLE
+    assert report["failure_phase"] == "oidc_exchange"
+    assert report["hub_write_state"] == "NOT_ATTEMPTED"
+    assert report["auth_mode"] == "HF_OIDC"
+    assert "TOKEN-CANARY" not in report_path.read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize("resource", ["", "spaces/SZLHOLDINGS/szl-marketing-1.1"])
+def test_oidc_wrong_resource_blocks_before_exchange(tmp_path, monkeypatch, resource):
+    package = tmp_path / "pkg"
+    build_package("szl-brand-campaign", REPO_ROOT, SHA, package)
+    monkeypatch.setenv("HF_OIDC_RESOURCE", resource)
+    monkeypatch.setenv("HF_TOKEN", "AMBIENT-PAT-CANARY")
+    report_path = tmp_path / "report.json"
+
+    report = publish_package(package, report_path)
+
+    assert report["state"] == UNAVAILABLE
+    assert report["reason"].startswith("OIDC_RESOURCE_MISMATCH")
+    assert report["hub_write_state"] == "NOT_ATTEMPTED"
+    assert "AMBIENT-PAT-CANARY" not in report_path.read_text(encoding="utf-8")
+
+
+def test_oidc_exchange_rejection_records_no_hub_write(tmp_path, monkeypatch):
+    package = tmp_path / "pkg"
+    build_package("szl-brand-campaign", REPO_ROOT, SHA, package)
+    monkeypatch.setenv("HF_OIDC_RESOURCE", "spaces/SZLHOLDINGS/szl-brand-campaign")
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_URL", "https://example.invalid/oidc")
+    monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN", "REQUEST-CANARY")
+
+    def rejected_exchange(*_args, **_kwargs):
+        return SimpleNamespace(returncode=1, stdout="TOKEN-CANARY-DO-NOT-RECORD")
+
+    monkeypatch.setattr(space_package.subprocess, "run", rejected_exchange)
+    report_path = tmp_path / "report.json"
+
+    report = publish_package(package, report_path)
+
+    assert report["state"] == UNAVAILABLE
+    assert report["failure_phase"] == "oidc_exchange"
+    assert report["hub_write_state"] == "NOT_ATTEMPTED"
+    assert "TOKEN-CANARY" not in report_path.read_text(encoding="utf-8")
+
+
+def test_oidc_token_is_scoped_and_write_checked_before_upload(tmp_path, monkeypatch):
+    canary = "hf_jwt_TOKEN-CANARY-DO-NOT-RECORD"
+    resource = "spaces/SZLHOLDINGS/szl-brand-campaign"
+    package = tmp_path / "pkg"
+    build_package("szl-brand-campaign", REPO_ROOT, SHA, package)
+    monkeypatch.setenv("HF_OIDC_RESOURCE", resource)
+    monkeypatch.setenv("HF_TOKEN", "AMBIENT-PAT-CANARY")
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_URL", "https://example.invalid/oidc")
+    monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN", "REQUEST-CANARY")
+
+    def fake_exchange(args, **kwargs):
+        assert args == ["hf", "auth", "token"]
+        assert kwargs["env"]["HF_OIDC_RESOURCE"] == resource
+        assert "HF_TOKEN" not in kwargs["env"]
+        assert "HF_ORG_TOKEN" not in kwargs["env"]
+        return SimpleNamespace(returncode=0, stdout=canary + "\n")
+
+    monkeypatch.setattr(space_package.subprocess, "run", fake_exchange)
+
+    class FakeApi:
+        def __init__(self, token):
+            assert token == canary
+
+        def auth_check(self, repo_id, *, repo_type, write):
+            assert (repo_id, repo_type, write) == ("SZLHOLDINGS/szl-brand-campaign", "space", True)
+            raise ValueError(f"provider body includes {canary}")
+
+        def upload_folder(self, **_kwargs):
+            raise AssertionError("upload must not be attempted")
+
+    fake_hub = ModuleType("huggingface_hub")
+    fake_hub.HfApi = FakeApi
+    monkeypatch.setitem(sys.modules, "huggingface_hub", fake_hub)
+    report_path = tmp_path / "report.json"
+
+    report = publish_package(package, report_path)
+
+    assert report["state"] == "FAILED"
+    assert report["failure_phase"] == "target_write_authorization"
+    assert report["hub_write_state"] == "NOT_ATTEMPTED"
+    assert report["auth_mode"] == "HF_OIDC"
+    saved = report_path.read_text(encoding="utf-8")
+    assert canary not in saved
+    assert "AMBIENT-PAT-CANARY" not in saved
 
 
 def test_publish_refuses_drifted_package(tmp_path, monkeypatch):
