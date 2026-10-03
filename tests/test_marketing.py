@@ -516,6 +516,76 @@ def test_publish_records_safe_provider_failure(
     assert canary not in report_path.read_text(encoding="utf-8")
     assert "response body" not in report_path.read_text(encoding="utf-8")
     assert "Authorization" not in report_path.read_text(encoding="utf-8")
+    if failure_phase == "token_identity":
+        assert report["credential_diagnostic"] == {
+            "selected_binding": "EXPLICIT_ARGUMENT",
+            "starts_with_hf_prefix": False,
+            "contains_whitespace": False,
+            "contains_non_ascii": False,
+        }
+    else:
+        assert "credential_diagnostic" not in report
+
+
+@pytest.mark.parametrize(
+    ("source", "secret", "expected"),
+    [
+        (
+            "HF_ORG_TOKEN",
+            "hf_TOKEN-CANARY-DO-NOT-RECORD \n",
+            ("HF_ORG_TOKEN", True, True, False),
+        ),
+        ("HF_TOKEN", "hf_TOKEN-CANARY-DO-NOT-RECORD", ("HF_TOKEN", True, False, False)),
+        (
+            "TOKEN-CANARY-DO-NOT-RECORD",
+            "TOKEN-CANARY-DO-NOT-RECORD\u00e9",
+            ("UNDECLARED", False, False, True),
+        ),
+    ],
+)
+def test_token_identity_failure_records_only_allowlisted_binding_and_shape(
+    tmp_path, monkeypatch, source, secret, expected
+):
+    package = tmp_path / "pkg"
+    build_package("szl-brand-campaign", REPO_ROOT, SHA, package)
+    monkeypatch.setenv("HF_TOKEN", secret)
+    monkeypatch.setenv("HF_TOKEN_SOURCE", source)
+
+    class FakeApi:
+        def __init__(self, token):
+            assert token == secret
+
+        def whoami(self):
+            raise ValueError(f"provider body includes {secret}")
+
+        def upload_folder(self, **_kwargs):
+            raise AssertionError("upload must not be attempted")
+
+    fake_hub = ModuleType("huggingface_hub")
+    fake_hub.HfApi = FakeApi
+    monkeypatch.setitem(sys.modules, "huggingface_hub", fake_hub)
+    report_path = tmp_path / "report.json"
+    report = publish_package(package, report_path)
+
+    assert report["state"] == "FAILED"
+    assert report["failure_phase"] == "token_identity"
+    assert report["hub_write_state"] == "NOT_ATTEMPTED"
+    assert report["credential_diagnostic"] == dict(
+        zip(
+            (
+                "selected_binding",
+                "starts_with_hf_prefix",
+                "contains_whitespace",
+                "contains_non_ascii",
+            ),
+            expected,
+            strict=True,
+        )
+    )
+    saved = report_path.read_text(encoding="utf-8")
+    assert secret not in saved
+    assert "TOKEN-CANARY-DO-NOT-RECORD" not in saved
+    assert "provider body" not in saved
 
 
 def test_vendored_space_app_imports_without_network(tmp_path):
