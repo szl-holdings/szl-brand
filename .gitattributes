@@ -6,3 +6,7 @@ kanchay/** -text
 kit/tokens/szl-design-system.css -text
 kit/tokens/szl-console.css -text
 kit/logos/** -text
+# Preserve the earlier public Space files byte for byte on Windows checkouts.
+marketing/space/szl-marketing-1.1/PAYLOAD-SZL-MARKETING-1.1.md -text
+marketing/space/szl-marketing-1.1/factbase.json -text
+marketing/space/szl-marketing-1.1/factbase_pipeline.py -text

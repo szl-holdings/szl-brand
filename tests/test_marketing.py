@@ -32,7 +32,6 @@ from szl_brand.marketing import (
     plan_text,
     product_facts,
     render_plan,
-    space_package,
     strip_html,
     substack_draft,
     surface_facts,
@@ -467,6 +466,7 @@ def test_oidc_fails_closed_without_job_identity_even_with_ambient_pat(tmp_path, 
     assert report["failure_phase"] == "oidc_exchange"
     assert report["hub_write_state"] == "NOT_ATTEMPTED"
     assert report["auth_mode"] == "HF_OIDC"
+    assert report["oidc_diagnostic"] == {"failure_type": "MISSING_GITHUB_IDENTITY"}
     assert "TOKEN-CANARY" not in report_path.read_text(encoding="utf-8")
 
 
@@ -494,10 +494,22 @@ def test_oidc_exchange_rejection_records_no_hub_write(tmp_path, monkeypatch):
     monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_URL", "https://example.invalid/oidc")
     monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN", "REQUEST-CANARY")
 
-    def rejected_exchange(*_args, **_kwargs):
-        return SimpleNamespace(returncode=1, stdout="TOKEN-CANARY-DO-NOT-RECORD")
+    class HfHubHTTPError(Exception):
+        def __init__(self):
+            super().__init__("TOKEN-CANARY-DO-NOT-RECORD")
+            self.response = SimpleNamespace(
+                status_code=400,
+                headers={"Authorization": "TOKEN-CANARY-DO-NOT-RECORD"},
+                json=lambda: {"error": "invalid_grant", "detail": "TOKEN-CANARY-DO-NOT-RECORD"},
+            )
 
-    monkeypatch.setattr(space_package.subprocess, "run", rejected_exchange)
+    def rejected_exchange():
+        raise HfHubHTTPError()
+
+    fake_hub = ModuleType("huggingface_hub")
+    fake_hub.get_token = rejected_exchange
+    fake_hub.HfApi = lambda **_kwargs: pytest.fail("Hub API must not be constructed")
+    monkeypatch.setitem(sys.modules, "huggingface_hub", fake_hub)
     report_path = tmp_path / "report.json"
 
     report = publish_package(package, report_path)
@@ -505,6 +517,11 @@ def test_oidc_exchange_rejection_records_no_hub_write(tmp_path, monkeypatch):
     assert report["state"] == UNAVAILABLE
     assert report["failure_phase"] == "oidc_exchange"
     assert report["hub_write_state"] == "NOT_ATTEMPTED"
+    assert report["oidc_diagnostic"] == {
+        "failure_type": "HfHubHTTPError",
+        "failure_http_status": 400,
+        "oauth_error": "invalid_grant",
+    }
     assert "TOKEN-CANARY" not in report_path.read_text(encoding="utf-8")
 
 
@@ -519,14 +536,9 @@ def test_oidc_token_is_scoped_and_write_checked_before_upload(tmp_path, monkeypa
     monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_URL", "https://example.invalid/oidc")
     monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN", "REQUEST-CANARY")
 
-    def fake_exchange(args, **kwargs):
-        assert args == ["hf", "auth", "token"]
-        assert kwargs["env"]["HF_OIDC_RESOURCE"] == resource
-        assert "HF_TOKEN" not in kwargs["env"]
-        assert "HF_ORG_TOKEN" not in kwargs["env"]
-        return SimpleNamespace(returncode=0, stdout=canary + "\n")
-
-    monkeypatch.setattr(space_package.subprocess, "run", fake_exchange)
+    def fake_exchange():
+        assert os.environ["HF_OIDC_RESOURCE"] == resource
+        return canary
 
     class FakeApi:
         def __init__(self, token):
@@ -540,6 +552,7 @@ def test_oidc_token_is_scoped_and_write_checked_before_upload(tmp_path, monkeypa
             raise AssertionError("upload must not be attempted")
 
     fake_hub = ModuleType("huggingface_hub")
+    fake_hub.get_token = fake_exchange
     fake_hub.HfApi = FakeApi
     monkeypatch.setitem(sys.modules, "huggingface_hub", fake_hub)
     report_path = tmp_path / "report.json"
@@ -553,6 +566,28 @@ def test_oidc_token_is_scoped_and_write_checked_before_upload(tmp_path, monkeypa
     saved = report_path.read_text(encoding="utf-8")
     assert canary not in saved
     assert "AMBIENT-PAT-CANARY" not in saved
+
+
+def test_oidc_rejects_ambient_pat_fallback_without_hub_write(tmp_path, monkeypatch):
+    package = tmp_path / "pkg"
+    build_package("szl-brand-campaign", REPO_ROOT, SHA, package)
+    monkeypatch.setenv("HF_OIDC_RESOURCE", "spaces/SZLHOLDINGS/szl-brand-campaign")
+    monkeypatch.setenv("HF_TOKEN", "hf_AMBIENT-PAT-CANARY")
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_URL", "https://example.invalid/oidc")
+    monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN", "REQUEST-CANARY")
+    fake_hub = ModuleType("huggingface_hub")
+    fake_hub.get_token = lambda: "hf_AMBIENT-PAT-CANARY"
+    fake_hub.HfApi = lambda **_kwargs: pytest.fail("Hub API must not be constructed")
+    monkeypatch.setitem(sys.modules, "huggingface_hub", fake_hub)
+
+    report_path = tmp_path / "report.json"
+    report = publish_package(package, report_path)
+
+    assert report["state"] == UNAVAILABLE
+    assert report["hub_write_state"] == "NOT_ATTEMPTED"
+    assert report["oidc_diagnostic"] == {"failure_type": "INVALID_OIDC_TOKEN_SHAPE"}
+    assert "AMBIENT-PAT-CANARY" not in report_path.read_text(encoding="utf-8")
 
 
 def test_publish_refuses_drifted_package(tmp_path, monkeypatch):
