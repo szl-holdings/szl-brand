@@ -189,13 +189,18 @@ def _load_receipt(package: Path) -> dict[str, Any]:
 
 
 def _oidc_error_diagnostic(exc: Exception) -> dict[str, Any]:
-    """Return only bounded, allow-listed structure from an exchange failure."""
+    """Return identifier-only exception metadata, never provider text or token data."""
     name = type(exc).__name__
-    kind = (
-        name
-        if name in {"HfHubHTTPError", "OIDCError", "ImportError", "TimeoutError"}
-        else "OTHER_ERROR"
-    )
+    module = type(exc).__module__
+    # Exception identifiers are defined by code, unlike messages and response
+    # bodies. Keep only short Python identifiers and reject credential shapes.
+    forbidden = ("hf_jwt_", "hf_oauth_", "sk_", "ghp_", "canary")
+    kind = name if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]{0,63}", name) else "OTHER_ERROR"
+    source = module if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_.]{0,127}", module) else "OTHER_ERROR"
+    if any(marker in kind.lower() for marker in forbidden):
+        kind = "OTHER_ERROR"
+    if any(marker in source.lower() for marker in forbidden):
+        source = "OTHER_ERROR"
     response = getattr(exc, "response", None)
     status = getattr(response, "status_code", None)
     status = status if isinstance(status, int) and 100 <= status <= 599 else None
@@ -208,7 +213,12 @@ def _oidc_error_diagnostic(exc: Exception) -> dict[str, Any]:
                 oauth_error = code
         except Exception:  # noqa: BLE001 - provider body is untrusted and never recorded
             pass
-    return {"failure_type": kind, "failure_http_status": status, "oauth_error": oauth_error}
+    return {
+        "failure_type": kind,
+        "failure_module": source,
+        "failure_http_status": status,
+        "oauth_error": oauth_error,
+    }
 
 
 def _exchange_oidc_token(resource: str) -> tuple[str | None, dict[str, Any]]:
