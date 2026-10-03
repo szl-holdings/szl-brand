@@ -179,7 +179,13 @@ def test_workflow_scopes_credential_and_checks_each_side_of_upload() -> None:
     assert "ref: ${{ env.PUBLISH_SHA }}" not in workflow
     assert "id-token: write" not in build_job
     assert "tests/test_marketing_source_gate.py" in build_job
+    assert (
+        'python -m pip wheel --disable-pip-version-check --wheel-dir dist/publisher-wheels ".[publish]"'
+        in build_job
+    )
     assert "--no-index --find-links dist/publisher-wheels" in publish_job
+    assert 'dist/publisher-wheels "szl-brand[publish]"' in publish_job
+    assert 'python -c "from huggingface_hub import get_token"' in publish_job
     assert "id-token: write" in publish_job
     assert publish_job.index(
         "Prove publisher checkout matches qualified current main"

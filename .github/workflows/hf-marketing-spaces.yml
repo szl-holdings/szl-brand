@@ -190,7 +190,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python -m pip install --disable-pip-version-check --no-index --find-links dist/publisher-wheels dist/publisher-wheels/szl_brand-*.whl
+          python -m pip install --disable-pip-version-check --no-index --find-links dist/publisher-wheels "szl-brand[publish]"
+          python -c "from huggingface_hub import get_token"
 
       - name: Publish exact package with target-scoped OIDC and Hub readback
         env:
