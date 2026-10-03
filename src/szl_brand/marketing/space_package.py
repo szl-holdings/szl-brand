@@ -298,15 +298,26 @@ def publish_package(package: Path, report: Path, token: str | None = None) -> di
     try:
         api = HfApi(token=token)
         if oidc_selected:
-            phase = "target_write_authorization"
-            api.auth_check(repo_id, repo_type="space", write=True)
+            # Repo Trusted Publishers return a repository-scoped hf_jwt_ token.
+            # auth_check expects a user token, so read the exact target with the
+            # exchanged token and let the subsequent upload enforce write access.
+            phase = "target_repository_read"
+            target_info = api.repo_info(repo_id, repo_type="space", token=token)
+            if getattr(target_info, "id", None) != repo_id or not _SHA_RE.match(
+                str(getattr(target_info, "sha", ""))
+            ):
+                raise ValueError("OIDC_TARGET_REPOSITORY_MISMATCH")
             out["publisher"] = "HF_OIDC"
         else:
             phase = "token_identity"
             identity = api.whoami()
             out["publisher"] = str(identity.get("name", "UNAVAILABLE"))
         phase = "pre_upload_file_inventory"
-        existing = set(api.list_repo_files(repo_id, repo_type="space"))
+        existing = set(
+            api.list_repo_files(repo_id, repo_type="space", token=token)
+            if oidc_selected
+            else api.list_repo_files(repo_id, repo_type="space")
+        )
         wanted = set(receipt["files"]) | {RECEIPT_NAME}
         stale = sorted(f for f in existing - wanted if f != ".gitattributes")
         phase = "upload_folder"

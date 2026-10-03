@@ -558,7 +558,7 @@ def test_oidc_unknown_safe_exception_identifier_keeps_secret_out(tmp_path, monke
     assert "REQUEST-CANARY" not in saved
 
 
-def test_oidc_token_is_scoped_and_write_checked_before_upload(tmp_path, monkeypatch):
+def test_oidc_target_read_denial_blocks_upload_without_leaking_token(tmp_path, monkeypatch):
     canary = "hf_jwt_TOKEN-CANARY-DO-NOT-RECORD"
     resource = "spaces/SZLHOLDINGS/szl-brand-campaign"
     package = tmp_path / "pkg"
@@ -577,8 +577,12 @@ def test_oidc_token_is_scoped_and_write_checked_before_upload(tmp_path, monkeypa
         def __init__(self, token):
             assert token == canary
 
-        def auth_check(self, repo_id, *, repo_type, write):
-            assert (repo_id, repo_type, write) == ("SZLHOLDINGS/szl-brand-campaign", "space", True)
+        def repo_info(self, repo_id, *, repo_type, token):
+            assert (repo_id, repo_type, token) == (
+                "SZLHOLDINGS/szl-brand-campaign",
+                "space",
+                canary,
+            )
             raise ValueError(f"provider body includes {canary}")
 
         def upload_folder(self, **_kwargs):
@@ -593,12 +597,150 @@ def test_oidc_token_is_scoped_and_write_checked_before_upload(tmp_path, monkeypa
     report = publish_package(package, report_path)
 
     assert report["state"] == "FAILED"
-    assert report["failure_phase"] == "target_write_authorization"
+    assert report["failure_phase"] == "target_repository_read"
     assert report["hub_write_state"] == "NOT_ATTEMPTED"
     assert report["auth_mode"] == "HF_OIDC"
     saved = report_path.read_text(encoding="utf-8")
     assert canary not in saved
     assert "AMBIENT-PAT-CANARY" not in saved
+
+
+@pytest.mark.parametrize(
+    ("remote_id", "remote_sha"),
+    [("SZLHOLDINGS/other-space", "b" * 40), ("SZLHOLDINGS/szl-brand-campaign", "")],
+)
+def test_oidc_target_identity_mismatch_blocks_upload(tmp_path, monkeypatch, remote_id, remote_sha):
+    canary = "hf_jwt_TOKEN-CANARY-DO-NOT-RECORD"
+    package = tmp_path / "pkg"
+    build_package("szl-brand-campaign", REPO_ROOT, SHA, package)
+    monkeypatch.setenv("HF_OIDC_RESOURCE", "spaces/SZLHOLDINGS/szl-brand-campaign")
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_URL", "https://example.invalid/oidc")
+    monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN", "REQUEST-CANARY")
+
+    class FakeApi:
+        def __init__(self, token):
+            assert token == canary
+
+        def repo_info(self, _repo_id, *, repo_type, token):
+            assert (repo_type, token) == ("space", canary)
+            return SimpleNamespace(id=remote_id, sha=remote_sha)
+
+        def list_repo_files(self, *_args, **_kwargs):
+            pytest.fail("inventory must not be attempted for the wrong target")
+
+        def upload_folder(self, **_kwargs):
+            pytest.fail("upload must not be attempted for the wrong target")
+
+    fake_hub = ModuleType("huggingface_hub")
+    fake_hub.get_token = lambda: canary
+    fake_hub.HfApi = FakeApi
+    monkeypatch.setitem(sys.modules, "huggingface_hub", fake_hub)
+    report_path = tmp_path / "report.json"
+
+    report = publish_package(package, report_path)
+
+    assert report["state"] == "FAILED"
+    assert report["failure_phase"] == "target_repository_read"
+    assert report["hub_write_state"] == "NOT_ATTEMPTED"
+    assert canary not in report_path.read_text(encoding="utf-8")
+
+
+def test_oidc_inventory_denial_blocks_upload(tmp_path, monkeypatch):
+    canary = "hf_jwt_TOKEN-CANARY-DO-NOT-RECORD"
+    package = tmp_path / "pkg"
+    build_package("szl-brand-campaign", REPO_ROOT, SHA, package)
+    monkeypatch.setenv("HF_OIDC_RESOURCE", "spaces/SZLHOLDINGS/szl-brand-campaign")
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_URL", "https://example.invalid/oidc")
+    monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN", "REQUEST-CANARY")
+
+    class FakeApi:
+        def __init__(self, token):
+            assert token == canary
+
+        def repo_info(self, _repo_id, *, repo_type, token):
+            assert (repo_type, token) == ("space", canary)
+            return SimpleNamespace(id="SZLHOLDINGS/szl-brand-campaign", sha="b" * 40)
+
+        def list_repo_files(self, _repo_id, *, repo_type, token):
+            assert (repo_type, token) == ("space", canary)
+            raise ValueError(f"provider body includes {canary}")
+
+        def upload_folder(self, **_kwargs):
+            pytest.fail("upload must not be attempted when inventory is denied")
+
+    fake_hub = ModuleType("huggingface_hub")
+    fake_hub.get_token = lambda: canary
+    fake_hub.HfApi = FakeApi
+    monkeypatch.setitem(sys.modules, "huggingface_hub", fake_hub)
+    report_path = tmp_path / "report.json"
+
+    report = publish_package(package, report_path)
+
+    assert report["state"] == "FAILED"
+    assert report["failure_phase"] == "pre_upload_file_inventory"
+    assert report["hub_write_state"] == "NOT_ATTEMPTED"
+    assert canary not in report_path.read_text(encoding="utf-8")
+
+
+def test_oidc_target_read_and_inventory_allow_exact_upload(tmp_path, monkeypatch):
+    canary = "hf_jwt_TOKEN-CANARY-DO-NOT-RECORD"
+    package = tmp_path / "pkg"
+    receipt = build_package("szl-brand-campaign", REPO_ROOT, SHA, package)
+    repo_id = "SZLHOLDINGS/szl-brand-campaign"
+    monkeypatch.setenv("HF_OIDC_RESOURCE", f"spaces/{repo_id}")
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_URL", "https://example.invalid/oidc")
+    monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN", "REQUEST-CANARY")
+    calls = []
+
+    class FakeApi:
+        def __init__(self, token):
+            assert token == canary
+
+        def repo_info(self, target, *, repo_type, token):
+            assert (target, repo_type, token) == (repo_id, "space", canary)
+            calls.append("repo_info")
+            return SimpleNamespace(id=repo_id, sha="b" * 40)
+
+        def list_repo_files(self, target, *, repo_type, token=None):
+            assert (target, repo_type) == (repo_id, "space")
+            if not calls or calls[-1] != "upload_folder":
+                assert token == canary
+                calls.append("pre_inventory")
+                return ["README.md", ".gitattributes"]
+            calls.append("post_inventory")
+            return sorted(set(receipt["files"]) | {RECEIPT_NAME, ".gitattributes"})
+
+        def upload_folder(self, **kwargs):
+            assert (kwargs["repo_id"], kwargs["repo_type"]) == (repo_id, "space")
+            assert kwargs["delete_patterns"] is None
+            calls.append("upload_folder")
+            return SimpleNamespace(
+                commit_url=f"https://huggingface.co/spaces/{repo_id}/commit/test"
+            )
+
+        def hf_hub_download(self, _repo_id, _filename, *, repo_type, force_download):
+            assert (repo_type, force_download) == ("space", True)
+            return str(package / RECEIPT_NAME)
+
+        def get_space_runtime(self, _repo_id):
+            return SimpleNamespace(stage="UNAVAILABLE")
+
+    fake_hub = ModuleType("huggingface_hub")
+    fake_hub.get_token = lambda: canary
+    fake_hub.HfApi = FakeApi
+    monkeypatch.setitem(sys.modules, "huggingface_hub", fake_hub)
+    report_path = tmp_path / "report.json"
+
+    report = publish_package(package, report_path)
+
+    assert report["state"] == "PUBLISHED_CONVERGED"
+    assert report["auth_mode"] == "HF_OIDC"
+    assert report["removed_stale_files"] == []
+    assert calls == ["repo_info", "pre_inventory", "upload_folder", "post_inventory"]
+    assert canary not in report_path.read_text(encoding="utf-8")
 
 
 def test_oidc_rejects_ambient_pat_fallback_without_hub_write(tmp_path, monkeypatch):
