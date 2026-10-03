@@ -15,7 +15,6 @@ import json
 import os
 import re
 import shutil
-import subprocess
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Final
@@ -189,38 +188,50 @@ def _load_receipt(package: Path) -> dict[str, Any]:
     return receipt
 
 
-def _exchange_oidc_token(resource: str) -> str | None:
+def _oidc_error_diagnostic(exc: Exception) -> dict[str, Any]:
+    """Return only bounded, allow-listed structure from an exchange failure."""
+    name = type(exc).__name__
+    kind = (
+        name
+        if name in {"HfHubHTTPError", "OIDCError", "ImportError", "TimeoutError"}
+        else "OTHER_ERROR"
+    )
+    response = getattr(exc, "response", None)
+    status = getattr(response, "status_code", None)
+    status = status if isinstance(status, int) and 100 <= status <= 599 else None
+    oauth_error = None
+    if response is not None:
+        try:
+            payload = response.json()
+            code = payload.get("error") if isinstance(payload, dict) else None
+            if code in {"invalid_grant", "invalid_request"}:
+                oauth_error = code
+        except Exception:  # noqa: BLE001 - provider body is untrusted and never recorded
+            pass
+    return {"failure_type": kind, "failure_http_status": status, "oauth_error": oauth_error}
+
+
+def _exchange_oidc_token(resource: str) -> tuple[str | None, dict[str, Any]]:
     """Exchange this GitHub job's OIDC identity without exposing token bytes."""
     if (
         os.environ.get("GITHUB_ACTIONS") != "true"
         or not os.environ.get("ACTIONS_ID_TOKEN_REQUEST_URL")
         or not os.environ.get("ACTIONS_ID_TOKEN_REQUEST_TOKEN")
     ):
-        return None
-    env = os.environ.copy()
-    for name in ("HF_TOKEN", "HF_ORG_TOKEN", "HUGGING_FACE_HUB_TOKEN"):
-        env.pop(name, None)
-    env["HF_OIDC_RESOURCE"] = resource
+        return None, {"failure_type": "MISSING_GITHUB_IDENTITY"}
+    if os.environ.get("HF_OIDC_RESOURCE") != resource:
+        return None, {"failure_type": "OIDC_RESOURCE_MISMATCH"}
     try:
-        result = subprocess.run(
-            ["hf", "auth", "token"],
-            check=False,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL,
-            text=True,
-            timeout=30,
-            env=env,
-        )
-    except (OSError, subprocess.TimeoutExpired):
-        return None
-    token = result.stdout.strip()
-    return (
-        token
-        if result.returncode == 0
-        and token.startswith("hf_")
-        and not any(char.isspace() for char in token)
-        else None
-    )
+        from huggingface_hub import get_token
+
+        token = get_token()
+    except Exception as exc:  # noqa: BLE001 - fail closed and record only allow-listed structure
+        return None, _oidc_error_diagnostic(exc)
+    # A repo Trusted Publisher receives hf_jwt_, never a human PAT. Reject any
+    # ambient-token fallback even if a future Hub client changes its precedence.
+    if not token or not token.startswith("hf_jwt_") or any(char.isspace() for char in token):
+        return None, {"failure_type": "INVALID_OIDC_TOKEN_SHAPE"}
+    return token, {}
 
 
 def publish_package(package: Path, report: Path, token: str | None = None) -> dict[str, Any]:
@@ -249,13 +260,14 @@ def publish_package(package: Path, report: Path, token: str | None = None) -> di
             )
             _write(report, out)
             return out
-        token = _exchange_oidc_token(oidc_resource)
+        token, diagnostic = _exchange_oidc_token(oidc_resource)
         if not token:
             out.update(
                 state="UNAVAILABLE",
                 reason="OIDC_EXCHANGE_UNAVAILABLE: no Hub write attempted",
                 failure_phase="oidc_exchange",
                 hub_write_state="NOT_ATTEMPTED",
+                oidc_diagnostic=diagnostic,
             )
             _write(report, out)
             return out
