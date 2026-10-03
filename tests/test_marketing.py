@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -354,6 +355,20 @@ def test_checked_in_marketing_copy_is_clean():
 
 
 # --------------------------------------------------------------------------- space packages
+def test_marketing_space_preserves_historical_hub_files(tmp_path):
+    """Keep the original public Hub files byte-identical during exact projection."""
+    expected = {
+        "PAYLOAD-SZL-MARKETING-1.1.md": "26167cbea6336dada15c833c94847e6cd6c434561f70b84bb015a753cabd2f00",
+        "factbase.json": "0af2335e28eff80bc8f1be1433f90ebe7eb835e129ddfdefb540d907a7966914",
+        "factbase_pipeline.py": "b49cb92586ceff800667f5d68157104e983493d7dd3cb37bca3d26180c74fef9",
+    }
+    out = tmp_path / "szl-marketing-1.1"
+    receipt = build_package("szl-marketing-1.1", REPO_ROOT, SHA, out)
+    for name, digest in expected.items():
+        assert hashlib.sha256((out / name).read_bytes()).hexdigest() == digest
+        assert receipt["files"][name] == digest
+
+
 @pytest.mark.parametrize("target", sorted(TARGETS))
 def test_space_package_builds_with_receipt(tmp_path, target):
     out = tmp_path / target
