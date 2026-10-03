@@ -517,12 +517,45 @@ def test_oidc_exchange_rejection_records_no_hub_write(tmp_path, monkeypatch):
     assert report["state"] == UNAVAILABLE
     assert report["failure_phase"] == "oidc_exchange"
     assert report["hub_write_state"] == "NOT_ATTEMPTED"
-    assert report["oidc_diagnostic"] == {
-        "failure_type": "HfHubHTTPError",
-        "failure_http_status": 400,
-        "oauth_error": "invalid_grant",
-    }
+    assert report["oidc_diagnostic"]["failure_type"] == "HfHubHTTPError"
+    assert report["oidc_diagnostic"]["failure_module"].endswith("test_marketing")
+    assert report["oidc_diagnostic"]["failure_http_status"] == 400
+    assert report["oidc_diagnostic"]["oauth_error"] == "invalid_grant"
     assert "TOKEN-CANARY" not in report_path.read_text(encoding="utf-8")
+
+
+def test_oidc_unknown_safe_exception_identifier_keeps_secret_out(tmp_path, monkeypatch):
+    package = tmp_path / "pkg"
+    build_package("szl-brand-campaign", REPO_ROOT, SHA, package)
+    monkeypatch.setenv("HF_OIDC_RESOURCE", "spaces/SZLHOLDINGS/szl-brand-campaign")
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_URL", "https://example.invalid/oidc")
+    monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN", "REQUEST-CANARY")
+
+    RemoteProtocolError = type("RemoteProtocolError", (Exception,), {"__module__": "httpx"})
+
+    def rejected_exchange():
+        raise RemoteProtocolError("TOKEN-CANARY-DO-NOT-RECORD")
+
+    fake_hub = ModuleType("huggingface_hub")
+    fake_hub.get_token = rejected_exchange
+    fake_hub.HfApi = lambda **_kwargs: pytest.fail("Hub API must not be constructed")
+    monkeypatch.setitem(sys.modules, "huggingface_hub", fake_hub)
+
+    report_path = tmp_path / "report.json"
+    report = publish_package(package, report_path)
+
+    assert report["state"] == UNAVAILABLE
+    assert report["hub_write_state"] == "NOT_ATTEMPTED"
+    assert report["oidc_diagnostic"] == {
+        "failure_type": "RemoteProtocolError",
+        "failure_module": "httpx",
+        "failure_http_status": None,
+        "oauth_error": None,
+    }
+    saved = report_path.read_text(encoding="utf-8")
+    assert "TOKEN-CANARY" not in saved
+    assert "REQUEST-CANARY" not in saved
 
 
 def test_oidc_token_is_scoped_and_write_checked_before_upload(tmp_path, monkeypatch):
