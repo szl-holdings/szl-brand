@@ -200,6 +200,7 @@ def publish_package(package: Path, report: Path, token: str | None = None) -> di
         "secrets_recorded": False,
         "attempted_at": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
     }
+    explicit_token = bool(token)
     token = token or os.environ.get("HF_TOKEN")
     if not token:
         out.update(state="UNAVAILABLE", reason="NO_TOKEN: HF_TOKEN not supplied; nothing written")
@@ -275,6 +276,20 @@ def publish_package(package: Path, report: Path, token: str | None = None) -> di
                 else f"{error_type} at {phase}"
             )[:400],
         )
+        if phase == "token_identity":
+            # Only fixed labels and booleans enter the public receipt. Never
+            # record token bytes, length, a fingerprint, or provider content.
+            binding = os.environ.get("HF_TOKEN_SOURCE", "")
+            if explicit_token:
+                binding = "EXPLICIT_ARGUMENT"
+            elif binding not in {"HF_ORG_TOKEN", "HF_TOKEN"}:
+                binding = "UNDECLARED"
+            out["credential_diagnostic"] = {
+                "selected_binding": binding,
+                "starts_with_hf_prefix": token.startswith("hf_"),
+                "contains_whitespace": any(char.isspace() for char in token),
+                "contains_non_ascii": not token.isascii(),
+            }
     _write(report, out)
     return out
 

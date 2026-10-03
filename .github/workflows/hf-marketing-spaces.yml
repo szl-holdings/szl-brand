@@ -44,6 +44,8 @@ jobs:
     timeout-minutes: 30
     env:
       HF_TOKEN: ${{ secrets.HF_ORG_TOKEN || secrets.HF_TOKEN }}
+      # Record only which secret binding won the same selection expression.
+      HF_TOKEN_SOURCE: ${{ secrets.HF_ORG_TOKEN != '' && 'HF_ORG_TOKEN' || secrets.HF_TOKEN != '' && 'HF_TOKEN' || 'NONE' }}
       PUBLISH_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
       TARGET: ${{ github.event_name == 'workflow_dispatch' && inputs.target || 'all' }}
     steps:
