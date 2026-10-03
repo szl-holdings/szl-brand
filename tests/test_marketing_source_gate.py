@@ -175,10 +175,15 @@ def test_workflow_scopes_credential_and_checks_each_side_of_upload() -> None:
     publish_step = publish_job.split("      - name: Upload secret-free per-target receipts", 1)[0]
     assert "secrets.HF_ORG_TOKEN" not in workflow
     assert "secrets.HF_TOKEN" not in workflow
+    assert workflow.count("          ref: main\n") == 2
+    assert "ref: ${{ env.PUBLISH_SHA }}" not in workflow
     assert "id-token: write" not in build_job
     assert "tests/test_marketing_source_gate.py" in build_job
     assert "--no-index --find-links dist/publisher-wheels" in publish_job
     assert "id-token: write" in publish_job
+    assert publish_job.index(
+        "Prove publisher checkout matches qualified current main"
+    ) < publish_job.index("Install qualified publisher offline")
     assert "HF_OIDC_RESOURCE: spaces/SZLHOLDINGS/${{ matrix.target }}" in publish_step
     assert "matrix.target" in publish_job
     assert publish_step.count("env -u HF_TOKEN -u HF_TOKEN_SOURCE python -m") == 2

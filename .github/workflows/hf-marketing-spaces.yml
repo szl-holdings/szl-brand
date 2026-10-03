@@ -53,10 +53,10 @@ jobs:
       PUBLISH_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
       TARGET: ${{ github.event_name == 'workflow_dispatch' && inputs.target || 'all' }}
     steps:
-      - name: Checkout exact tested main commit
+      - name: Checkout protected main for exact-source verification
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ env.PUBLISH_SHA }}
+          ref: main
           fetch-depth: 1
           persist-credentials: false
 
@@ -160,12 +160,21 @@ jobs:
     env:
       PUBLISH_SHA: ${{ needs.build.outputs.publish_sha }}
     steps:
-      - name: Checkout exact qualified main commit
+      - name: Checkout protected main for publisher verification
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ env.PUBLISH_SHA }}
+          ref: main
           fetch-depth: 1
           persist-credentials: false
+
+      - name: Prove publisher checkout matches qualified current main
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REPOSITORY}" = "szl-holdings/szl-brand"
+          test "$(git rev-parse HEAD)" = "${PUBLISH_SHA}"
+          git fetch --no-tags --depth=1 origin +refs/heads/main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = "${PUBLISH_SHA}"
 
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
