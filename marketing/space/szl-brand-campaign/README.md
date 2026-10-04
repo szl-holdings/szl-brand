@@ -13,6 +13,29 @@ tags:
 - brand
 ---
 
+<p><a href="https://huggingface.co/spaces/SZLHOLDINGS/szl-command-lab"><img src="https://raw.githubusercontent.com/szl-holdings/.github/main/profile/assets/szl/logos/szl_mark_holographic.svg" alt="SZL Holdings" width="112" /></a></p>
+
+# SZL Brand Campaign
+
+Explore SZL verification work through a compact campaign hub and public estate facts. Follow the source and publication receipt for the content served here.
+
+**Artifact:** Campaign hub and public fact display · **Stage:** Source-owned static presentation
+
+[Explore in Command Lab](https://huggingface.co/spaces/SZLHOLDINGS/szl-command-lab) · [Build](https://github.com/szl-holdings/szl-brand) · [Evidence](https://github.com/szl-holdings/szl-brand/actions/workflows/hf-marketing-spaces.yml)
+
+## Before you use it
+
+- Public API facts depend on the response and its observation time. Failed observations remain UNAVAILABLE.
+- Campaign copy and publication receipts do not establish product performance or authorize consequential actions.
+- The original asset and code licenses continue to apply. SZL names and marks remain subject to the repository trademark notice.
+
+<details>
+<summary>Technical details and original evidence</summary>
+
+The retained source below is exact and may contain historical observations. Its dates, use restrictions, licenses and evidence boundaries continue to apply.
+
+<!-- SZL-PRESERVED-TECHNICAL-BODY:START -->
+
 # SZL Holdings — brand campaign hub
 
 The line: SZL Holdings builds the verification layer for AI — signed, tamper-evident receipts,
@@ -33,3 +56,7 @@ do not edit the Space. The fact factory and compliance linter behind the campaig
 [SZLHOLDINGS/szl-marketing-1.1](https://huggingface.co/spaces/SZLHOLDINGS/szl-marketing-1.1).
 
 Brand assets CC BY 4.0 · code Apache-2.0 · ORCID 0009-0001-0110-4173.
+
+<!-- SZL-PRESERVED-TECHNICAL-BODY:END -->
+
+</details>
