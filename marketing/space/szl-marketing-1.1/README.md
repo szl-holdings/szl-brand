@@ -16,6 +16,30 @@ tags:
 - szl-holdings
 ---
 
+<p><a href="https://huggingface.co/spaces/SZLHOLDINGS/szl-command-lab"><img src="https://raw.githubusercontent.com/szl-holdings/.github/main/profile/assets/szl/logos/szl_mark_holographic.svg" alt="SZL Holdings" width="112" /></a></p>
+
+# SZL Marketing · Governed Fact Factory
+
+Collect public estate facts, compose drafts and check copy against the SZL house guardrails. The active application uses its vendored source engine and labels unavailable observations.
+
+**Artifact:** Public fact collection and draft linter · **Stage:** Source-owned Gradio application
+
+[Explore in Command Lab](https://huggingface.co/spaces/SZLHOLDINGS/szl-command-lab) · [Build](https://github.com/szl-holdings/szl-brand) · [Evidence](https://github.com/szl-holdings/szl-brand/actions/workflows/hf-marketing-spaces.yml)
+
+## Before you use it
+
+- Facts are observations from public APIs, with MEASURED or UNAVAILABLE states; freshness depends on the recorded observation.
+- The retained September 30 payload and factbase files are historical snapshots. They are distinct from facts requested by the active application.
+- Linter acceptance is a house-rule check, not independent performance evidence or permission to distribute a draft. Lambda remains Conjecture 1, advisory.
+- Original licenses and the repository trademark notice continue to apply.
+
+<details>
+<summary>Technical details and original evidence</summary>
+
+The retained source below is exact and may contain historical observations. Its dates, use restrictions, licenses and evidence boundaries continue to apply.
+
+<!-- SZL-PRESERVED-TECHNICAL-BODY:START -->
+
 # SZL-MARKETING-1.1 — Governed Fact Factory
 
 A marketing pipeline that cannot type a number. Every figure is fetched anonymously from the
@@ -51,3 +75,7 @@ The 2026-09-30 `PAYLOAD-SZL-MARKETING-1.1.md`, `factbase.json`, and
 snapshots; the active app uses the vendored engine and fetches fresh facts.
 
 Doctrine: labels stay. The trust ceiling stays 0.97, never 1.0. Λ stays Conjecture 1, advisory.
+
+<!-- SZL-PRESERVED-TECHNICAL-BODY:END -->
+
+</details>

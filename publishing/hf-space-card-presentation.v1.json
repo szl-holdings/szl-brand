@@ -1,0 +1,86 @@
+{
+  "_notice": "SPDX-License-Identifier: CC-BY-4.0; (c) 2026 SZL Holdings",
+  "schema": "szl.hf.space-card-presentation.v1",
+  "source_repository": "szl-holdings/szl-brand",
+  "cards": [
+    {
+      "kind": "spaces",
+      "repo_id": "SZLHOLDINGS/szl-brand-campaign",
+      "source_repository": "szl-holdings/szl-brand",
+      "source_revision_before_presentation": "f3517b371fd9119b3ed8db107f25794abdba296b",
+      "source_path": "marketing/space/szl-brand-campaign/README.md",
+      "source_url": "https://github.com/szl-holdings/szl-brand/blob/f3517b371fd9119b3ed8db107f25794abdba296b/marketing/space/szl-brand-campaign/README.md",
+      "presentation": {
+        "title": "SZL Brand Campaign",
+        "summary": "Explore SZL verification work through a compact campaign hub and public estate facts. Follow the source and publication receipt for the content served here.",
+        "artifact_type": "Campaign hub and public fact display",
+        "stage": "Source-owned static presentation",
+        "build_url": "https://github.com/szl-holdings/szl-brand",
+        "evidence_url": "https://github.com/szl-holdings/szl-brand/actions/workflows/hf-marketing-spaces.yml",
+        "visible_limits": [
+          "Public API facts depend on the response and its observation time. Failed observations remain UNAVAILABLE.",
+          "Campaign copy and publication receipts do not establish product performance or authorize consequential actions.",
+          "The original asset and code licenses continue to apply. SZL names and marks remain subject to the repository trademark notice."
+        ]
+      },
+      "before_sha256": "9bd200b0ce1096764995937015d92263520e1a7961a68af4d53522723f6bdcfd",
+      "after_sha256": "1069b639551300cdfda0bb17ae2beb56c70a4207007cf31828eb279c0d1f806c",
+      "front_matter_sha256": "38f9582cb4c89bf3ed55bb3ca599ce132655ccbb5e9fa256cb25d6a9ca8c0e7c",
+      "preserved_body_sha256": "7da2c3dcc76a1a79450d4a256baa86344cd6be65bcf2720f1d49ff1f0802d094",
+      "bytes_before": 1289,
+      "bytes_after": 2743,
+      "front_matter_preserved": true,
+      "original_body_preserved": true,
+      "publisher_repository": "szl-holdings/szl-brand",
+      "publisher_workflow": ".github/workflows/hf-marketing-spaces.yml",
+      "publisher_workflow_source_url": "https://github.com/szl-holdings/szl-brand/blob/f3517b371fd9119b3ed8db107f25794abdba296b/.github/workflows/hf-marketing-spaces.yml",
+      "publisher_readme_mapping": "src/szl_brand/marketing/space_package.py::TARGETS and build_package() copy the target marketing/space/<name>/README.md as README.md into that exact target package. Campaign adds the KANCHAY stylesheet; Marketing 1.1 includes the vendored source engine and the preserved historical files.",
+      "publication_trigger": "Existing workflow_run after successful Tests for a main push, with exact current-main source checks; the existing manual event retains its confirmation and fixed-target selection. No event is dispatched by this preparation.",
+      "publication_state_at_preparation": "SOURCE_CANDIDATE_ONLY_NO_HUB_EVENT_BY_THIS_LANE",
+      "publication_boundary": "The existing source-gated, target-isolated OIDC route publishes complete exact packages, reconciles stale files, and performs readback with PUBLICATION_RECEIPT.json. This preparation neither registers provider authorization nor runs publication. Packaging/card presence does not establish current API availability, business outcomes, model capability, or authorization to distribute generated marketing copy.",
+      "writer_or_workflow_changed": false,
+      "runtime_or_artifact_code_changed": false,
+      "central_apply_allowed": false
+    },
+    {
+      "kind": "spaces",
+      "repo_id": "SZLHOLDINGS/szl-marketing-1.1",
+      "source_repository": "szl-holdings/szl-brand",
+      "source_revision_before_presentation": "f3517b371fd9119b3ed8db107f25794abdba296b",
+      "source_path": "marketing/space/szl-marketing-1.1/README.md",
+      "source_url": "https://github.com/szl-holdings/szl-brand/blob/f3517b371fd9119b3ed8db107f25794abdba296b/marketing/space/szl-marketing-1.1/README.md",
+      "presentation": {
+        "title": "SZL Marketing · Governed Fact Factory",
+        "summary": "Collect public estate facts, compose drafts and check copy against the SZL house guardrails. The active application uses its vendored source engine and labels unavailable observations.",
+        "artifact_type": "Public fact collection and draft linter",
+        "stage": "Source-owned Gradio application",
+        "build_url": "https://github.com/szl-holdings/szl-brand",
+        "evidence_url": "https://github.com/szl-holdings/szl-brand/actions/workflows/hf-marketing-spaces.yml",
+        "visible_limits": [
+          "Facts are observations from public APIs, with MEASURED or UNAVAILABLE states; freshness depends on the recorded observation.",
+          "The retained September 30 payload and factbase files are historical snapshots. They are distinct from facts requested by the active application.",
+          "Linter acceptance is a house-rule check, not independent performance evidence or permission to distribute a draft. Lambda remains Conjecture 1, advisory.",
+          "Original licenses and the repository trademark notice continue to apply."
+        ]
+      },
+      "before_sha256": "32e1ca286f7860d2ebace3a56da44cf8195e5cf77b29a3f5c3a807af4fcd10d4",
+      "after_sha256": "d89b506fce361ddc8c76406487c764dd4b0f7837fa34a64b21ff5cb4614c0a73",
+      "front_matter_sha256": "8a2306f510c258b69ca8d9d58b91d4c32ff1658f4d76e7d2afffb5747a71a233",
+      "preserved_body_sha256": "e46e7e70de65f461fda0ba5467c2f8577ddb25745ed360f87241a9ec63ca179b",
+      "bytes_before": 2217,
+      "bytes_after": 3875,
+      "front_matter_preserved": true,
+      "original_body_preserved": true,
+      "publisher_repository": "szl-holdings/szl-brand",
+      "publisher_workflow": ".github/workflows/hf-marketing-spaces.yml",
+      "publisher_workflow_source_url": "https://github.com/szl-holdings/szl-brand/blob/f3517b371fd9119b3ed8db107f25794abdba296b/.github/workflows/hf-marketing-spaces.yml",
+      "publisher_readme_mapping": "src/szl_brand/marketing/space_package.py::TARGETS and build_package() copy the target marketing/space/<name>/README.md as README.md into that exact target package. Campaign adds the KANCHAY stylesheet; Marketing 1.1 includes the vendored source engine and the preserved historical files.",
+      "publication_trigger": "Existing workflow_run after successful Tests for a main push, with exact current-main source checks; the existing manual event retains its confirmation and fixed-target selection. No event is dispatched by this preparation.",
+      "publication_state_at_preparation": "SOURCE_CANDIDATE_ONLY_NO_HUB_EVENT_BY_THIS_LANE",
+      "publication_boundary": "The existing source-gated, target-isolated OIDC route publishes complete exact packages, reconciles stale files, and performs readback with PUBLICATION_RECEIPT.json. This preparation neither registers provider authorization nor runs publication. Packaging/card presence does not establish current API availability, business outcomes, model capability, or authorization to distribute generated marketing copy.",
+      "writer_or_workflow_changed": false,
+      "runtime_or_artifact_code_changed": false,
+      "central_apply_allowed": false
+    }
+  ]
+}
