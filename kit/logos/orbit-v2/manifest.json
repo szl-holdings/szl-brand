@@ -1,0 +1,16 @@
+{
+  "schema": "szl.logo-manifest.v1",
+  "version": "2.0.0",
+  "source_repository": "szl-holdings/szl-brand",
+  "master": "kit/logos/orbit-v2/szl-orbit.svg",
+  "sha256": "84a23d7b2a6dd198378ded91e52c545df2943fd33cbc4a67dd4184e94f4d94fb",
+  "deployment_status": "NOT_ATTESTED",
+  "viewBox": [0, 0, 600, 600],
+  "lettering": "matching outlined S Z L; shared scale and baseline",
+  "orbit_degrees": -22,
+  "palette": {"navy": "#030F29", "letters": "#FFFFFF", "node": "#DF735F"},
+  "runtime_fonts": 0,
+  "external_resources": 0,
+  "approval_scope": "Parent SZL mark; preserve vertical names and product identity",
+  "legacy_bundle_status": "KANCHAY 1.1.1 unchanged; adopt v2 only after protected-source admission"
+}
