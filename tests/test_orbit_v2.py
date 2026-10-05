@@ -32,8 +32,17 @@ def test_orbit_is_accessible_self_contained_static_vector():
         element = root.find(f".//*[@id='{ref}']")
         assert element is not None and element.text and element.text.strip()
     allowed = {
-        "svg", "title", "desc", "defs", "linearGradient", "stop",
-        "rect", "g", "ellipse", "path", "circle",
+        "svg",
+        "title",
+        "desc",
+        "defs",
+        "linearGradient",
+        "stop",
+        "rect",
+        "g",
+        "ellipse",
+        "path",
+        "circle",
     }
     for node in root.iter():
         assert node.tag.removeprefix("{http://www.w3.org/2000/svg}") in allowed
