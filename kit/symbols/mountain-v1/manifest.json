@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "asset": "szl-mountain-symbol-v1",
+  "selection_date": "2026-10-05",
+  "status": "owner_selected_source_reference",
+  "production_adopted": false,
+  "generation": "OpenAI built-in image generation; original requested artwork",
+  "file": "szl-mountain-symbol.png",
+  "mime_type": "image/png",
+  "width": 1254,
+  "height": 1254,
+  "color_mode": "RGB",
+  "bytes": 938960,
+  "sha256": "1e05dfb0739375572fc63154770b42af1ae67905409e8b87f862a5791c22c52c",
+  "git_blob_sha": "f2fab78f89286de1436f2689b1526e910fadad59",
+  "validation": {
+    "png_decode": "passed",
+    "byte_identity": "passed",
+    "small_size_visual": "not_run",
+    "circle_crop": "not_run",
+    "vector_master": "not_created",
+    "downstream_publication": "not_performed"
+  },
+  "preserve_existing_assets": true
+}
