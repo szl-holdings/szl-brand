@@ -9,6 +9,7 @@ Usage:
     python -m szl_brand serve           Start live preview gallery
     python -m szl_brand drift           Check manifest drift
     python -m szl_brand kanchay-build   Rebuild or check the kanchay/ vendor bundle
+    python -m szl_brand orbit-suite     Rebuild or check the Orbit v2 asset suite
 """
 
 from __future__ import annotations
@@ -265,6 +266,33 @@ def cmd_kanchay_build(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_orbit_suite(args: argparse.Namespace) -> int:
+    """Rebuild (``resvg-py`` required) or check the Orbit v2 asset suite."""
+    import hashlib
+
+    from szl_brand import orbit_suite
+
+    root = Path(args.root).resolve() if args.root else orbit_suite.repo_root()
+    if args.check:
+        errors = orbit_suite.check(root)
+        for error in errors:
+            print(f"  [31merror[0m {error}", file=sys.stderr)
+        if errors:
+            return 1
+        print(
+            f"Orbit v2 suite {orbit_suite.SUITE_VERSION} matches its master: {root / orbit_suite.SUITE_DIR}"
+        )
+        return 0
+    try:
+        outputs = orbit_suite.write(root)
+    except ImportError as exc:
+        print(f"  [31merror[0m rendering needs resvg-py: {exc}", file=sys.stderr)
+        return 2
+    for name, data in outputs.items():
+        print(f"{hashlib.sha256(data).hexdigest()}  {orbit_suite.SUITE_DIR}/{name}")
+    return 0
+
+
 def cmd_validate_command_contract(args: argparse.Namespace) -> int:
     """Validate a KHIPU Command System surface disclosure."""
 
@@ -347,6 +375,12 @@ def app() -> None:
         help="szl-brand main commit the bundle is cut from (default: the one in SOURCE.json)",
     )
 
+    p_orbit = sub.add_parser(
+        "orbit-suite", help="Rebuild or check the Orbit v2 asset suite derived from the master"
+    )
+    p_orbit.add_argument("--check", action="store_true", help="Fail if the suite differs")
+    p_orbit.add_argument("--root", help="Checkout root (default: this source tree)")
+
     p_command = sub.add_parser(
         "validate-command-contract",
         help="Validate a KHIPU Command System surface disclosure",
@@ -369,6 +403,7 @@ def app() -> None:
         "serve": cmd_serve,
         "export-system": cmd_export_system,
         "kanchay-build": cmd_kanchay_build,
+        "orbit-suite": cmd_orbit_suite,
         "validate-command-contract": cmd_validate_command_contract,
     }
 
