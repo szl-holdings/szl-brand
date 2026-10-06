@@ -11,6 +11,7 @@ pinned by sha256 in `SOURCE.json`. Nothing in this folder is generated or edited
 |---|---|---|
 | `szl-design-system.css` | KANCHAY v1.3.0: tokens, both surfaces, base, type scale and components. | `kit/tokens/szl-design-system.css` |
 | `szl-console.css` | Operator console layer 1.2.0, additive, on the same tokens. | `kit/tokens/szl-console.css` |
+| `szl-tokens.css` | Derived: only the custom properties of `szl-design-system.css` (palette, both polarities, type, spacing, radius, shadow, motion, z). No element or class rules. | built from `kit/tokens/szl-design-system.css` |
 | `logos/` | The orbit mark suite: horizontal, primary, transparent, mono white and navy, favicons. | `kit/logos/`, `kit/logos/png/` |
 | `SOURCE.json` | Version, base, layers, `source_commit`, licenses and the sha256 of every file above. | built |
 
@@ -22,7 +23,12 @@ pinned by sha256 in `SOURCE.json`. Nothing in this folder is generated or edited
    edit a vendored file; override in your own stylesheet with tokens.
 2. **Stop Git from rewriting the bytes.** Add `assets/szl/** -text` to the surface's
    `.gitattributes`.
-3. **Link it before the surface's own stylesheet**, the design system first:
+3. **Tokens only?** If the surface keeps its own component CSS and its class names (for example
+   `.card`, `.chip`, `.hero`) would collide with KANCHAY's, vendor `szl-tokens.css` instead of
+   `szl-design-system.css`. It carries every token and both polarities, including nested
+   `data-surface` panels, but no element or class rules. The surface then sets its own `color` on
+   nested panels.
+4. **Link it before the surface's own stylesheet**, the design system first:
 
    ```html
    <link rel="stylesheet" href="/assets/szl/szl-design-system.css">
@@ -30,11 +36,11 @@ pinned by sha256 in `SOURCE.json`. Nothing in this folder is generated or edited
    <link rel="stylesheet" href="/assets/app.css">
    ```
 
-4. **Remove every webfont.** Delete Google Fonts and other CDN font links, and any `@font-face`
+5. **Remove every webfont.** Delete Google Fonts and other CDN font links, and any `@font-face`
    for Inter, Space Grotesk, IBM Plex or Syncopate. Also remove files from the withdrawn `kanchay/`
    1.0.0 export: its stylesheets, component bundle and WOFF2 files. The system uses the device's own
    font stacks through `--font-body`, `--font-display` and `--font-mono`.
-5. **Check the copy against the manifest.** Files you did not vendor are skipped:
+6. **Check the copy against the manifest.** Files you did not vendor are skipped:
 
    ```bash
    cd assets/szl && python -c "import hashlib,json,pathlib;m=json.load(open('SOURCE.json'))['sha256'];bad=[p for p,h in m.items() if pathlib.Path(p).exists() and hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()!=h];print('modified: '+', '.join(bad) if bad else 'ok')"
