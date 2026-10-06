@@ -1,16 +1,16 @@
 <!-- SPDX-License-Identifier: Apache-2.0
 (c) 2026 Lutar, Stephen P. - SZL Holdings - ORCID 0009-0001-0110-4173 -->
 
-# KANCHAY vendor bundle 1.1.1
+# KANCHAY vendor bundle 1.2.0
 
-This folder is the ready-to-vendor bundle of KANCHAY v1.1.1, the founder-approved SZL Holdings
+This folder is the ready-to-vendor bundle of KANCHAY v1.2.0, the founder-approved SZL Holdings
 design system. The source of truth is `kit/`. Every file here is a byte-for-byte copy of a kit file,
 pinned by sha256 in `SOURCE.json`. Nothing in this folder is generated or edited.
 
 | File | What it is | Kit source |
 |---|---|---|
-| `szl-design-system.css` | KANCHAY v1.1.1: tokens, both surfaces, base, type scale and components. | `kit/tokens/szl-design-system.css` |
-| `szl-console.css` | Operator console layer 1.0.0, additive, on the same tokens. | `kit/tokens/szl-console.css` |
+| `szl-design-system.css` | KANCHAY v1.2.0: tokens, both surfaces, base, type scale and components. | `kit/tokens/szl-design-system.css` |
+| `szl-console.css` | Operator console layer 1.1.0, additive, on the same tokens. | `kit/tokens/szl-console.css` |
 | `logos/` | The orbit mark suite: horizontal, primary, transparent, mono white and navy, favicons. | `kit/logos/`, `kit/logos/png/` |
 | `SOURCE.json` | Version, base, layers, `source_commit`, licenses and the sha256 of every file above. | built |
 
@@ -40,6 +40,14 @@ pinned by sha256 in `SOURCE.json`. Nothing in this folder is generated or edited
    cd assets/szl && python -c "import hashlib,json,pathlib;m=json.load(open('SOURCE.json'))['sha256'];bad=[p for p,h in m.items() if pathlib.Path(p).exists() and hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()!=h];print('modified: '+', '.join(bad) if bad else 'ok')"
    ```
 
+### Upgrading from 1.1.1
+
+1.2.0 lets a surface be declared on any element (see "Nested surfaces" below). No color value
+changes. Replace `szl-design-system.css`, `szl-console.css` and `SOURCE.json` in `szl/`; every logo
+file is byte-identical to 1.1.1. If your own stylesheet keys rules on the page polarity, such as
+`[data-surface="light"] .thing { color:… }`, move the value into a token declared on both
+polarities, because a descendant rule like that also reaches into a nested dark panel.
+
 ### Upgrading from 1.1.0
 
 1.1.1 changes only the focus ring (see "Focus" below). Replace `szl-design-system.css` and
@@ -53,6 +61,24 @@ their hashes do not change.
 - **Light marketing** is `<html data-surface="light">`: the public site, landing pages, decks, the
   blog, and document-like light tools. It uses the same roles with light values.
 - Code blocks stay dark on both surfaces. There is no third theme.
+
+### Nested surfaces
+
+From 1.2.0 either polarity can be declared on any element, not only `<html>`. A dark hero, code
+panel or specimen card inside a light page carries `data-surface="dark"` on its own root, and a
+light card inside a dark console carries `data-surface="light"`:
+
+```html
+<html data-surface="light">
+  <section class="hero" data-surface="dark">…</section>
+</html>
+```
+
+Every role (`--text`, `--link`, `--focus`, `--chip-ok` and the rest) re-resolves at that root, the
+root takes `color:var(--text)` for its plain text, and `--shadow-focus` follows its `--focus`. The
+panel still paints its own background. A surface's own aliases must re-resolve there too: if your
+stylesheet maps a local name onto a role on `<html>`, for example `--ink:var(--text)`, declare that
+mapping on `[data-surface]` as well, or the nested panel inherits the page's resolved value.
 
 ## Color, in short
 
@@ -115,7 +141,9 @@ python -m szl_brand kanchay-build --check   # fails if kanchay/ differs from kit
 - a webfont or the withdrawn gold token appears in the bundle;
 - a `var(--…)` without a fallback is undefined in the two stylesheets.
 
-`source_commit` is the szl-brand main commit the bundle was cut from. For 1.1.1 that is
+`source_commit` is the szl-brand main commit the bundle was cut from. For 1.2.0 that is
+`20b551b`; the nested-surface change to both kit stylesheets was made in the change that cut 1.2.0,
+on top of that commit, and the logos already had these bytes there. For 1.1.1 it was
 `a0a27f0`. The focus-outline change to `kit/tokens/szl-design-system.css` was made in the change
 that cut 1.1.1, on top of that commit; `szl-console.css` and the logos already had these bytes
 there. For 1.1.0 it was `168c53a`, and `szl-console.css` 1.0.0 was added to `kit/tokens/` in the
