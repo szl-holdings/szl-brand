@@ -58,8 +58,6 @@ RASTERS: Final = {
 }
 ICO: Final = {"favicon.ico": ("png/favicon-16.png", "png/favicon-32.png", "png/favicon-48.png")}
 
-_NS: Final = "{http://www.w3.org/2000/svg}"
-
 
 def repo_root() -> Path:
     return Path(__file__).resolve().parents[2]
