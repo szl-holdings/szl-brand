@@ -43,6 +43,13 @@ settings update separately; a logo commit does not establish that those settings
 Do not overwrite vertical marks, historical evidence images, licensed partner logos or
 unrelated app icons. No product or evaluation result is upgraded by a branding change.
 
+## Derived placements
+
+[`suite/`](suite/) holds every derived placement: single-color and holographic variants, 16 to
+48 px icons, the favicon set, a round-crop-safe avatar, app and maskable icons, and a 1200×630
+social image. All are generated from this master by `szl-brand orbit-suite` and pinned in
+`suite/manifest.json`. [`suite/README.md`](suite/README.md) says which file goes where.
+
 ## Verification
 
 ```bash

@@ -1,0 +1,142 @@
+{
+  "schema": "szl.logo-suite.v1",
+  "version": "1.0.0",
+  "source_repository": "szl-holdings/szl-brand",
+  "master": "kit/logos/orbit-v2/szl-orbit.svg",
+  "master_sha256": "84a23d7b2a6dd198378ded91e52c545df2943fd33cbc4a67dd4184e94f4d94fb",
+  "generator": "src/szl_brand/orbit_suite.py",
+  "renderer": "resvg-py 0.5.0; Pillow ICO",
+  "deployment_status": "NOT_ATTESTED",
+  "license": {
+    "code": "Apache-2.0",
+    "brand_assets": "CC BY 4.0"
+  },
+  "trademark": "The SZL Holdings name, mark and brand colors are trademarks of SZL Holdings and are not licensed by either license.",
+  "files": {
+    "szl-orbit.svg": {
+      "sha256": "84a23d7b2a6dd198378ded91e52c545df2943fd33cbc4a67dd4184e94f4d94fb"
+    },
+    "szl-orbit-mono-navy.svg": {
+      "sha256": "194077b528325839428f1862b2d5c79e7197169467d51e0fb11cf873b93fc18d"
+    },
+    "szl-orbit-mono-white.svg": {
+      "sha256": "fdcfbf3644274dc2dbd60f4a95e55674c2b88c4bcd5fbc7f592deb7563fa36fd"
+    },
+    "szl-orbit-holo.svg": {
+      "sha256": "66bbf937cb3cd257ec4ab5e7b016e4c09b5d6ea97f735453833a04c534a63b37"
+    },
+    "szl-icon-32.svg": {
+      "sha256": "6e2b7d72a3af3d9602b79de41df0194ede6496a9661f057108ec224c0efc92e6"
+    },
+    "szl-icon-16.svg": {
+      "sha256": "6e2dc7c9794dc452fbccb44ffadbd168c2584361904e8bcaeba542427d9e1a3a"
+    },
+    "szl-avatar.svg": {
+      "sha256": "bd26bc09d2650a419508f5ce35688bbc9416f37a72d24a6ea2208957eea3728d"
+    },
+    "szl-icon-maskable.svg": {
+      "sha256": "3ef42b26537cad1738c828deef10e8df89f82a65248da392f72d96715a53790d"
+    },
+    "szl-social-1200x630.svg": {
+      "sha256": "8e4f2420049b0416353fa4a8689396038ab32c252f13150f4d78e51e285be1c7"
+    },
+    "png/szl-orbit-512.png": {
+      "sha256": "2f808b6b33292f5c950cc5a04cc2ebf52431dafcd4dd4529fa262c880f10afb3",
+      "from": "szl-orbit.svg",
+      "width": 512,
+      "height": 512
+    },
+    "png/szl-orbit-1024.png": {
+      "sha256": "8eeef8c3e3278074c58b8fb55ce6092c0b453bc602c7277512d1a50b86058274",
+      "from": "szl-orbit.svg",
+      "width": 1024,
+      "height": 1024
+    },
+    "png/szl-orbit-mono-navy-1024.png": {
+      "sha256": "16389ba203e8642e3a4acfdfaca89008929010e5ca2790183906e547fbe5328e",
+      "from": "szl-orbit-mono-navy.svg",
+      "width": 1024,
+      "height": 1024
+    },
+    "png/szl-orbit-mono-white-1024.png": {
+      "sha256": "0842755ad69f40075bd4bbf379be27db07404714d29839f31a21b341e5b75047",
+      "from": "szl-orbit-mono-white.svg",
+      "width": 1024,
+      "height": 1024
+    },
+    "png/szl-orbit-holo-1024.png": {
+      "sha256": "d4eb1e708fb166f7fb6b33052cd064b4d9814dc0c7b1f25da4a20650774f6742",
+      "from": "szl-orbit-holo.svg",
+      "width": 1024,
+      "height": 1024
+    },
+    "png/favicon-16.png": {
+      "sha256": "764edf88b2dc2159cfdde131259a28880fdf49fa81bbd52bed4299ca0b6d030a",
+      "from": "szl-icon-16.svg",
+      "width": 16,
+      "height": 16
+    },
+    "png/favicon-32.png": {
+      "sha256": "b8d1d3c96cd34b74aa7496da0252dce37845dfa0ea75e302b7d7f6be6766c504",
+      "from": "szl-icon-32.svg",
+      "width": 32,
+      "height": 32
+    },
+    "png/favicon-48.png": {
+      "sha256": "c066d829e5c65940df749217a574be14ebfc0ce4331fae31cfcdf23d18f5605d",
+      "from": "szl-icon-32.svg",
+      "width": 48,
+      "height": 48
+    },
+    "png/apple-touch-icon-180.png": {
+      "sha256": "ddeb873e960f14c41078d82cad4f7bb5a40dca555867ac3c3fb869ce46bbef6c",
+      "from": "szl-avatar.svg",
+      "width": 180,
+      "height": 180
+    },
+    "png/icon-192.png": {
+      "sha256": "b09068513a2de8ac95a2894c17a7b1db0bf6701d4e1b21fb30d72fb0d133e97c",
+      "from": "szl-avatar.svg",
+      "width": 192,
+      "height": 192
+    },
+    "png/icon-512.png": {
+      "sha256": "6671a948d3df50150452ed0799621b874e3a6f52e905c01bb1f58ea7a66dd3e5",
+      "from": "szl-avatar.svg",
+      "width": 512,
+      "height": 512
+    },
+    "png/icon-maskable-512.png": {
+      "sha256": "571d8c84e0e4cc5a9dfa48d881c95c005a49787c194563c84becd64a02836060",
+      "from": "szl-icon-maskable.svg",
+      "width": 512,
+      "height": 512
+    },
+    "png/szl-avatar-512.png": {
+      "sha256": "6671a948d3df50150452ed0799621b874e3a6f52e905c01bb1f58ea7a66dd3e5",
+      "from": "szl-avatar.svg",
+      "width": 512,
+      "height": 512
+    },
+    "png/szl-avatar-1024.png": {
+      "sha256": "3fd72a6f8bd36f61dbb4137393e685e55c78042f5e070dfe13fe5e50e630cc9a",
+      "from": "szl-avatar.svg",
+      "width": 1024,
+      "height": 1024
+    },
+    "png/szl-social-1200x630.png": {
+      "sha256": "de6dca43a0a9d42ee43654f8a1bc23dea41961239c5e4c8de82bf8163e3b41af",
+      "from": "szl-social-1200x630.svg",
+      "width": 1200,
+      "height": 630
+    },
+    "favicon.ico": {
+      "sha256": "8c9591eefe7a7c01a79c9b5500bf57993acbdc004dc298993ea631e1aea07cab",
+      "from": [
+        "png/favicon-16.png",
+        "png/favicon-32.png",
+        "png/favicon-48.png"
+      ]
+    }
+  }
+}

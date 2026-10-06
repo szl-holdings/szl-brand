@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Orbit v2 asset suite 1.0.0 in `kit/logos/orbit-v2/suite/`, derived from the approved master
+  by `src/szl_brand/orbit_suite.py` (`szl-brand orbit-suite [--check]`). It contains:
+  - single-color navy and white variants, with the orbit masked around the letters;
+  - a restrained silver holographic variant;
+  - simplified icons for 24 to 48 px and for 20 px and below (no lambda; no orbit at 16 px);
+  - `favicon.ico` (16, 32, 48);
+  - a full-bleed avatar whose content stays inside the round crop;
+  - apple-touch, PWA and maskable icons, and a 1200×630 social image.
+
+  The rasters are rendered with resvg. Every file is pinned by sha256 next to the master's hash,
+  and `suite/README.md` gives the placement rules. `tests/test_orbit_suite.py` gates master reuse,
+  small-size simplification, the round-crop and safe-zone geometry, single-color purity, the
+  palette, the raster sizes and transparency.
+
 - Add the `szl_brand.marketing` engine (`szl-marketing` CLI): a live, labeled estate factbase
   (anonymous GitHub and Hugging Face pulls, models+datasets crown sweep, UNAVAILABLE over guessed,
   backup before overwrite), the Part 2 compliance linter as code (sentence-scoped, disclaimer

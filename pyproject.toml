@@ -27,6 +27,9 @@ publish = [
 space = [
     "gradio>=5.9,<7",
 ]
+render = [
+    "resvg-py>=0.5,<1",
+]
 
 [project.scripts]
 szl-brand = "szl_brand.cli:app"
