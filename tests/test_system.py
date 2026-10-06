@@ -436,10 +436,10 @@ def test_a_surface_declared_on_any_element_re_resolves_every_role(path):
     # page around it, so both polarities declare the same roles.
     assert set(dark) == set(light)
     # Roles derived from a polarity token re-resolve on every surface root.
-    derived = _custom_properties(css, ":root, [data-surface]")
+    derived = _custom_properties(css, ':root, [data-surface="dark"], [data-surface="light"]')
     assert derived["shadow-focus"].startswith("0 0 0 3px color-mix(in srgb, var(--focus)")
     assert "shadow-focus" not in _custom_properties(css, ":root")
-    assert ":where([data-surface]) { color:var(--text); }" in css
+    assert ':where([data-surface="dark"], [data-surface="light"]) { color:var(--text); }' in css
     # A descendant rule keyed on the page polarity would leak into a nested surface.
     assert not re.search(r'\[data-surface="(?:light|dark)"\]\s+[^\s{,]', css)
 

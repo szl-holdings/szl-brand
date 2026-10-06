@@ -75,7 +75,8 @@ light card inside a dark console carries `data-surface="light"`:
 ```
 
 Every role (`--text`, `--link`, `--focus`, `--chip-ok` and the rest) re-resolves at that root, the
-root takes `color:var(--text)` for its plain text, and `--shadow-focus` follows its `--focus`. The
+root takes `color:var(--text)` for its plain text (only the values `dark` and `light` act as a
+surface; `data-surface` used as a label elsewhere is ignored), and `--shadow-focus` follows its `--focus`. The
 panel still paints its own background. A surface's own aliases must re-resolve there too: if your
 stylesheet maps a local name onto a role on `<html>`, for example `--ink:var(--text)`, declare that
 mapping on `[data-surface]` as well, or the nested panel inherits the page's resolved value.

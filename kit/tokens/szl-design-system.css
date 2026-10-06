@@ -104,11 +104,12 @@
   color-scheme:light;
 }
 /* Roles derived from a polarity token are re-declared on every surface root so they
-   resolve against that surface, and a nested surface carries its own text color. */
-:root, [data-surface] {
+   resolve against that surface, and a nested surface carries its own text color. Only
+   the two polarity values count; data-surface used as a label is left alone. */
+:root, [data-surface="dark"], [data-surface="light"] {
   --shadow-focus:0 0 0 3px color-mix(in srgb, var(--focus) 55%, transparent);
 }
-:where([data-surface]) { color:var(--text); }
+:where([data-surface="dark"], [data-surface="light"]) { color:var(--text); }
 
 /* --- 3 · TYPE SCALE — Major Third (1.25), base 16px (KANCHAY scale) -------- */
 :root {

@@ -24,8 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - KANCHAY 1.2.0: either polarity can be declared on any element. The dark semantic block in
   `kit/tokens/szl-design-system.css` is now `:root, [data-surface="dark"]`; `--shadow-focus` is
-  re-declared on every `[data-surface]` root so it follows that root's `--focus`; a surface root
-  takes `color:var(--text)`; and the proven/live, conjecture/simulated and sorry/unavailable chip
+  re-declared on every `dark` or `light` surface root so it follows that root's `--focus`; a
+  surface root takes `color:var(--text)` (other `data-surface` values, used as labels, are ignored); and the proven/live, conjecture/simulated and sorry/unavailable chip
   colors move into `--chip-ok`, `--chip-warn` and `--chip-bad` on both polarities, replacing the
   `[data-surface="light"] .chip-*` descendant overrides that leaked into nested dark panels. The
   operator layer `kit/tokens/szl-console.css` 1.1.0 declares its status inks the same way. No
