@@ -18,7 +18,7 @@ class TestCLI:
             [sys.executable, "-m", "szl_brand", "--version"], capture_output=True, text=True
         )
         assert result.returncode == 0
-        assert "1.2.0" in result.stdout
+        assert "1.3.0" in result.stdout
 
     def test_generate(self, tmp_path):
         result = subprocess.run(
@@ -128,7 +128,7 @@ class TestCLI:
         )
         assert result.returncode == 0, result.stderr
         assert (tmp_path / "system" / "manifest.json").is_file()
-        assert "KANCHAY design system 1.2.0" in result.stdout
+        assert "KANCHAY design system 1.3.0" in result.stdout
 
     def test_validate_command_contract(self):
         result = subprocess.run(

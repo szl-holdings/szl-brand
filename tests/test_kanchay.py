@@ -52,9 +52,9 @@ def test_source_json_has_the_founder_shape_and_pins_every_file():
     source = _source()
     assert list(source) == SOURCE_KEYS
     assert source["name"] == "szl-kanchay"
-    assert source["version"] == kanchay.VERSION == "1.2.0"
-    assert "KANCHAY v1.2.0, founder-approved" in source["base"]
-    assert source["layers"] == {"szl-console.css": "1.1.0 (operator console, additive)"}
+    assert source["version"] == kanchay.VERSION == "1.3.0"
+    assert "KANCHAY v1.3.0, founder-approved" in source["base"]
+    assert source["layers"] == {"szl-console.css": "1.2.0 (operator console, additive)"}
     assert re.fullmatch(r"[0-9a-f]{40}", source["source_commit"])
     assert source["license"] == {"code": "Apache-2.0", "brand_assets": "CC BY 4.0"}
     assert list(source["sha256"]) == list(kanchay.BUNDLE)

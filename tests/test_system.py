@@ -48,7 +48,7 @@ def test_manifest_pins_source_and_every_asset(tmp_path):
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 
     assert manifest["contract"] == CONTRACT
-    assert manifest["version"] == "1.2.0"
+    assert manifest["version"] == "1.3.0"
     assert manifest["source"]["revision"] == REVISION
     assert {record["path"] for record in manifest["assets"]} == {
         "system.css",
@@ -460,6 +460,30 @@ def test_console_status_inks_follow_the_nearest_surface(path):
     assert set(dark) == set(light) >= {"ink-good", "ink-warn", "ink-bad", "ink-info"}
     assert not re.search(r"(?m)^:root\s*\{", css)
     assert not re.search(r'\[data-surface="(?:light|dark)"\]\s+[^\s{,]', css)
+
+
+@pytest.mark.parametrize(
+    "path", ["kit/tokens/szl-design-system.css", "kanchay/szl-design-system.css"]
+)
+def test_graphite_and_editorial_neutrals_keep_controls_and_quiet_text_readable(path):
+    css = (Path(__file__).resolve().parents[1] / path).read_text(encoding="utf-8")
+    grounds = ("bg", "surface", "surface-alt", "surface-raised")
+    canvas = {"dark": "#080B12", "light": "#F5F3EE"}
+    for surface in ("dark", "light"):
+        tokens = _surface_tokens(css, surface)
+        assert _resolve_hex(tokens, "bg") == Color.from_hex(canvas[surface])
+        edge = _resolve_hex(tokens, "control-edge")
+        ghost = _resolve_hex(tokens, "text-ghost")
+        for ground in grounds:
+            base = _resolve_hex(tokens, ground)
+            # An essential control boundary is non-text UI: 3:1 against every ground it sits on.
+            assert edge.contrast_ratio(base) >= 3.0, f"{surface} --control-edge on --{ground}"
+            assert ghost.contrast_ratio(base) >= 4.5, f"{surface} --text-ghost on --{ground}"
+    # A decorative separator must never be the only outline of a control.
+    assert (
+        ".btn-secondary { background:transparent; color:var(--text); border-color:var(--control-edge); }"
+        in css
+    )
 
 
 def test_control_target_uses_a_sizable_display_mode():
