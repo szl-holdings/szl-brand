@@ -43,10 +43,10 @@ attribute (`:root` = dark; `[data-surface="light"]`):
 | | **Dark operator surface** (default) | **Light marketing surface** |
 |---|---|---|
 | Where | `/console`, `/elite`, docs, dashboards, the 3D search | public site, landing, decks, blog |
-| Ground | space navy `#030F29` → near-black | near-white `#f5f7fa` |
+| Ground | graphite `#080B12` (KANCHAY 1.3.0; navy `#030F29` stays the mark's tile) | warm paper `#F5F3EE` (KANCHAY 1.3.0) |
 | Feeling | deep space, instrument, focus | open, editorial, generous air |
 | Accent | coral `#DF735F` (one node) | coral `#C4543F` (deeper, for AA) |
-| Text | `#f5f7fa` on navy (17.8:1) | `#10151c` on white (17:1) |
+| Text | `#F1F4F8` on graphite (17.8:1) | `#111722` on paper (16.2:1) |
 
 This is the True-Anomaly polarity in our own palette: the marketing light is where we
 *explain*; the operator dark is where we *operate*. Both are the same brand; the flip
@@ -57,7 +57,7 @@ the page).
 
 ## 3 · Color discipline — earn every color
 
-- **Mostly neutral.** Squint at any screen: it should read as navy/grey with **one**
+- **Mostly neutral.** Squint at any screen: it should read as graphite/grey with **one**
   bright moment. That moment is the **coral node**. One primary CTA per view; one node
   per hero; one accent underline on the active nav item. If coral appears twice for
   decoration, remove one.

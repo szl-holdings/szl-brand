@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- KANCHAY 1.3.0: graphite operational and warm editorial neutrals, as directed by the 2026-10-06
+  frontend overhaul brief.
+  - **Dark polarity:** `--bg` `#080B12`, `--surface` `#111722`, `--surface-raised` `#182232`,
+    `--text` `#F1F4F8`, `--text-sub` `#AAB7C9`. It now matches the graphite canvas already used by
+    the product console and the proof origin.
+  - **Light polarity:** `--bg` `#F5F3EE`, white surfaces, `--surface-alt` `#EBEEF2`, `--text`
+    `#111722`. It now matches the product homepage's editorial canvas.
+  - **New palette tokens:** a `graphite` / `paper` / `mist` / `ink` neutral scale.
+  - **`--control-edge`** moves from the operator layer (now 1.2.0) into both polarities as the
+    outline of essential controls. `.btn-secondary` uses it, and `--border` stays a decorative
+    separator.
+  - **`--text-ghost`** now reaches 4.5:1 or more on every ground. Dark ghost on `--surface` was
+    4.27:1 in 1.2.0.
+  - Accents (coral, teal links and focus, gold premium, silver linework), type, spacing and
+    components are unchanged.
+  - The design direction's polarity table, the bundle README and a new 1.3.0 section in
+    `COLOR_CONTRAST_REPORT.md` record the measured pairs. A test enforces control-edge 3:1 and
+    ghost 4.5:1 on every ground.
 - Orbit v2 asset suite 1.0.0 in `kit/logos/orbit-v2/suite/`, derived from the approved master
   by `src/szl_brand/orbit_suite.py` (`szl-brand orbit-suite [--check]`). It contains:
   - single-color navy and white variants, with the orbit masked around the letters;

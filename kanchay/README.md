@@ -1,16 +1,16 @@
 <!-- SPDX-License-Identifier: Apache-2.0
 (c) 2026 Lutar, Stephen P. - SZL Holdings - ORCID 0009-0001-0110-4173 -->
 
-# KANCHAY vendor bundle 1.2.0
+# KANCHAY vendor bundle 1.3.0
 
-This folder is the ready-to-vendor bundle of KANCHAY v1.2.0, the founder-approved SZL Holdings
+This folder is the ready-to-vendor bundle of KANCHAY v1.3.0, the founder-approved SZL Holdings
 design system. The source of truth is `kit/`. Every file here is a byte-for-byte copy of a kit file,
 pinned by sha256 in `SOURCE.json`. Nothing in this folder is generated or edited.
 
 | File | What it is | Kit source |
 |---|---|---|
-| `szl-design-system.css` | KANCHAY v1.2.0: tokens, both surfaces, base, type scale and components. | `kit/tokens/szl-design-system.css` |
-| `szl-console.css` | Operator console layer 1.1.0, additive, on the same tokens. | `kit/tokens/szl-console.css` |
+| `szl-design-system.css` | KANCHAY v1.3.0: tokens, both surfaces, base, type scale and components. | `kit/tokens/szl-design-system.css` |
+| `szl-console.css` | Operator console layer 1.2.0, additive, on the same tokens. | `kit/tokens/szl-console.css` |
 | `logos/` | The orbit mark suite: horizontal, primary, transparent, mono white and navy, favicons. | `kit/logos/`, `kit/logos/png/` |
 | `SOURCE.json` | Version, base, layers, `source_commit`, licenses and the sha256 of every file above. | built |
 
@@ -40,6 +40,24 @@ pinned by sha256 in `SOURCE.json`. Nothing in this folder is generated or edited
    cd assets/szl && python -c "import hashlib,json,pathlib;m=json.load(open('SOURCE.json'))['sha256'];bad=[p for p,h in m.items() if pathlib.Path(p).exists() and hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()!=h];print('modified: '+', '.join(bad) if bad else 'ok')"
    ```
 
+### Upgrading from 1.2.0
+
+1.3.0 changes the neutral values of both polarities. Accents, the type scale, spacing and component
+classes stay the same.
+
+- **Dark** becomes the graphite operational surface: `--bg` `#080B12`, `--surface` `#111722`,
+  `--surface-raised` `#182232`, `--text` `#F1F4F8`, `--text-sub` `#AAB7C9`.
+- **Light** becomes the warm editorial surface: `--bg` `#F5F3EE`, `--surface` white,
+  `--surface-alt` `#EBEEF2`, `--text` `#111722`, `--text-sub` `#516075`.
+- **New token `--control-edge`.** It moves from the console layer into both polarities, as the
+  outline of essential controls (3:1 or more on every ground). `--border` is now a decorative
+  separator only, and `.btn-secondary` uses `--control-edge`.
+- **`--text-ghost`** now reaches 4.5:1 on every ground in both polarities.
+
+To upgrade, replace `szl-design-system.css`, `szl-console.css` and `SOURCE.json`. Logos are
+unchanged. Anything you outlined with `--border` that a person must find and operate (inputs,
+toggles, outline buttons) should switch to `--control-edge`.
+
 ### Upgrading from 1.1.1
 
 1.2.0 lets a surface be declared on any element (see "Nested surfaces" below). No color value
@@ -56,10 +74,11 @@ their hashes do not change.
 
 ## Two surfaces, one token set
 
-- **Dark operator is the default** on `:root`: consoles, dashboards, docs, bench and operator
-  Spaces.
-- **Light marketing** is `<html data-surface="light">`: the public site, landing pages, decks, the
-  blog, and document-like light tools. It uses the same roles with light values.
+- **Dark operator is the default** on `:root`: a graphite canvas (`#080B12`) for consoles,
+  dashboards, docs, bench and operator Spaces.
+- **Light editorial** is `<html data-surface="light">`: a warm paper canvas (`#F5F3EE`) for the
+  public site, landing pages, decks, the blog, and document-like light tools. It uses the same
+  roles with light values.
 - Code blocks stay dark on both surfaces. There is no third theme.
 
 ### Nested surfaces
@@ -91,9 +110,9 @@ mapping on `[data-surface]` as well, or the nested panel inherits the page's res
   `--shadow-glow-hatun` mark premium or investor emphasis, or the one important number.
 - **Teal is links and focus**: `--link`, `--link-hover`, `--focus` and `--shadow-focus`.
 - **Focus is a solid ring.** From 1.1.1 the base `:focus-visible` rule draws a 2px solid
-  `--focus` outline, offset 2px, around the `--shadow-focus` halo. The outline measures 6.73:1 on
-  dark `--bg` and 5.36:1 on light `--bg`. The 55% halo alone measured 2.81:1 and 2.32:1, below
-  the 3:1 floor for non-text contrast. Do not remove the outline in surface CSS unless a solid
+  `--focus` outline, offset 2px, around the `--shadow-focus` halo. In 1.3.0 the outline measures
+  6.97:1 on dark `--bg` and 5.18:1 on light `--bg`. In 1.1.1 the 55% halo alone measured 2.81:1
+  and 2.32:1, below the 3:1 floor for non-text contrast. Do not remove the outline in surface CSS unless a solid
   `--focus` edge replaces it, as the console layer's `.input` and `.select` border does.
 - **Red is errors and destructive actions only.** Use `--color-error`, and `--ink-bad` from the
   console layer for red text.
@@ -110,10 +129,9 @@ mapping on `[data-surface]` as well, or the nested panel inherits the page's res
 These pairs were measured with the WCAG 2 formula on the token values. They fall below 4.5:1
 for normal text, so put small text where it passes rather than patching the vendored file:
 
-- Light surface, `--accent` as text on `--bg`: 4.17:1. Do not set coral text on light.
+- Light surface, `--accent` as text on `--bg`: 4.04:1. Do not set coral text on light.
 - Light surface, white on `.btn-primary`: 4.48:1. On its hover: 3.11:1.
-- Dark surface, `--text-ghost` on `--surface`: 4.27:1. On `--bg` it reaches 5.07:1.
-- Dark surface, `--color-error` as text on `--bg`: 3.50:1. Use `--ink-bad` (9.48:1).
+- Dark surface, `--color-error` as text on `--bg`: 3.62:1. Use `--ink-bad` (9.82:1).
 
 ## Where the rules live
 
@@ -142,8 +160,9 @@ python -m szl_brand kanchay-build --check   # fails if kanchay/ differs from kit
 - a webfont or the withdrawn gold token appears in the bundle;
 - a `var(--…)` without a fallback is undefined in the two stylesheets.
 
-`source_commit` is the szl-brand main commit the bundle was cut from. For 1.2.0 that is
-`20b551b`; the nested-surface change to both kit stylesheets was made in the change that cut 1.2.0,
+`source_commit` is the szl-brand main commit the bundle was cut from. For 1.3.0 that is
+`48344c2`; the neutral-value change to both kit stylesheets was made in the change that cut 1.3.0.
+For 1.2.0 it was `20b551b`; the nested-surface change to both kit stylesheets was made in the change that cut 1.2.0,
 on top of that commit, and the logos already had these bytes there. For 1.1.1 it was
 `a0a27f0`. The focus-outline change to `kit/tokens/szl-design-system.css` was made in the change
 that cut 1.1.1, on top of that commit; `szl-console.css` and the logos already had these bytes
