@@ -35,6 +35,10 @@ BUNDLE: Final = {
     "logos/szl_logo_primary.svg": "kit/logos/szl_logo_primary.svg",
     "logos/szl_logo_transparent.svg": "kit/logos/szl_logo_transparent.svg",
 }
+# Derived payload: the custom properties of the design system only (no element or class rules),
+# for surfaces that keep their own component CSS and need the tokens without the components.
+TOKENS: Final = "szl-tokens.css"
+TOKENS_SOURCE: Final = "kit/tokens/szl-design-system.css"
 # Files in kanchay/ that are documentation or the manifest itself, not copied payload.
 NON_PAYLOAD: Final = frozenset({"README.md", "SOURCE.json"})
 
@@ -72,6 +76,71 @@ def render_source_json(payload: dict[str, bytes], source_commit: str) -> str:
     return json.dumps(source, indent=2, ensure_ascii=False) + "\n"
 
 
+_TOKEN_SELECTOR_RE: Final = re.compile(
+    r'(?::root|\[data-surface="(?:dark|light)"\])'
+    r'(?:\s*,\s*(?::root|\[data-surface="(?:dark|light)"\]))*'
+)
+_TOKEN_DECLARATION_RE: Final = re.compile(r"\s*(?:--[A-Za-z0-9_-]+|color-scheme)\s*:")
+
+
+def _top_level_blocks(css: str) -> list[tuple[str, str]]:
+    """Return ``(prelude, body)`` for every top-level rule, skipping comments and at-rules' insides."""
+
+    blocks: list[tuple[str, str]] = []
+    depth, start, prelude_start, i = 0, 0, 0, 0
+    prelude = ""
+    while i < len(css):
+        if css.startswith("/*", i):
+            end = css.find("*/", i + 2)
+            if end < 0:
+                raise ValueError("unterminated CSS comment")
+            if depth == 0:
+                prelude_start = end + 2
+            i = end + 2
+            continue
+        char = css[i]
+        if char == "{":
+            if depth == 0:
+                prelude, start = css[prelude_start:i].strip(), i + 1
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth < 0:
+                raise ValueError("unbalanced CSS braces")
+            if depth == 0:
+                blocks.append((prelude, css[start:i]))
+                prelude_start = i + 1
+        i += 1
+    if depth:
+        raise ValueError("unbalanced CSS braces")
+    return blocks
+
+
+def extract_tokens(css: str) -> str:
+    """Return the token blocks of the design system: custom properties on :root and surfaces."""
+
+    kept = []
+    for prelude, body in _top_level_blocks(css):
+        if not _TOKEN_SELECTOR_RE.fullmatch(prelude):
+            continue
+        plain = re.sub(r"/\*.*?\*/", "", body, flags=re.S)
+        declarations = [part for part in plain.split(";") if part.strip()]
+        if not all(_TOKEN_DECLARATION_RE.match(part) for part in declarations):
+            raise ValueError(f"token block {prelude!r} carries a non-token declaration")
+        kept.append(f"{prelude} {{{body}}}")
+    header = "\n".join(
+        (
+            f"/* KANCHAY tokens v{VERSION} (derived): only the custom properties of",
+            "   szl-design-system.css. Palette, both polarities (on :root and on any",
+            "   [data-surface] element), type, spacing, radius, shadow, motion and z tokens.",
+            "   No element or class rules. Built by `szl-brand kanchay-build`; never edit by",
+            "   hand. Use it when a surface keeps its own component CSS.",
+            "   Brand assets (c) 2026 SZL Holdings, CC BY 4.0; code Apache-2.0. */",
+        )
+    )
+    return header + "\n" + "\n".join(kept) + "\n"
+
+
 def recorded_source_commit(root: Path | None = None) -> str:
     """Return the ``source_commit`` recorded in the committed ``SOURCE.json``."""
 
@@ -93,6 +162,9 @@ def build(root: Path | None = None, source_commit: str | None = None) -> dict[st
     root = repo_root() if root is None else root
     commit = recorded_source_commit(root) if source_commit is None else source_commit
     outputs = {path: (root / source).read_bytes() for path, source in BUNDLE.items()}
+    outputs[TOKENS] = extract_tokens((root / TOKENS_SOURCE).read_bytes().decode("utf-8")).encode(
+        "utf-8"
+    )
     outputs["SOURCE.json"] = render_source_json(outputs, commit).encode("utf-8")
     return outputs
 
@@ -152,7 +224,7 @@ def check(root: Path | None = None) -> list[str]:
         if not destination.is_file():
             errors.append(f"{EXPORT_DIR}/{path} is missing")
         elif destination.read_bytes() != data:
-            source = BUNDLE.get(path, "its kit sources")
+            source = BUNDLE.get(path, TOKENS_SOURCE if path == TOKENS else "its kit sources")
             errors.append(
                 f"{EXPORT_DIR}/{path} differs from {source}; "
                 "run `python -m szl_brand kanchay-build` and commit the result"

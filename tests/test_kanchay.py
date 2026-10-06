@@ -57,7 +57,7 @@ def test_source_json_has_the_founder_shape_and_pins_every_file():
     assert source["layers"] == {"szl-console.css": "1.2.0 (operator console, additive)"}
     assert re.fullmatch(r"[0-9a-f]{40}", source["source_commit"])
     assert source["license"] == {"code": "Apache-2.0", "brand_assets": "CC BY 4.0"}
-    assert list(source["sha256"]) == list(kanchay.BUNDLE)
+    assert list(source["sha256"]) == [*kanchay.BUNDLE, kanchay.TOKENS]
     for path, digest in source["sha256"].items():
         assert hashlib.sha256((EXPORT / path).read_bytes()).hexdigest() == digest, path
 
@@ -65,7 +65,7 @@ def test_source_json_has_the_founder_shape_and_pins_every_file():
 def test_committed_bundle_matches_the_build():
     for path, data in kanchay.build(ROOT).items():
         assert (EXPORT / path).read_bytes() == data, path
-    assert _shipped() == set(kanchay.BUNDLE) | kanchay.NON_PAYLOAD
+    assert _shipped() == set(kanchay.BUNDLE) | {kanchay.TOKENS} | kanchay.NON_PAYLOAD
 
 
 def test_bundle_ships_no_webfont_and_no_withdrawn_gold_token():
@@ -144,3 +144,26 @@ def test_cli_check_passes_then_reports_drift(mirror):
     failed = subprocess.run([*command, "--root", str(mirror)], capture_output=True, text=True)
     assert failed.returncode == 1
     assert "kanchay/szl-design-system.css differs" in failed.stderr
+
+
+def test_tokens_file_is_every_design_system_token_and_nothing_else():
+    tokens = (EXPORT / kanchay.TOKENS).read_text(encoding="utf-8")
+    system = (EXPORT / "szl-design-system.css").read_text(encoding="utf-8")
+    assert tokens == kanchay.extract_tokens(system)
+    preludes = [prelude for prelude, _ in kanchay._top_level_blocks(tokens)]
+    assert preludes and all(kanchay._TOKEN_SELECTOR_RE.fullmatch(p) for p in preludes)
+    assert ':root, [data-surface="dark"]' in preludes and '[data-surface="light"]' in preludes
+    definitions = re.compile(r"(--[A-Za-z0-9_-]+)\s*:")
+    token_blocks = [
+        body
+        for prelude, body in kanchay._top_level_blocks(system)
+        if kanchay._TOKEN_SELECTOR_RE.fullmatch(prelude)
+    ]
+    expected = {name for body in token_blocks for name in definitions.findall(body)}
+    assert set(definitions.findall(tokens)) == expected
+    assert "@font-face" not in tokens and "@import" not in tokens
+
+
+def test_extract_tokens_rejects_a_token_block_with_a_style_declaration():
+    with pytest.raises(ValueError, match="non-token declaration"):
+        kanchay.extract_tokens(":root { --a: 1px; color: red; }")

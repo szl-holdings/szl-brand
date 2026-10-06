@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- KANCHAY bundle: add the derived `kanchay/szl-tokens.css`. It holds every custom property of
+  `szl-design-system.css` (palette, both polarities with nested `data-surface` support, type,
+  spacing, radius, shadow, motion, z) and no element or class rules.
+  - It is for surfaces that keep their own component layer. On the proof origin, for example,
+    `.card`, `.chip`, `.hero` and `.nav` collide with KANCHAY's classes on 15-32 pages.
+  - `kanchay-build` extracts it from the design system, and fails if a token block carries a style
+    declaration. `SOURCE.json` pins it.
+  - No token value changes; the system stays 1.3.0.
+
 - KANCHAY 1.3.0: graphite operational and warm editorial neutrals, as directed by the 2026-10-06
   frontend overhaul brief.
   - **Dark polarity:** `--bg` `#080B12`, `--surface` `#111722`, `--surface-raised` `#182232`,
