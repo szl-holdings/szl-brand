@@ -3,7 +3,7 @@
 """Build and verify ``kanchay/``, the ready-to-vendor bundle of the KANCHAY design system.
 
 KANCHAY has one token system: the founder-approved ``kit/tokens/szl-design-system.css``
-(v1.1.1) plus the additive operator layer ``kit/tokens/szl-console.css``. The bundle is a
+(v1.2.0) plus the additive operator layer ``kit/tokens/szl-console.css``. The bundle is a
 byte-for-byte copy of those two files and the orbit logo suite from ``kit/logos``, with a
 ``SOURCE.json`` that records the sha256 of every copied file. Nothing in the bundle is
 generated or edited; change the kit source and rebuild.
@@ -17,7 +17,7 @@ import re
 from pathlib import Path
 from typing import Final
 
-VERSION: Final = "1.1.1"
+VERSION: Final = "1.2.0"
 EXPORT_DIR: Final = "kanchay"
 
 # Bundle path -> kit source path. Order is the SOURCE.json manifest order.
@@ -39,9 +39,9 @@ BUNDLE: Final = {
 NON_PAYLOAD: Final = frozenset({"README.md", "SOURCE.json"})
 
 _BASE: Final = (
-    "szl-holdings/szl-brand kit/tokens/szl-design-system.css (KANCHAY v1.1.1, founder-approved)"
+    "szl-holdings/szl-brand kit/tokens/szl-design-system.css (KANCHAY v1.2.0, founder-approved)"
 )
-_LAYERS: Final = {"szl-console.css": "1.0.0 (operator console, additive)"}
+_LAYERS: Final = {"szl-console.css": "1.1.0 (operator console, additive)"}
 _LICENSE: Final = {"code": "Apache-2.0", "brand_assets": "CC BY 4.0"}
 _COMMIT_RE: Final = re.compile(r"^[0-9a-f]{40}$")
 _CSS_DEFINITION_RE: Final = re.compile(r"--([A-Za-z0-9_-]+)\s*:")

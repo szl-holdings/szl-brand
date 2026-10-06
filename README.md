@@ -63,8 +63,8 @@ uppercase SHAs, and path-like values are rejected.
 ## Vendor bundle (`kanchay/`)
 
 KANCHAY has one token system: [`kit/tokens/szl-design-system.css`](./kit/tokens/szl-design-system.css)
-(v1.1.1, founder-approved) and its additive operator layer
-[`kit/tokens/szl-console.css`](./kit/tokens/szl-console.css) (v1.0.0).
+(v1.2.0, founder-approved) and its additive operator layer
+[`kit/tokens/szl-console.css`](./kit/tokens/szl-console.css) (v1.1.0).
 [`kanchay/`](./kanchay) is the ready-to-vendor bundle of that system: byte-for-byte copies of both
 stylesheets and the orbit logo suite, with `SOURCE.json` pinning each file's sha256. Surfaces copy
 it into a static folder named `szl/`, link `szl-design-system.css` before their own stylesheet, and
@@ -105,7 +105,7 @@ runtime font or stylesheet dependency.
 
 | Path | Responsibility |
 |---|---|
-| [`kanchay`](./kanchay) | Vendor bundle of KANCHAY v1.1.1: design system, console layer, logos, `SOURCE.json`. |
+| [`kanchay`](./kanchay) | Vendor bundle of KANCHAY v1.2.0: design system, console layer, logos, `SOURCE.json`. |
 | [`kit/tokens`](./kit/tokens) | Canonical typed tokens, component stylesheet, and operator console layer. |
 | [`kit/contracts`](./kit/contracts) | Public metadata and truth-label schemas. |
 | [`kit/adapters`](./kit/adapters) | Deterministic framework adapters. |
@@ -161,7 +161,7 @@ axiom, or `sorry` counts.
   title   = {KANCHAY: the SZL Holdings design system},
   author  = {{SZL Holdings}},
   year    = {2026},
-  version = {1.1.1},
+  version = {1.2.0},
   doi     = {10.5281/zenodo.20434276},
   url     = {https://github.com/szl-holdings/szl-brand}
 }

@@ -48,7 +48,7 @@ def test_manifest_pins_source_and_every_asset(tmp_path):
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 
     assert manifest["contract"] == CONTRACT
-    assert manifest["version"] == "1.1.1"
+    assert manifest["version"] == "1.2.0"
     assert manifest["source"]["revision"] == REVISION
     assert {record["path"] for record in manifest["assets"]} == {
         "system.css",
@@ -345,9 +345,13 @@ def test_light_mode_status_and_focus_colors_meet_contrast_contract():
     css = (Path(__file__).resolve().parents[1] / "kit/tokens/szl-design-system.css").read_text(
         encoding="utf-8"
     )
-    assert '[data-surface="light"] .chip-live { color:var(--color-success-strong); }' in css
-    assert '[data-surface="light"] .chip-simulated { color:#6b4f00; }' in css
-    assert '[data-surface="light"] .chip-unavailable { color:#9f281e; }' in css
+    light = _surface_tokens(css, "light")
+    assert _resolve_hex(light, "chip-ok") == status_colors["live"]
+    assert _resolve_hex(light, "chip-warn") == status_colors["simulated"]
+    assert _resolve_hex(light, "chip-bad") == status_colors["unavailable"]
+    assert ".chip-live       { color:var(--chip-ok); }" in css
+    assert ".chip-simulated  { color:var(--chip-warn); }" in css
+    assert ".chip-unavailable { color:var(--chip-bad); }" in css
 
 
 FOCUS_SELECTOR = ":where(a,button,input,select,textarea,[tabindex]):focus-visible"
@@ -366,6 +370,20 @@ def _custom_properties(css: str, selector: str) -> dict[str, str]:
         for body in blocks
         for name, value in re.findall(r"--([\w-]+)\s*:\s*([^;]+);", body)
     }
+
+
+DARK_POLARITY = ':root, [data-surface="dark"]'
+LIGHT_POLARITY = '[data-surface="light"]'
+
+
+def _surface_tokens(css: str, surface: str) -> dict[str, str]:
+    """Return the tokens an element on ``surface`` resolves: the palette plus that polarity."""
+
+    palette = _custom_properties(css, ":root")
+    dark = {**palette, **_custom_properties(css, DARK_POLARITY)}
+    if surface == "dark":
+        return dark
+    return {**dark, **_custom_properties(css, LIGHT_POLARITY)}
 
 
 def _resolve_hex(tokens: dict[str, str], name: str) -> Color:
@@ -398,13 +416,50 @@ def test_base_focus_rule_draws_a_solid_outline_that_meets_3_to_1(path):
         "border-radius": "var(--radius-sm)",
     }
 
-    dark = _custom_properties(css, ":root")
-    light = {**dark, **_custom_properties(css, '[data-surface="light"]')}
-    for surface, tokens in (("dark", dark), ("light", light)):
+    for surface in ("dark", "light"):
+        tokens = _surface_tokens(css, surface)
         focus = _resolve_hex(tokens, "focus")
         for ground in FOCUS_GROUNDS:
             ratio = focus.contrast_ratio(_resolve_hex(tokens, ground))
             assert ratio >= 3.0, f"{surface} --focus on --{ground}: {ratio:.2f}:1"
+
+
+@pytest.mark.parametrize(
+    "path", ["kit/tokens/szl-design-system.css", "kanchay/szl-design-system.css"]
+)
+def test_a_surface_declared_on_any_element_re_resolves_every_role(path):
+    css = (Path(__file__).resolve().parents[1] / path).read_text(encoding="utf-8")
+    dark = _custom_properties(css, DARK_POLARITY)
+    light = _custom_properties(css, LIGHT_POLARITY)
+
+    # A dark panel inside a light page, or the reverse, must not inherit any role from the
+    # page around it, so both polarities declare the same roles.
+    assert set(dark) == set(light)
+    # Roles derived from a polarity token re-resolve on every surface root.
+    derived = _custom_properties(css, ':root, [data-surface="dark"], [data-surface="light"]')
+    assert derived["shadow-focus"].startswith("0 0 0 3px color-mix(in srgb, var(--focus)")
+    assert "shadow-focus" not in _custom_properties(css, ":root")
+    assert ':where([data-surface="dark"], [data-surface="light"]) { color:var(--text); }' in css
+    # A descendant rule keyed on the page polarity would leak into a nested surface.
+    assert not re.search(r'\[data-surface="(?:light|dark)"\]\s+[^\s{,]', css)
+
+    for surface in ("dark", "light"):
+        tokens = _surface_tokens(css, surface)
+        for ink in ("chip-ok", "chip-warn", "chip-bad"):
+            for ground in ("bg", "surface", "surface-alt"):
+                ratio = _resolve_hex(tokens, ink).contrast_ratio(_resolve_hex(tokens, ground))
+                assert ratio >= 4.5, f"{surface} --{ink} on --{ground}: {ratio:.2f}:1"
+
+
+@pytest.mark.parametrize("path", ["kit/tokens/szl-console.css", "kanchay/szl-console.css"])
+def test_console_status_inks_follow_the_nearest_surface(path):
+    css = (Path(__file__).resolve().parents[1] / path).read_text(encoding="utf-8")
+    dark = _custom_properties(css, DARK_POLARITY)
+    light = _custom_properties(css, LIGHT_POLARITY)
+
+    assert set(dark) == set(light) >= {"ink-good", "ink-warn", "ink-bad", "ink-info"}
+    assert not re.search(r"(?m)^:root\s*\{", css)
+    assert not re.search(r'\[data-surface="(?:light|dark)"\]\s+[^\s{,]', css)
 
 
 def test_control_target_uses_a_sizable_display_mode():

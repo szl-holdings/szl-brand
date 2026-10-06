@@ -22,6 +22,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `marketing/SZL-MARKETING-1.1/factbase_pipeline.py` becomes a shim over the engine (no more
   absolute `/opt` output path).
 
+- KANCHAY 1.2.0: either polarity can be declared on any element. The dark semantic block in
+  `kit/tokens/szl-design-system.css` is now `:root, [data-surface="dark"]`; `--shadow-focus` is
+  re-declared on every `dark` or `light` surface root so it follows that root's `--focus`; a
+  surface root takes `color:var(--text)` (other `data-surface` values, used as labels, are ignored); and the proven/live, conjecture/simulated and sorry/unavailable chip
+  colors move into `--chip-ok`, `--chip-warn` and `--chip-bad` on both polarities, replacing the
+  `[data-surface="light"] .chip-*` descendant overrides that leaked into nested dark panels. The
+  operator layer `kit/tokens/szl-console.css` 1.1.0 declares its status inks the same way. No
+  color value changed. This repairs the a-11-oy.com console, where a dark hero inside the light
+  shell inherited the page's dark ink (about 1.01:1 for its heading). `kanchay/` is rebuilt as
+  bundle 1.2.0; tests fail CI if the two polarities stop declaring the same roles, if a
+  descendant rule is keyed on the page polarity, or if a chip ink drops under 4.5:1 on either
+  surface.
 - KANCHAY 1.1.1: the base `:focus-visible` rule in `kit/tokens/szl-design-system.css` now draws a
   solid focus outline, `outline:2px solid var(--focus); outline-offset:2px`, and keeps the
   `--shadow-focus` halo and `--radius-sm`. The halo alone (`--focus` at 55%) measured 2.81:1 on
