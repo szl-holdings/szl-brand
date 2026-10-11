@@ -1,6 +1,6 @@
 <div align="center">
 
-![SZL Brand](./social-previews/szl-brand.png)
+<img src="./kit/logos/orbit-v2/szl-orbit.svg" alt="SZL Holdings" width="96" height="96" />
 
 # KANCHAY design system
 
