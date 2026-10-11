@@ -34,12 +34,19 @@ const record = async (name, run) => {
 const channels = (css) => {
   const numbers = css.match(/[\d.]+/g)?.map(Number);
   assert(numbers && numbers.length >= 3, `Unsupported color: ${css}`);
-  return css.startsWith("color(srgb") ? numbers.slice(0, 3) : numbers.slice(0, 3).map(x => x / 255);
+  const rgb = css.startsWith("color(srgb") ? numbers.slice(0, 3) : numbers.slice(0, 3).map(x => x / 255);
+  return [...rgb, numbers[3] ?? 1];
 };
-const luminance = (css) => channels(css).map(c => c <= .04045 ? c / 12.92 : ((c + .055) / 1.055) ** 2.4)
+const luminance = (rgb) => rgb.map(c => c <= .04045 ? c / 12.92 : ((c + .055) / 1.055) ** 2.4)
   .reduce((sum, c, i) => sum + c * [.2126, .7152, .0722][i], 0);
-const contrast = (a, b) => (Math.max(luminance(a), luminance(b)) + .05) /
-  (Math.min(luminance(a), luminance(b)) + .05);
+const contrast = (foreground, background) => {
+  const ink = channels(foreground), ground = channels(background);
+  assert.equal(ground[3], 1, "Contrast checks need an opaque reading ground");
+  const painted = ink.slice(0, 3).map((c, i) => c * ink[3] + ground[i] * (1 - ink[3]));
+  const a = luminance(painted), b = luminance(ground.slice(0, 3));
+  return (Math.max(a, b) + .05) / (Math.min(a, b) + .05);
+};
+assert.equal(contrast("rgba(0, 0, 0, 0)", "rgb(255, 255, 255)"), 1);
 const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
 page.on("pageerror", error => errors.push(error.message));
 await page.route(/^https?:/, route => {
@@ -179,6 +186,15 @@ await record("Forced colors keeps a solid material boundary", async () => {
     const s = getComputedStyle(e); return { image: s.backgroundImage, border: s.borderTopStyle, width: s.borderTopWidth };
   });
   assert.deepEqual(style, { image: "none", border: "solid", width: "1px" });
+});
+await record("Forced colors preserves a visible meter track and fill", async () => {
+  const style = await page.locator(".meter").evaluate(e => {
+    const track = getComputedStyle(e), fill = getComputedStyle(e.querySelector(".meter__fill"));
+    return { ground: track.backgroundColor, fill: fill.backgroundColor,
+      border: track.borderTopStyle, width: track.borderTopWidth };
+  });
+  assert.equal(style.border, "solid"); assert.equal(style.width, "1px");
+  assert(contrast(style.fill, style.ground) >= 3, JSON.stringify(style));
 });
 await page.screenshot({ path: path.join(out, "forced-colors.png") });
 const touch = await browser.newPage({ viewport: { width: 375, height: 900 }, hasTouch: true, isMobile: true });
