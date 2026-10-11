@@ -5,13 +5,13 @@
   "layers": {
     "szl-console.css": "1.2.0 (operator console, additive)"
   },
-  "source_commit": "30346f631f8731d5903f7237fbf76decce830d8a",
+  "source_commit": "69e795951d9dadc9698e0a2517c58b71fe22f2bf",
   "license": {
     "code": "Apache-2.0",
     "brand_assets": "CC BY 4.0"
   },
   "sha256": {
-    "szl-console.css": "28f8ffa2efc48f3cc0441afab806e26dd43cedf34edbea463c83c3bc9180ec3d",
+    "szl-console.css": "df066d54d0b8b6bb2f5bf281cd990f65055b32bc71309bb2fc5868b6e40b6c6b",
     "szl-design-system.css": "da310be5cbe23dfc4054d1bb07e5b37e1a62a510e43902171e217af5c1ff0ec7",
     "logos/szl_favicon.svg": "4b154f0de21f71b111bde98bc564ddeef082d888d44f0b50b5a5247e3badf190",
     "logos/szl_favicon_180.png": "75457c07144e90dcc23e3180e83a47e21cf20be3e7eb163ea41b4fed8c6c1b08",
