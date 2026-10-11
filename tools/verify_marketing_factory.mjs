@@ -43,8 +43,8 @@ const child = spawn(options.python || 'python', [path.join(root, 'tools/marketin
 let logs = '', errors = '', ready = null;
 child.stdout.on('data', data => { logs += data.toString(); });
 child.stderr.on('data', data => { errors += data.toString(); });
-const results = [], measurements = [], browserErrors = [], deniedRequests = [], localCallbacks = [], frameworkResets = [], callbackResponses = [];
-let browser;
+const results = [], measurements = [], browserErrors = [], deniedRequests = [], localCallbacks = [], frameworkResets = [], callbackResponses = [], callbackInputs = [];
+let browser, formSnapshots = [];
 const record = async (name, fn) => {
   try { await fn(); results.push({ name, status: 'passed' }); }
   catch (error) { results.push({ name, status: 'failed', error: error.message }); }
@@ -152,6 +152,12 @@ try {
     if (url.origin !== origin) { deniedRequests.push({ method: request.method(), url: url.origin + url.pathname }); await route.abort(); return; }
     if (request.method() === 'GET' || request.method() === 'HEAD') { await route.continue(); return; }
     if (request.method() === 'POST' && url.pathname === '/gradio_api/queue/join' && phase === 'action') {
+      const raw = request.postData() || '';
+      if (Buffer.byteLength(raw) > 32768) { deniedRequests.push({ method: 'POST', url: url.pathname, reason: 'Oversize fixture input' }); await route.abort(); return; }
+      let payload;
+      try { payload = JSON.parse(raw); }
+      catch { deniedRequests.push({ method: 'POST', url: url.pathname, reason: 'Malformed fixture input' }); await route.abort(); return; }
+      callbackInputs.push({ function_index: payload.fn_index, data: payload.data });
       localCallbacks.push(url.pathname); await route.continue(); return;
     }
     if (request.method() === 'POST' && ['/gradio_api/reset', '/gradio_api/reset/'].includes(url.pathname)) {
@@ -160,6 +166,14 @@ try {
     deniedRequests.push({ method: request.method(), url: url.pathname, phase }); await route.abort();
   });
   const page = await context.newPage();
+  await page.addInitScript(() => {
+    window.__factoryFixtureInputs = [];
+    document.addEventListener('click', event => {
+      if (!(event.target instanceof Element) || !event.target.closest('#compose-drafts')) return;
+      window.__factoryFixtureInputs.push([...document.querySelectorAll('#factory-panel-drafts input, #factory-panel-drafts textarea')]
+        .filter(field => !field.disabled && !field.readOnly).map(field => field.value.slice(0, 4096)));
+    }, true);
+  });
   page.setDefaultTimeout(7000);
   page.on('pageerror', error => browserErrors.push(error.message));
   page.on('response', async response => {
@@ -267,6 +281,7 @@ try {
   await page.locator('#compose-drafts').click();
   await record('Invalid subjects do not collect a factbase or retain a draft', async () => {
     await page.waitForFunction(() => document.querySelector('#compose-verdict textarea')?.value.includes('two distinct'));
+    assert.deepEqual(callbackInputs.at(-1)?.data, ['same', 'same', '']);
     assert.equal(factsCount(), 5); assert.equal(await page.locator('#substack-draft textarea').inputValue(), '');
   });
   await page.getByLabel('Subject line A', { exact: true }).fill('Source observations');
@@ -275,6 +290,7 @@ try {
   await page.locator('#compose-drafts').click();
   await record('Draft output retains literal source without rendering author markup', async () => {
     await page.waitForFunction(() => document.querySelector('#substack-draft textarea')?.value.includes('invalid.example/draft'));
+    assert.deepEqual(callbackInputs.at(-1)?.data, ['Source observations', 'The next draft', '<img src="https://invalid.example/draft" onerror="window.injected=1">']);
     assert.equal(factsCount(), 6); assert.equal(await page.locator('#substack-draft img').count(), 0);
     assert((await page.locator('#compose-verdict textarea').inputValue()).includes('house linter only'));
   });
@@ -293,6 +309,7 @@ try {
     assert((await page.locator('#lint-findings textarea').inputValue()).includes('not publication approval'));
     assert.equal(factsCount(), 6);
   });
+  formSnapshots = await page.evaluate(() => window.__factoryFixtureInputs);
   phase = 'navigation';
   await page.getByRole('tab', { name: 'Source & package', exact: true }).click();
   await record('Declared source and package-stage statement bind this staged candidate', async () => {
@@ -347,6 +364,7 @@ try {
   const report = {
     schema: 'szl.marketing-factory-rendered-fixture/v1', classification: 'UNSIGNED_LOCAL_RENDERED_FIXTURE',
     source, tree, dirty, package: ready, results, measurements, browserErrors, deniedRequests, callbackResponses,
+    synthetic_callback_inputs: callbackInputs, synthetic_form_snapshots: formSnapshots,
     local_synthetic_callback_posts: localCallbacks.length, gradio_session_cleanup_posts: frameworkResets.length,
     factbase_fixture_calls: factsCount(),
     scope: 'Actual staged Gradio application, six widths and two themes, synthetic facts and explicit local callbacks. Browser counters cover the browser context; Python DNS/connect calls are separately denied. No provider fact collection or publication is exercised. These are local observations, not signed or provider readiness receipts.',
