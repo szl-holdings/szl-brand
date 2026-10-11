@@ -105,6 +105,9 @@ def native_head() -> str:
     return (
         '<meta name="description" content="Public estate observations, original drafts and SZL house-rule review.">'
         + f'<link rel="icon" type="image/svg+xml" href="{_svg("favicon")}">'
+        + '<style id="factory-native-style">'
+        + native_css()
+        + "</style>"
     )
 
 

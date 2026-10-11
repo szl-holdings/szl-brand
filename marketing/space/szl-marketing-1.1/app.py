@@ -14,7 +14,6 @@ from native_presentation import (
     footer,
     header,
     initial_observation,
-    native_css,
     native_head,
     native_js,
     observation,
@@ -264,10 +263,9 @@ with gr.Blocks(
 
 
 def launch(**kwargs):
-    """Gradio 6 keeps theme, CSS and JS on launch; metadata pins that runtime."""
+    """The owned page head preserves root tokens before Gradio scopes component CSS."""
     return demo.launch(
         theme=native_theme(),
-        css=native_css(),
         js=native_js(),
         head=native_head(),
         footer_links=[],

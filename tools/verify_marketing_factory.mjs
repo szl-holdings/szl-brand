@@ -181,6 +181,10 @@ try {
     }
     assert.equal(await page.locator('.mf-brand img').evaluate(e => e.getBoundingClientRect().width), 40);
   });
+  await record('The document stylesheet preserves exact native tokens and component CSS', async () => {
+    const expected = (await readFile(path.join(out, 'package/native/szl-tokens.css'), 'utf8')) + '\n' + (await readFile(path.join(out, 'package/factory.css'), 'utf8'));
+    assert.equal(await page.locator('#factory-native-style').textContent(), expected);
+  });
   const tabs = ['Public facts', 'Draft studio', 'Copy review', 'Operating plan', 'Source & package'];
   for (const width of [320, 390, 768, 1024, 1440, 2560]) {
     await page.setViewportSize({ width, height: 1000 });
