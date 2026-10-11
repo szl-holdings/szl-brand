@@ -103,6 +103,15 @@ async function openScenario(mode = "success", contextOptions = {}) {
         }
       }
       if (mode === "missing-download" && kind === "datasets") delete body[0].downloads;
+      if (["saturated", "hidden-link"].includes(mode) && kind === "models") {
+        body = Array.from({ length: 1000 }, (_, i) => ({ id: `SZLHOLDINGS/model-${i}`, downloads: 1 }));
+        if (mode === "saturated") delete headers.Link;
+        else headers["Access-Control-Expose-Headers"] = "X-Request-Id";
+      }
+      if (mode === "bucket-pagination" && kind === "buckets") {
+        if (url.searchParams.has("cursor")) body = [{ id: "SZLHOLDINGS/bucket-b", author: "SZLHOLDINGS" }];
+        else headers.Link = '<https://huggingface.co/api/buckets/SZLHOLDINGS?cursor=next>; rel="next"';
+      }
       if (mode === "malformed" && kind === "collections") body[0].owner.name = 42;
       if (mode === "invalid-json" && kind === "buckets") {
         await route.fulfill({ status, headers, contentType: "application/json", body: "{invalid" }); return;
@@ -241,7 +250,7 @@ await record("Reduced motion and forced colors preserve the material boundary", 
 await page.screenshot({ path: path.join(out, "campaign-forced-colors.png") });
 await page.close();
 
-for (const mode of ["empty", "partial", "missing-download", "duplicate", "scope", "owner", "malformed", "invalid-json", "bad-publication", "timeout"]) {
+for (const mode of ["empty", "partial", "missing-download", "duplicate", "scope", "owner", "malformed", "invalid-json", "bad-publication", "saturated", "hidden-link", "bucket-pagination", "timeout"]) {
   const { page: scenario, requests: seen } = await openScenario(mode);
   await record(`${mode}: coverage, unavailable values and recovery are explicit`, async () => {
     await settle(scenario);
@@ -264,6 +273,15 @@ for (const mode of ["empty", "partial", "missing-download", "duplicate", "scope"
       assert.equal(await value(scenario, "hf_buckets"), "UNAVAILABLE"); assert.match(await fact(scenario, "hf_buckets").textContent(), /unreadable JSON/);
     } else if (mode === "bad-publication") {
       await scenario.waitForFunction(() => document.querySelector("#source-sha").textContent.includes("UNAVAILABLE"));
+    } else if (["saturated", "hidden-link"].includes(mode)) {
+      assert.equal(await value(scenario, "hf_models"), "≥ 1,000"); assert.equal(await chip(scenario, "hf_models"), "PARTIAL");
+      assert.match(await fact(scenario, "hf_models").textContent(), /no readable continuation/);
+      assert.equal(await value(scenario, "downloads"), "UNAVAILABLE");
+      assert(!seen.includes(next), "Unreadable continuation must not produce another fetch");
+    } else if (mode === "bucket-pagination") {
+      assert.equal(await value(scenario, "hf_buckets"), "2"); assert.equal(await chip(scenario, "hf_buckets"), "MEASURED");
+      assert(seen.includes("https://huggingface.co/api/buckets/SZLHOLDINGS?cursor=next"));
+      assert(!seen.some(url => url.includes("/api/buckets/") && new URL(url).searchParams.has("limit")));
     } else if (mode === "timeout") {
       assert.equal(await value(scenario, "hf_models"), "UNAVAILABLE"); assert.match(await fact(scenario, "hf_models").textContent(), /timed out/);
       assert.equal(await value(scenario, "hf_spaces"), "1");

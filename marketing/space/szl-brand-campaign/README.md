@@ -25,8 +25,9 @@ Explore SZL verification work through its public catalog, source and evidence pa
 
 ## Before you use it
 
-- Public API facts depend on the response and its observation time. Failed observations remain UNAVAILABLE.
+- Public API facts depend on the response and its observation time. Unreadable observations remain UNAVAILABLE; readable partial results retain their lower bound.
 - Catalog requests follow pagination within the expected organization and endpoint. An incomplete listing is PARTIAL; a successful empty listing is zero. Missing download fields remain UNAVAILABLE.
+- A full limit-bearing page without readable continuation metadata remains PARTIAL. Buckets follow the [Hub SDK's namespace-listing and Link-pagination contract](https://github.com/huggingface/huggingface_hub/blob/v1.9.0/src/huggingface_hub/hf_api.py); that endpoint has no caller-supplied limit.
 - The active page includes public native kernels, collections and buckets alongside models, datasets and Spaces. Catalog membership does not establish runtime readiness.
 - Campaign copy and publication receipts do not establish product performance or authorize consequential actions.
 - The original asset and code licenses continue to apply. SZL names and marks remain subject to the repository trademark notice.

@@ -13,6 +13,8 @@
     { key: "spaces", url: HF + "/api/spaces?author=" + OWNER + "&limit=1000" },
     { key: "kernels", url: HF + "/api/kernels?author=" + OWNER + "&limit=1000" },
     { key: "collections", url: HF + "/api/collections?owner=" + OWNER + "&limit=100" },
+    // The Hub's list_buckets SDK uses this namespace endpoint with Link pagination;
+    // it has no caller-supplied page limit. Do not invent one for its terminal rule.
     { key: "buckets", url: HF + "/api/buckets/" + OWNER },
   ];
   const facts = document.getElementById("facts");
@@ -101,6 +103,11 @@
       while (url) {
         if (pages.size >= MAX_PAGES) throw new Error("The bounded page limit was reached.");
         if (pages.has(url)) throw new Error("The source repeated a pagination page.");
+        const limits = new URL(url).searchParams.getAll("limit");
+        const limit = spec.key === "buckets" ? null : Number(limits[0]);
+        if (limit !== null && (limits.length !== 1 || !Number.isSafeInteger(limit) || limit < 1 || limit > 1000)) {
+          throw new Error("The source changed the bounded catalog page size.");
+        }
         pages.add(url);
         const response = await request(url, signal);
         const rows = await response.json();
@@ -110,7 +117,11 @@
           throw new Error("The source repeated a listing; a complete total is unavailable.");
         }
         rows.forEach((item, index) => { items.push(item); ids.add(pageIds[index]); });
-        url = nextPage(response.headers.get("Link"), url, spec.url);
+        const next = nextPage(response.headers.get("Link"), url, spec.url);
+        if (!next && limit !== null && rows.length >= limit) {
+          throw new Error("A full page had no readable continuation metadata. Complete coverage could not be established.");
+        }
+        url = next;
       }
       return { items, complete: true, source: spec.url };
     } catch (error) {
