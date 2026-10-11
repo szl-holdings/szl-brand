@@ -34,6 +34,8 @@ _ASSETS: Final = {
     "executive-brief-template.html": (
         "kit/templates/khipu-command-system/executive-brief-template.html"
     ),
+    "szl-orbit.svg": "kit/logos/orbit-v2/szl-orbit.svg",
+    "szl-avatar.svg": "kit/logos/orbit-v2/suite/szl-avatar.svg",
 }
 _SOURCE_PROVENANCE = "src/szl_brand/design_system/source-provenance.json"
 _WHEEL_PROVENANCE = "szl_brand/design_system/source-provenance.json"
