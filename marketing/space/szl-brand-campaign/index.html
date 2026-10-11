@@ -1,83 +1,97 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-surface="light">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SZL Holdings — receipts, not vibes</title>
-    <meta
-      name="description"
-      content="SZL Holdings builds the verification layer for AI: signed, tamper-evident receipts you can check yourself. Every number on this page is fetched live in your browser and labeled."
-    />
+    <meta name="color-scheme" content="light" />
+    <title>SZL Holdings — public work, source and evidence</title>
+    <meta name="description" content="Explore SZL Holdings through its public work, source and evidence. Catalog observations carry their coverage and freshness." />
     <link rel="stylesheet" href="szl-design-system.css" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <main class="container campaign">
-      <header class="stack">
-        <p class="eyebrow">SZL Holdings · brand campaign hub</p>
-        <h1 class="display">Receipts, not vibes.</h1>
-        <p class="lead">
-          SZL Holdings builds the verification layer for AI: signed, tamper-evident receipts,
-          checkable in the open by anyone. The trust ceiling is 0.97, never 1.0. Λ stays
-          Conjecture 1, advisory. When a check does not run, the label says UNAVAILABLE.
-        </p>
-      </header>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="campaign-nav">
+      <a class="campaign-brand" href="#main" aria-label="SZL Holdings campaign home">SZL <span>/ HOLDINGS</span></a>
+      <nav aria-label="Page navigation">
+        <a href="#estate">Public estate</a>
+        <a href="#principles">Our discipline</a>
+        <a href="#explore">Explore</a>
+      </nav>
+    </header>
 
-      <section class="card" aria-labelledby="live-heading">
-        <h2 id="live-heading" class="card-title">The estate, measured in your browser</h2>
-        <p class="muted">
-          Nothing below is typed into this page. Your browser asks the public GitHub and
-          Hugging Face APIs when the page loads, then labels what came back. A source that
-          does not answer is printed as UNAVAILABLE.
-        </p>
-        <table class="facts" id="facts">
-          <thead>
-            <tr><th scope="col">Metric</th><th scope="col">Value</th><th scope="col">Label</th></tr>
-          </thead>
-          <tbody>
-            <tr data-fact="gh_repos"><td>GitHub public repositories</td><td class="mono tabular">…</td><td><span class="chip chip-unavailable">PENDING</span></td></tr>
-            <tr data-fact="hf_models"><td>Hugging Face models</td><td class="mono tabular">…</td><td><span class="chip chip-unavailable">PENDING</span></td></tr>
-            <tr data-fact="hf_datasets"><td>Hugging Face datasets</td><td class="mono tabular">…</td><td><span class="chip chip-unavailable">PENDING</span></td></tr>
-            <tr data-fact="hf_spaces"><td>Hugging Face Spaces</td><td class="mono tabular">…</td><td><span class="chip chip-unavailable">PENDING</span></td></tr>
-            <tr data-fact="crown"><td>Most-downloaded public artifact (models + datasets)</td><td class="mono tabular">…</td><td><span class="chip chip-unavailable">PENDING</span></td></tr>
-            <tr data-fact="downloads"><td>Estate downloads (models + datasets)</td><td class="mono tabular">…</td><td><span class="chip chip-unavailable">PENDING</span></td></tr>
-          </tbody>
-        </table>
-        <p class="ghost mono" id="measured-at">Measured: pending…</p>
-      </section>
-
-      <section class="card" aria-labelledby="laws-heading">
-        <h2 id="laws-heading" class="card-title">House laws baked into every channel</h2>
-        <ul class="laws">
-          <li>Every number is pulled from a public API at publish time and labeled; nothing is typed from memory.</li>
-          <li>Capabilities of the defense vertical are never quantified in public copy.</li>
-          <li>Every claim carries its label: MEASURED, REPORTED, ROADMAP, or UNAVAILABLE.</li>
-          <li>Λ is Conjecture 1, advisory. The words a marketer would reach for are banned by a linter that runs in CI.</li>
-        </ul>
-      </section>
-
-      <section class="card" aria-labelledby="doors-heading">
-        <h2 id="doors-heading" class="card-title">Two domains, two jobs</h2>
-        <div class="cluster">
-          <a class="btn btn-primary" href="https://a-11-oy.com/verify" rel="noopener">Verify a receipt yourself</a>
-          <a class="btn btn-secondary" href="https://a11oy.net" rel="noopener">Proof registry: a11oy.net</a>
-          <a class="btn btn-ghost" href="https://github.com/szl-holdings" rel="noopener">GitHub organization</a>
-          <a class="btn btn-ghost" href="https://huggingface.co/SZLHOLDINGS" rel="noopener">Hugging Face organization</a>
+    <main id="main" class="container campaign">
+      <section class="campaign-hero" aria-labelledby="campaign-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Control before action · evidence after</p>
+          <h1 id="campaign-title">Explore the evidence behind SZL.</h1>
+          <p class="lead">Follow our public work, inspect its source, and read the scope of every claim.</p>
+          <p class="muted">We build governed AI systems and portable receipts. A signature establishes scoped integrity and origin; accuracy, performance and authorization need their own evidence.</p>
+          <div class="cluster hero-actions">
+            <a class="btn btn-primary" href="https://a-11-oy.com/verify">Verify a receipt</a>
+            <a class="btn btn-secondary" href="https://a11oy.net">Explore the proof registry</a>
+          </div>
         </div>
-        <p class="muted">
-          a-11-oy.com is the product. a11oy.net is the dated, checkable diligence path. The
-          fact factory behind this page runs at
-          <a href="https://huggingface.co/spaces/SZLHOLDINGS/szl-marketing-1.1" rel="noopener">SZLHOLDINGS/szl-marketing-1.1</a>.
-        </p>
+        <aside class="identity-panel surface-holo" data-surface="dark" aria-label="SZL Holdings identity">
+          <img src="szl-orbit-holo.svg" alt="SZL Holdings" width="600" height="600" fetchpriority="high" />
+          <p class="identity-caption"><span>SZL Holdings</span><span>Built to be examined.</span></p>
+        </aside>
       </section>
 
-      <footer class="ghost">
-        <p>
-          Exact projection of
-          <a href="https://github.com/szl-holdings/szl-brand" rel="noopener">szl-holdings/szl-brand</a>
-          (<code class="mono" id="source-sha">source: see PUBLICATION_RECEIPT.json</code>).
-          Brand assets CC BY 4.0 · code Apache-2.0 · ORCID 0009-0001-0110-4173.
-        </p>
+      <section id="estate" class="estate-panel" aria-labelledby="estate-heading">
+        <header class="section-heading">
+          <div>
+            <p class="eyebrow">Public catalog</p>
+            <h2 id="estate-heading">One estate. Visible boundaries.</h2>
+            <p class="muted">Anonymous listings from GitHub and Hugging Face. Counts describe public catalog coverage; runtime readiness requires each surface's own evidence.</p>
+          </div>
+          <button id="refresh-facts" class="btn btn-secondary" type="button">Refresh public facts</button>
+        </header>
+        <p id="snapshot-status" class="snapshot-status" role="status" aria-live="polite">Preparing a public catalog observation…</p>
+        <dl id="facts" class="fact-grid" aria-busy="true">
+          <div class="fact" data-fact="gh_repos"><dt>GitHub repositories</dt><dd class="fact-value">—</dd><dd class="fact-status"><span class="chip chip-unavailable">PENDING</span></dd><dd class="fact-note">Public repository count.</dd></div>
+          <div class="fact" data-fact="hf_models"><dt>Models</dt><dd class="fact-value">—</dd><dd class="fact-status"><span class="chip chip-unavailable">PENDING</span></dd><dd class="fact-note">Hugging Face model listings.</dd></div>
+          <div class="fact" data-fact="hf_datasets"><dt>Datasets</dt><dd class="fact-value">—</dd><dd class="fact-status"><span class="chip chip-unavailable">PENDING</span></dd><dd class="fact-note">Hugging Face dataset listings.</dd></div>
+          <div class="fact" data-fact="hf_spaces"><dt>Spaces</dt><dd class="fact-value">—</dd><dd class="fact-status"><span class="chip chip-unavailable">PENDING</span></dd><dd class="fact-note">Hosted application listings.</dd></div>
+          <div class="fact" data-fact="hf_kernels"><dt>Native kernels</dt><dd class="fact-value">—</dd><dd class="fact-status"><span class="chip chip-unavailable">PENDING</span></dd><dd class="fact-note">The native kernel catalog.</dd></div>
+          <div class="fact" data-fact="hf_collections"><dt>Collections</dt><dd class="fact-value">—</dd><dd class="fact-status"><span class="chip chip-unavailable">PENDING</span></dd><dd class="fact-note">Public curated collections.</dd></div>
+          <div class="fact" data-fact="hf_buckets"><dt>Buckets</dt><dd class="fact-value">—</dd><dd class="fact-status"><span class="chip chip-unavailable">PENDING</span></dd><dd class="fact-note">Public artifact bucket listings.</dd></div>
+          <div class="fact" data-fact="downloads"><dt>Reported downloads</dt><dd class="fact-value">—</dd><dd class="fact-status"><span class="chip chip-unavailable">PENDING</span></dd><dd class="fact-note">Sum of the model and dataset download fields returned by the APIs.</dd></div>
+          <div class="fact fact-wide" data-fact="crown"><dt>Most-downloaded listed artifact</dt><dd class="fact-value fact-name">—</dd><dd class="fact-status"><span class="chip chip-unavailable">PENDING</span></dd><dd class="fact-note">Models and datasets; the reported download field determines the ranking.</dd></div>
+        </dl>
+        <p class="observation-note">MEASURED means the relevant anonymous catalog request completed. PARTIAL retains the observed lower bound. UNAVAILABLE means a complete value could not be established. An empty successful catalog is displayed as zero.</p>
+        <p class="ghost mono" id="measured-at">Observation time pending.</p>
+        <noscript><p class="static-notice">JavaScript is unavailable, so catalog observations have not run. Explore the <a href="https://github.com/szl-holdings">GitHub organization</a> and <a href="https://huggingface.co/SZLHOLDINGS">Hugging Face organization</a> directly.</p></noscript>
+      </section>
+
+      <section id="principles" class="principles" aria-labelledby="principles-heading">
+        <header>
+          <p class="eyebrow">Our discipline</p>
+          <h2 id="principles-heading">Make the boundary part of the work.</h2>
+        </header>
+        <div class="principle-grid">
+          <article><h3>Keep claims scoped.</h3><p>Evidence and operational state travel separately. MEASURED, REPORTED, ROADMAP and UNAVAILABLE labels stay visible.</p></article>
+          <article><h3>Keep the source close.</h3><p>Follow a claim to its repository, observation and declared limitations. A public demo does not establish production authorization.</p></article>
+          <article><h3>Keep uncertainty explicit.</h3><p>Λ remains Conjecture 1, advisory. The trust ceiling is 0.97, never 1.0. Defense capabilities are never quantified in public campaign copy.</p></article>
+        </div>
+      </section>
+
+      <section id="explore" class="explore-panel" aria-labelledby="explore-heading">
+        <header class="section-heading">
+          <div><p class="eyebrow">Choose your next step</p><h2 id="explore-heading">From the product to its evidence.</h2></div>
+        </header>
+        <div class="door-grid">
+          <a class="door" href="https://a-11-oy.com"><span class="door-kicker">Product</span><strong>A11oy</strong><span>Explore governed execution and the verification path.</span><span class="door-address">a-11-oy.com <span aria-hidden="true">↗</span></span></a>
+          <a class="door" href="https://a11oy.net"><span class="door-kicker">Evidence</span><strong>Proof registry</strong><span>Read the dated diligence trail and its scope.</span><span class="door-address">a11oy.net <span aria-hidden="true">↗</span></span></a>
+          <a class="door" href="https://github.com/szl-holdings"><span class="door-kicker">Build</span><strong>Source repositories</strong><span>Inspect implementation, documentation and checks.</span><span class="door-address">GitHub <span aria-hidden="true">↗</span></span></a>
+          <a class="door" href="https://huggingface.co/SZLHOLDINGS"><span class="door-kicker">Explore</span><strong>Models and Spaces</strong><span>Read artifact cards, examples and operating boundaries.</span><span class="door-address">Hugging Face <span aria-hidden="true">↗</span></span></a>
+        </div>
+        <p class="muted">For public fact collection and draft guardrails, open the <a href="https://huggingface.co/spaces/SZLHOLDINGS/szl-marketing-1.1">governed fact factory</a>.</p>
+      </section>
+
+      <footer class="campaign-footer">
+        <div><a class="campaign-brand" href="https://github.com/szl-holdings/szl-brand">SZL <span>/ HOLDINGS</span></a><p>Brand assets CC BY 4.0 · code Apache-2.0.<br />SZL names and marks remain subject to the repository trademark notice.</p></div>
+        <div class="publication"><p class="eyebrow">Source &amp; package</p><p id="source-sha">Source: see <a href="PUBLICATION_RECEIPT.json">PUBLICATION_RECEIPT.json</a>.</p><p>Source attribution and package integrity are separate from runtime readiness.</p><p class="ghost">ORCID 0009-0001-0110-4173</p></div>
       </footer>
     </main>
     <script src="live.js" defer></script>
