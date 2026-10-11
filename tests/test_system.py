@@ -496,3 +496,83 @@ def test_control_target_uses_a_sizable_display_mode():
     assert "display:inline-flex" in rule.group("body")
     assert "min-inline-size:var(--target-size-min)" in rule.group("body")
     assert "min-block-size:var(--target-size-min)" in rule.group("body")
+
+
+def _resolve_opaque_color(tokens: dict[str, str], name: str, depth: int = 0) -> Color:
+    """Resolve opaque palette aliases and two-color sRGB mixes used by action fills."""
+
+    assert depth < 20, f"token cycle at --{name}"
+    value = tokens[name]
+    if reference := re.fullmatch(r"var\(--([\w-]+)\)", value):
+        return _resolve_opaque_color(tokens, reference[1], depth + 1)
+    if mix := re.fullmatch(
+        r"color-mix\(in srgb, var\(--([\w-]+)\) (\d+)%, var\(--([\w-]+)\)\)", value
+    ):
+        first = _resolve_opaque_color(tokens, mix[1], depth + 1)
+        second = _resolve_opaque_color(tokens, mix[3], depth + 1)
+        return first.lerp(second, 1 - int(mix[2]) / 100)
+    assert re.fullmatch(r"#[0-9A-Fa-f]{6}", value), f"unsupported color --{name}: {value}"
+    return Color.from_hex(value)
+
+
+@pytest.mark.parametrize(
+    "path",
+    ["kit/tokens/szl-design-system.css", "kanchay/szl-design-system.css", "kanchay/szl-tokens.css"],
+)
+def test_small_primary_labels_meet_aa_in_every_action_state(path):
+    css = (Path(__file__).resolve().parents[1] / path).read_text(encoding="utf-8")
+    for surface in ("light", "dark"):
+        tokens = _surface_tokens(css, surface)
+        # Keep the founder's palette primitives: the actionable state is a semantic role.
+        assert _resolve_hex(tokens, "color-coral-400") == Color.from_hex("#DF735F")
+        assert _resolve_hex(tokens, "color-coral-500") == Color.from_hex("#C4543F")
+        ink = _resolve_opaque_color(tokens, "action-ink")
+        for state in ("action-bg", "action-hover-bg", "action-press-bg"):
+            background = _resolve_opaque_color(tokens, state)
+            ratio = ink.contrast_ratio(background)
+            assert ratio >= 4.5, f"{surface} --action-ink on --{state}: {ratio:.3f}:1"
+
+
+@pytest.mark.parametrize(
+    "path",
+    ["kit/tokens/szl-design-system.css", "kanchay/szl-design-system.css", "kanchay/szl-tokens.css"],
+)
+def test_terminal_roles_are_opaque_and_readable_on_either_page(path):
+    css = (Path(__file__).resolve().parents[1] / path).read_text(encoding="utf-8")
+    for surface in ("light", "dark"):
+        tokens = _surface_tokens(css, surface)
+        ground = _resolve_hex(tokens, "code-bg")
+        assert ground == Color.from_hex("#05070C")
+        for name in (
+            "code-ink",
+            "code-muted",
+            "code-link",
+            "code-link-hover",
+            "code-string",
+            "code-number",
+        ):
+            ratio = _resolve_hex(tokens, name).contrast_ratio(ground)
+            assert ratio >= 4.5, f"{surface} --{name} on --code-bg: {ratio:.3f}:1"
+        for name in ("code-edge", "code-focus"):
+            ratio = _resolve_hex(tokens, name).contrast_ratio(ground)
+            assert ratio >= 3.0, f"{surface} --{name} on --code-bg: {ratio:.3f}:1"
+
+
+@pytest.mark.parametrize("prefix", ["kit/tokens", "kanchay"])
+def test_console_signal_inks_have_nontext_contrast_on_surfaces_and_meter_tracks(prefix):
+    root = Path(__file__).resolve().parents[1]
+    css = (root / prefix / "szl-design-system.css").read_text(encoding="utf-8")
+    console = (root / prefix / "szl-console.css").read_text(encoding="utf-8")
+    for surface in ("light", "dark"):
+        selector = LIGHT_POLARITY if surface == "light" else DARK_POLARITY
+        tokens = {**_surface_tokens(css, surface), **_custom_properties(console, selector)}
+        for ground_name in FOCUS_GROUNDS:
+            ground = _resolve_hex(tokens, ground_name)
+            # The track is the same 10% text / 90% ground mixture used by .meter.
+            track = ground.lerp(_resolve_hex(tokens, "text"), 0.1)
+            for name in ("ink-good", "ink-warn", "ink-bad", "text-ghost"):
+                ink = _resolve_hex(tokens, name)
+                assert ink.contrast_ratio(ground) >= 3.0, f"{surface} --{name} on --{ground_name}"
+                assert ink.contrast_ratio(track) >= 3.0, (
+                    f"{surface} --{name} on meter --{ground_name}"
+                )

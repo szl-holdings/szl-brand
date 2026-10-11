@@ -1,74 +1,243 @@
 <!doctype html>
-<!-- KANCHAY example components (vanilla HTML/CSS). CC BY 4.0 / Apache-2.0 · ORCID 0009-0001-0110-4173 -->
-<html lang="en">
+<!-- SPDX-License-Identifier: Apache-2.0
+     Brand assets CC BY 4.0 · SZL Holdings · ORCID 0009-0001-0110-4173 -->
+<html lang="en" data-surface="light">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>KANCHAY components — HTML/CSS</title>
-  <link rel="stylesheet" href="../../tokens/COLOR_TOKENS.css"/>
-  <link rel="stylesheet" href="../../tokens/COMPONENT_TOKENS.css"/>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="KANCHAY components, nested surfaces and native material. Local examples with explicit sample states.">
+  <title>KANCHAY — a system for every surface</title>
+  <link rel="stylesheet" href="../../tokens/szl-design-system.css">
+  <link rel="stylesheet" href="../../tokens/szl-console.css">
   <style>
-    body{
-      background:var(--color-a11oy-bg); color:var(--color-a11oy-text);
-      font-family:"Inter",system-ui,sans-serif; margin:0; padding:var(--space-12);
-      line-height:1.6;
+    /* Example composition only. Components and colors come from canonical CSS. */
+    .specimen-section { padding-block:var(--space-16); scroll-margin-block-start:6rem; }
+    .specimen-section + .specimen-section { border-top:1px solid var(--border); }
+    .specimen-hero { display:grid; grid-template-columns:minmax(0,1.4fr) minmax(0,.6fr);
+      align-items:center; gap:var(--space-12); }
+    .specimen-mark { margin:0; display:grid; justify-items:center; gap:var(--space-5); }
+    .specimen-mark img { display:block; inline-size:min(100%,18rem); block-size:auto; }
+    .specimen-mark figcaption { text-align:center; font-size:var(--text-xs); color:var(--text-ghost); }
+    .specimen-intro { display:flex; flex-wrap:wrap; justify-content:space-between;
+      align-items:flex-start; gap:var(--space-6); margin-block-end:var(--space-8); }
+    .specimen-intro h2 { max-inline-size:20ch; }
+    .specimen-intro p { max-inline-size:45ch; }
+    .specimen-theme { inline-size:12rem; max-inline-size:100%; }
+    .specimen-panel { display:grid; gap:var(--space-5); min-inline-size:0; }
+    .specimen-panel > :last-child { margin-block-end:0; }
+    .specimen-panel h3 { font-size:var(--text-xl); margin:0; }
+    .specimen-panel > .chip { justify-self:start; }
+    .specimen-nested { margin-block-start:var(--space-2); }
+    .specimen-receipts { display:grid; justify-items:start; gap:var(--space-4); }
+    .specimen-state { min-block-size:1.6em; margin-block-start:var(--space-4); }
+    .specimen-statuses { display:grid; gap:var(--space-3); margin:0; padding:0; list-style:none; }
+    .specimen-statuses li { display:flex; align-items:center; gap:var(--space-3); }
+    .specimen-chart { display:grid; gap:var(--space-3); }
+    .specimen-chart .spark { inline-size:100%; block-size:3rem; }
+    .specimen-chart p { margin:0; }
+    .specimen-footer { padding-block:var(--space-8); border-top:1px solid var(--border); }
+    .specimen-footer p { font-size:var(--text-xs); margin:0; }
+    @media (max-width:800px) {
+      .specimen-hero { grid-template-columns:minmax(0,1fr); gap:var(--space-8); }
+      .specimen-mark { justify-items:start; }
+      .specimen-mark img { inline-size:8rem; }
+      .specimen-mark figcaption { text-align:start; }
     }
-    h1{font-family:"IBM Plex Sans",sans-serif;font-weight:700;letter-spacing:-.01em}
-    /* Button */
-    .btn{
-      font:inherit; font-weight:600; cursor:pointer; border:none;
-      padding:var(--space-2) var(--space-5); border-radius:var(--radius-md);
-      transition:background var(--duration-fast) var(--ease-standard),
-                 box-shadow var(--duration-fast) var(--ease-standard);
-    }
-    .btn:focus-visible{outline:none; box-shadow:var(--shadow-focus)}
-    .btn-primary{background:var(--color-yuyay-600); color:#fff}        /* 5.75:1 AA */
-    .btn-primary:hover{background:var(--color-yuyay-700)}
-    .btn-accent{background:var(--color-hatun-400); color:var(--color-gray-950)} /* 8.32:1 AAA */
-    .btn-accent:hover{background:var(--color-hatun-300)}
-    .btn-danger{background:var(--color-yawar-600); color:#fff}         /* 7.22:1 AAA */
-    /* Card */
-    .card{
-      background:var(--color-a11oy-surface); border:1px solid var(--color-a11oy-border);
-      border-radius:var(--radius-lg); padding:var(--space-6); max-width:380px;
-      box-shadow:var(--shadow-md);
-    }
-    .card h3{margin:0 0 var(--space-2); font-family:"IBM Plex Sans",sans-serif}
-    .card .hash{font-family:"JetBrains Mono",monospace; color:var(--color-yuyay-300);
-      font-size:.875rem}
-    /* Alert */
-    .alert{display:flex; gap:var(--space-3); padding:var(--space-4);
-      border-radius:var(--radius-md); border:1px solid; align-items:flex-start}
-    .alert-success{background:color-mix(in srgb,var(--color-success) 12%,transparent);
-      border-color:var(--color-success); color:#3fce82}
-    .alert-warning{background:color-mix(in srgb,var(--color-warning) 12%,transparent);
-      border-color:var(--color-warning); color:var(--color-hatun-200)}
-    .alert-error{background:color-mix(in srgb,var(--color-error) 12%,transparent);
-      border-color:var(--color-error); color:var(--color-yawar-200)}
-    .stack{display:flex; gap:var(--space-3); flex-wrap:wrap; margin-bottom:var(--space-8)}
   </style>
 </head>
 <body>
-  <h1>KANCHAY components</h1>
-
-  <div class="stack">
-    <button class="btn btn-primary">Verify receipt</button>
-    <button class="btn btn-accent">View khipu chain</button>
-    <button class="btn btn-danger">Halt (T10)</button>
-  </div>
-
-  <div class="stack">
-    <div class="card">
-      <h3>Receipt verified</h3>
-      <p>Chain extends append-only ledger. Signature: <strong>DSSE PLACEHOLDER</strong>.</p>
-      <div class="hash">root 3f9a8c2e…b71d</div>
+  <a class="skip-link" href="#main">Skip to components</a>
+  <nav class="nav" aria-label="Component reference">
+    <a class="nav__brand" href="#main">SZL <span class="ghost">/ KANCHAY</span></a>
+    <div class="nav__links">
+      <a class="nav__link" href="#surfaces">Surfaces</a>
+      <a class="nav__link" href="#actions">Actions</a>
+      <a class="nav__link" href="#evidence">Evidence</a>
+      <a class="nav__link" href="#terminal">Terminal</a>
     </div>
-  </div>
-
-  <div class="stack" style="flex-direction:column;max-width:520px">
-    <div class="alert alert-success"><span>OK</span><span>Yuyay gate cleared — all 13 axes above floor.</span></div>
-    <div class="alert alert-warning"><span>!</span><span>Λ-uniqueness is <strong>Conjecture 1</strong> (open), not proven.</span></div>
-    <div class="alert alert-error"><span>×</span><span>Action halted: tripwire T01 fired. No receipt written.</span></div>
-  </div>
+  </nav>
+  <main id="main" tabindex="-1">
+    <header class="hero">
+      <div class="hero__inner specimen-hero">
+        <div>
+          <p class="eyebrow">SZL Holdings · KANCHAY</p>
+          <h1 class="hero__title">One system.<br>Every surface.</h1>
+          <p class="hero__sub">Warm editorial space. Precise operator tools. A restrained silver edge,
+            built from the same language.</p>
+          <a class="btn btn-secondary" href="#surfaces">Explore the components <span aria-hidden="true">↘</span></a>
+        </div>
+        <figure class="specimen-mark">
+          <img src="../../logos/orbit-v2/suite/szl-orbit-holo.svg" width="600" height="600"
+            alt="SZL orbit mark with silver linework, a coral node and a lambda detail">
+          <figcaption>Orbit v2 · native SVG material</figcaption>
+        </figure>
+      </div>
+    </header>
+    <div class="container">
+      <section class="specimen-section" id="surfaces" aria-labelledby="surfaces-title">
+        <div class="specimen-intro">
+          <div>
+            <p class="eyebrow">01 / Polarity</p>
+            <h2 id="surfaces-title">Clarity on either ground.</h2>
+            <p>Nested panels keep their own readable text, controls and status colors.
+              Change the page polarity to inspect both directions.</p>
+          </div>
+          <label class="field specimen-theme" for="specimen-theme">
+            <span class="field__label">Page surface</span>
+            <select class="select" id="specimen-theme">
+              <option value="light">Light editorial</option>
+              <option value="dark">Dark operator</option>
+            </select>
+          </label>
+        </div>
+        <div class="grid-auto">
+          <article class="card specimen-panel surface-holo" data-surface="light" id="light-panel">
+            <p class="eyebrow">Editorial / Light</p>
+            <h3>Space to understand.</h3>
+            <p>Plain language and deliberate hierarchy give the source room to speak.</p>
+            <a href="#sample-details">Read the sample boundary</a>
+            <div class="card specimen-panel specimen-nested" data-surface="dark" id="dark-in-light">
+              <p class="eyebrow">Nested / Dark</p>
+              <h3>An operator view.</h3>
+              <span class="chip chip-sample">SAMPLE</span>
+              <a href="#terminal">Inspect a local command</a>
+              <div class="card specimen-panel" data-surface="light" id="light-in-dark-in-light">
+                <span class="text-sm">A light annotation keeps its own focus and ink.</span>
+                <a href="#evidence">View example evidence</a>
+              </div>
+            </div>
+          </article>
+          <article class="card specimen-panel surface-holo" data-surface="dark" id="dark-panel">
+            <p class="eyebrow">Operator / Dark</p>
+            <h3>Precision without noise.</h3>
+            <p>Graphite grounds carry long identifiers, controls and explicit states.</p>
+            <a href="#sample-details">Read the sample boundary</a>
+            <div class="card specimen-panel specimen-nested" data-surface="light" id="light-in-dark">
+              <p class="eyebrow">Nested / Light</p>
+              <h3>A readable document.</h3>
+              <span class="chip chip-unavailable">UNAVAILABLE</span>
+              <a href="#evidence">Inspect the state example</a>
+              <div class="card specimen-panel" data-surface="dark" id="dark-in-light-in-dark">
+                <span class="text-sm">A dark annotation re-resolves the same roles.</span>
+                <a href="#terminal">View the terminal example</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+      <section class="specimen-section" id="actions" aria-labelledby="actions-title">
+        <div class="specimen-intro">
+          <div>
+            <p class="eyebrow">02 / Interaction</p>
+            <h2 id="actions-title">One clear next step.</h2>
+          </div>
+          <p>Primary links and buttons keep the same ink in rest, hover and pressed states.
+            Long labels wrap; keyboard focus remains visible.</p>
+        </div>
+        <div class="cluster">
+          <a class="btn btn-primary" id="primary-action" href="#sample-details">Inspect this sample and its source boundary</a>
+          <button class="btn btn-secondary" id="sample-action" type="button">Preview local state</button>
+          <button class="btn btn-secondary" type="button" disabled>Unavailable action</button>
+        </div>
+        <p class="specimen-state text-sm" id="sample-action-state" role="status">SAMPLE — no production action is connected.</p>
+      </section>
+      <section class="specimen-section" id="evidence" aria-labelledby="evidence-title">
+        <div class="specimen-intro">
+          <div>
+            <p class="eyebrow">03 / Evidence</p>
+            <h2 id="evidence-title">State has a meaning.</h2>
+          </div>
+          <p>Every colored mark is paired with text. These fixtures demonstrate presentation;
+            they do not assert verification, availability or measured performance.</p>
+        </div>
+        <div class="grid-auto">
+          <article class="evidence-card surface-holo" id="sample-details">
+            <div class="evidence-card__header">
+              <h3 class="evidence-card__title">Local component specimen</h3>
+              <span class="chip chip-sample">SAMPLE</span>
+            </div>
+            <p>This page renders static example data. It has no production API connection.</p>
+            <dl class="evidence-card__meta">
+              <div><dt>Source</dt><dd><a href="components.html">This local HTML specimen</a></dd></div>
+              <div><dt>Observation</dt><dd>None — static example</dd></div>
+              <div><dt>Claim</dt><dd>UNAVAILABLE — no capability evidence supplied</dd></div>
+            </dl>
+            <div class="specimen-receipts">
+              <span class="receipt" data-state="unverified" id="receipt-unverified">
+                <span class="receipt__dot" aria-hidden="true"></span>
+                <span class="receipt__label">Unverified sample</span>
+                <span class="receipt__root">sample-not-a-signed-receipt-0123456789abcdefghijklmnopqrstuvwxyz</span>
+              </span>
+              <span class="receipt" data-state="failed" id="receipt-failed">
+                <span class="receipt__dot" aria-hidden="true"></span>
+                <span class="receipt__label">Failed sample</span>
+                <span class="receipt__root">signature mismatch fixture</span>
+              </span>
+            </div>
+          </article>
+          <article class="card specimen-panel">
+            <h3>Legible operational signals.</h3>
+            <ul class="specimen-statuses" aria-label="Static status examples">
+              <li><span class="dot dot--ok" aria-hidden="true"></span><span>Success — sample state</span></li>
+              <li><span class="dot dot--warn" aria-hidden="true"></span><span>Warning — sample state</span></li>
+              <li><span class="dot dot--err" aria-hidden="true"></span><span>Failure — sample state</span></li>
+            </ul>
+            <div class="specimen-chart">
+              <p class="text-sm">SAMPLE · 60% illustrative progress</p>
+              <div class="meter" data-tone="warn" role="progressbar" aria-label="Illustrative progress"
+                aria-valuemin="0" aria-valuemax="100" aria-valuenow="60">
+                <div class="meter__fill" style="inline-size:60%"></div>
+              </div>
+              <svg class="spark" data-tone="good" viewBox="0 0 200 40" role="img" aria-labelledby="sample-chart-title">
+                <title id="sample-chart-title">Static sample line; no measured data</title>
+                <path d="M2 32 L30 29 L56 30 L82 19 L108 22 L135 13 L160 17 L198 5"></path>
+              </svg>
+            </div>
+            <label class="field" for="sample-note">
+              <span class="field__label">Local note</span>
+              <input class="input" id="sample-note" type="text" placeholder="Write a sample note" autocomplete="off">
+            </label>
+          </article>
+        </div>
+      </section>
+      <section class="specimen-section" id="terminal" aria-labelledby="terminal-title">
+        <div class="specimen-intro">
+          <div>
+            <p class="eyebrow">04 / Developer surface</p>
+            <h2 id="terminal-title">A terminal on either page.</h2>
+          </div>
+          <p>The graphite code ground and syntax colors stay consistent on light and dark pages.
+            Long commands scroll inside the code region.</p>
+        </div>
+        <pre class="code code--copyable" data-lang="Shell" tabindex="0" aria-label="Sample validation command, horizontally scrollable" id="sample-code"><code><span class="tok-comment"># Run locally in an installed SZL Brand checkout; this page does not execute it.</span>
+<span class="tok-key">python</span> -m szl_brand kanchay-build <span class="tok-str">--check</span></code><button class="btn btn-ghost btn-sm code__copy" type="button" id="copy-command">Copy command</button></pre>
+        <p class="specimen-state text-sm" id="copy-state" role="status">SAMPLE — command preview only.</p>
+      </section>
+    </div>
+  </main>
+  <footer class="specimen-footer">
+    <div class="container">
+      <p>SZL Holdings · KANCHAY · Native CSS and SVG · No webfonts or production requests.</p>
+      <p>Brand assets CC BY 4.0 · Code Apache-2.0 · ORCID 0009-0001-0110-4173</p>
+    </div>
+  </footer>
+  <script>
+    const theme = document.getElementById("specimen-theme");
+    theme.addEventListener("change", () => {
+      document.documentElement.dataset.surface = theme.value;
+    });
+    document.getElementById("sample-action").addEventListener("click", () => {
+      document.getElementById("sample-action-state").textContent =
+        "SAMPLE — local state preview complete. No production action was executed.";
+    });
+    document.getElementById("copy-command").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText("python -m szl_brand kanchay-build --check");
+        document.getElementById("copy-state").textContent = "Sample command copied. It has not been executed.";
+      } catch {
+        document.getElementById("copy-state").textContent = "Copy unavailable. Select the sample command above to copy it manually.";
+      }
+    });
+  </script>
 </body>
 </html>
