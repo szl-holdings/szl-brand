@@ -1,7 +1,7 @@
 ---
 title: SZL Brand Campaign
 emoji: 🛡️
-colorFrom: indigo
+colorFrom: gray
 colorTo: gray
 sdk: static
 pinned: false
@@ -17,7 +17,7 @@ tags:
 
 # SZL Brand Campaign
 
-Explore SZL verification work through a compact campaign hub and public estate facts. Follow the source and publication receipt for the content served here.
+Explore SZL verification work through its public catalog, source and evidence paths. The campaign uses the approved Orbit artwork and KANCHAY presentation system. Follow the source and publication receipt for the content served here.
 
 **Artifact:** Campaign hub and public fact display · **Stage:** Source-owned static presentation
 
@@ -26,6 +26,8 @@ Explore SZL verification work through a compact campaign hub and public estate f
 ## Before you use it
 
 - Public API facts depend on the response and its observation time. Failed observations remain UNAVAILABLE.
+- Catalog requests follow pagination within the expected organization and endpoint. An incomplete listing is PARTIAL; a successful empty listing is zero. Missing download fields remain UNAVAILABLE.
+- The active page includes public native kernels, collections and buckets alongside models, datasets and Spaces. Catalog membership does not establish runtime readiness.
 - Campaign copy and publication receipts do not establish product performance or authorize consequential actions.
 - The original asset and code licenses continue to apply. SZL names and marks remain subject to the repository trademark notice.
 

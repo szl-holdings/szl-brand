@@ -389,6 +389,9 @@ def test_space_package_builds_with_receipt(tmp_path, target):
         assert (out / "index.html").is_file()
         assert (out / "szl-design-system.css").is_file()
         assert (out / "live.js").is_file()
+        assert (out / "szl-orbit-holo.svg").read_bytes() == (
+            REPO_ROOT / "kit/logos/orbit-v2/suite/szl-orbit-holo.svg"
+        ).read_bytes()
 
 
 def test_space_package_rejects_bad_sha_and_unknown_target(tmp_path):
@@ -435,6 +438,9 @@ def test_space_package_blocks_banned_copy(tmp_path):
     (src / "index.html").write_text("<p>fine</p>", "utf-8")
     (root / "kanchay").mkdir()
     (root / "kanchay" / "szl-design-system.css").write_text("body{}", "utf-8")
+    logo = root / "kit/logos/orbit-v2/suite/szl-orbit-holo.svg"
+    logo.parent.mkdir(parents=True)
+    logo.write_text("<svg/>", "utf-8")
     with pytest.raises(ValueError, match="compliance linter"):
         build_package("szl-brand-campaign", root, SHA, tmp_path / "out")
     assert not (tmp_path / "out").exists()

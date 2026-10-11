@@ -48,7 +48,10 @@ TARGETS: Final[dict[str, dict[str, Any]]] = {
         "repo_id": "SZLHOLDINGS/szl-brand-campaign",
         "source_dir": "marketing/space/szl-brand-campaign",
         "vendor_module": False,
-        "extra_files": {"kanchay/szl-design-system.css": "szl-design-system.css"},
+        "extra_files": {
+            "kanchay/szl-design-system.css": "szl-design-system.css",
+            "kit/logos/orbit-v2/suite/szl-orbit-holo.svg": "szl-orbit-holo.svg",
+        },
         "lint_files": ("README.md", "index.html"),
     },
 }
