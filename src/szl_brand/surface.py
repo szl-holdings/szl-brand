@@ -26,6 +26,8 @@ from pathlib import Path
 from typing import Any, Final
 from urllib.parse import urlsplit
 
+from szl_brand.system import _source_bundle
+
 SCHEMA: Final = "szl.surface-foundry/v3"
 RECEIPT_SCHEMA: Final = "szl.surface-receipt/v1"
 WIDTH: Final = 1280
@@ -62,7 +64,16 @@ EVIDENCE_LABELS: Final = frozenset(
     }
 )
 OPERATIONAL_STATES: Final = frozenset(
-    {"OPERATIONAL", "PARTIAL", "DEGRADED", "UNAVAILABLE", "HISTORICAL"}
+    {
+        "OPERATIONAL",
+        "PARTIAL",
+        "DEGRADED",
+        "UNAVAILABLE",
+        "HISTORICAL",
+        "UNKNOWN",
+        "DEPRECATED",
+        "ROADMAP",
+    }
 )
 SLUG_RE: Final = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._/-]{0,95}$")
 HEX_RE: Final = re.compile(r"^#[0-9A-Fa-f]{6}$")
@@ -98,7 +109,7 @@ KIND_LABELS: Final = {
     "model": "MODEL",
     "kernel": "GOVERNED KERNEL",
     "dataset": "DATASET",
-    "space": "LIVE SURFACE",
+    "space": "SPACE",
     "proof": "PROOF SURFACE",
     "archived": "HISTORICAL ARTIFACT",
 }
@@ -408,6 +419,10 @@ def render_surface_svg(spec: SurfaceSpec) -> str:
     title_lines = _wrap_svg_text(spec.display_name, width=23, max_lines=2)
     lede_lines = _wrap_svg_text(spec.one_liner, width=62, max_lines=3)
     kind_label = KIND_LABELS[spec.kind]
+    if spec.kind == "space":
+        # A hosting type is not liveness evidence. Keep the supplied state in the
+        # first-screen label, including unknown, historical and planned surfaces.
+        kind_label = f"{spec.operational_state} {kind_label}"
     surface_id = _digest(canonical_contract(spec))[:12]
 
     title_tspans = [
@@ -463,41 +478,21 @@ def render_surface_svg(spec: SurfaceSpec) -> str:
 
 
 def render_avatar_svg(spec: SurfaceSpec, *, profile: bool = False) -> str:
-    """Render a high-resolution, small-size-safe vector avatar."""
+    """Return the approved Orbit avatar, byte for byte, from the bound source.
+
+    ``profile`` remains accepted for caller compatibility. It never redraws the
+    parent mark into initials or recolors it by surface kind. Founder and product
+    identities belong in their own reviewed copy and assets.
+    """
 
     validate_surface(spec)
-    primary, secondary, tertiary = _palette(spec)
-    seed = _seed(spec)
-    rotation = -18 - seed[2] % 10
-    core = (
-        '<path d="M402 332 C365 291 238 299 229 367 C220 430 342 438 365 476 C395 525 338 574 251 561" fill="none" stroke="#F4F6F8" stroke-width="72" stroke-linecap="round"/>'
-        '<path d="M420 303 H642 V378 L532 516 H642 V594 H420 V520 L531 381 H420Z" fill="#F4F6F8"/>'
-        '<path d="M677 303 H754 V516 H881 L816 594 H677Z" fill="#F4F6F8"/>'
-    )
-    if profile:
-        core = (
-            '<path d="M470 334 C432 292 292 300 282 370 C273 435 397 444 421 485 C450 535 388 589 295 574" fill="none" stroke="#F4F6F8" stroke-width="74" stroke-linecap="round"/>'
-            '<path d="M548 306 H638 V554 H823 L750 642 H548Z" fill="#F4F6F8"/>'
-        )
-    label = "Founder profile mark" if profile else "SZL Holdings organization mark"
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-labelledby="avatar-title avatar-desc">
-  <title id="avatar-title">{_escape(label)}</title>
-  <desc id="avatar-desc">High-resolution KANCHAY mark designed to remain legible at small avatar sizes.</desc>
-  <defs>
-    <linearGradient id="orbit" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E9EEF6"/><stop offset="0.52" stop-color="{tertiary}"/><stop offset="1" stop-color="#5C6B86"/></linearGradient>
-    <radialGradient id="node" cx="38%" cy="34%" r="75%"><stop offset="0" stop-color="#F4B0A2"/><stop offset="0.55" stop-color="{secondary}"/><stop offset="1" stop-color="#C4543F"/></radialGradient>
-    <radialGradient id="field" cx="50%" cy="42%" r="70%"><stop offset="0" stop-color="#0D2540"/><stop offset="1" stop-color="#030F29"/></radialGradient>
-    <filter id="avatar-glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="12" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-  </defs>
-  <rect width="1024" height="1024" rx="196" fill="url(#field)"/>
-  <rect x="18" y="18" width="988" height="988" rx="180" fill="none" stroke="#9AA7BD" stroke-opacity="0.18" stroke-width="4"/>
-  <g transform="rotate({rotation} 512 470)"><ellipse cx="512" cy="470" rx="370" ry="214" fill="none" stroke="url(#orbit)" stroke-width="15" opacity="0.95"/></g>
-  <circle cx="824" cy="245" r="31" fill="url(#node)" filter="url(#avatar-glow)"/>
-  {core}
-  <path d="M512 750 L558 858 H534 L512 793 L490 858 H466Z" fill="url(#orbit)" opacity="0.96"/>
-  <circle cx="512" cy="470" r="294" fill="none" stroke="{primary}" stroke-opacity="0.08" stroke-width="3"/>
-</svg>
-'''
+    try:
+        assets, _revision = _source_bundle()
+        return assets["szl-avatar.svg"].decode("utf-8")
+    except (KeyError, OSError, UnicodeDecodeError, ValueError) as exc:
+        raise SurfaceContractError(
+            "approved Orbit avatar source is unavailable or invalid"
+        ) from exc
 
 
 def _markdown_cell(value: str) -> str:

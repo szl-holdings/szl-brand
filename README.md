@@ -46,19 +46,26 @@ python -m szl_brand export-system \
 
 The export contains:
 
-```text
-dist/kanchay/
-├── manifest.json          # contract, version, exact source, per-file hashes, root hash
-├── system.css             # tokens + accessible components + reduced-motion behavior
-├── tokens.json            # typed token source and measured contrast pairs
-├── metadata.schema.json   # fail-closed public metadata convention
-└── vitepress.css          # first framework adapter
-```
+| File | Purpose |
+| --- | --- |
+| `manifest.json` | Contract, version, exact source, per-file hashes and bundle root hash. |
+| `system.css` | Tokens, components, focus and reduced-motion behavior. |
+| `tokens.json` | Typed token source and measured contrast pairs. |
+| `metadata.schema.json` | Public metadata convention. |
+| `vitepress.css` | Framework adapter. |
+| `khipu-command-system.css`, `khipu-command-system.schema.json`, `khipu-command-system.example.json` | Command surface styles, contract and example. |
+| `repository-readme-template.md`, `org-card-template.md` | Managed front-door templates. |
+| `repository-hero-template.svg`, `org-card-template.svg`, `executive-brief-template.html` | Native presentation templates. |
+| `szl-orbit.svg`, `szl-avatar.svg` | Exact approved Orbit v2 master and round-crop avatar projection. |
 
 Identical inputs and the same source SHA produce byte-identical outputs. Checkout exports read the
 asset blobs from the canonical repository's exact `HEAD`; wheel exports require build-embedded
 revision and per-asset hashes. Mutable refs, mismatched revisions, forks, abbreviated SHAs,
 uppercase SHAs, and path-like values are rejected.
+
+[Surface Foundry](./docs/SURFACE_FOUNDRY_V3.md) uses that same bound avatar source for every
+generated parent identity. Its Space artwork preserves the supplied operational state;
+unknown, deprecated and roadmap contracts remain explicit.
 
 ## Vendor bundle (`kanchay/`)
 
@@ -122,7 +129,8 @@ runtime font or stylesheet dependency.
 
 ## Truth and accessibility contract
 
-- Public status vocabulary is exactly `REAL`, `MEASURED`, `MODELED`, `ROADMAP`, or `UNAVAILABLE`.
+- Public metadata status vocabulary is exactly `REAL`, `MEASURED`, `MODELED`, `ROADMAP`, or `UNAVAILABLE`.
+- Surface Foundry's evidence and operational-state vocabularies are separate, documented contracts.
 - Every metadata record requires source and evidence URLs.
 - Focus is visible, status has a text label, and forced-colors mode keeps state indicators legible.
 - `prefers-reduced-motion: reduce` collapses nonessential animation and transition duration.

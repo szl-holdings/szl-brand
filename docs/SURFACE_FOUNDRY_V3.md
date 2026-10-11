@@ -30,7 +30,7 @@ Every surface shares:
 - the same managed README markers;
 - the same deterministic receipt format.
 
-Every surface varies deterministically by `kind + slug`:
+Every hero varies deterministically by `kind + slug`:
 
 - one of six geometric systems: aperture, signal lanes, khipu knots, bounded loop, evidence graph, or receipt blocks;
 - a family palette for org, profile, platform, repository, model, kernel, dataset, Space, proof, or archive;
@@ -44,7 +44,7 @@ A model does not look like a dataset. A proof surface does not look like a produ
 For each surface, the generator writes:
 
 - `surface-card.svg` — 1280×640 accessible hero, suitable for README and model-card leads;
-- `avatar.svg` — 1024×1024 small-size-safe mark;
+- `avatar.svg` — exact approved Orbit v2 avatar projection, with its 600×600 vector viewBox;
 - `README.block.md` — investor-readable and developer-usable managed lead;
 - `surface.json` — normalized disclosure contract;
 - `receipt.json` — SHA-256 binding for the contract, SVG, and README block.
@@ -63,6 +63,12 @@ python -m szl_brand.surface examples/surfaces.flagship.json --output generated
 
 Generation is offline and deterministic. It performs no GitHub, Hugging Face, DNS, or deployment write.
 
+Avatar bytes come from the canonical repository's exact `HEAD` or the installed wheel's
+revision-bound asset package. Missing or invalid source provenance stops generation. The
+`receipt.json` output is unsigned generation metadata binding the contract, hero and README;
+it is not a signed product receipt. `export-system` additionally binds the canonical parent
+mark and avatar bytes to their source paths and hashes.
+
 ## Managed README policy
 
 The generated block is bounded by:
@@ -78,15 +84,46 @@ Repository-specific lead contracts remain authoritative. A source repository may
 
 ## Avatar policy
 
-Avatars are not emoji and are not README art. At 24–96 pixels, fine type and thin gradients turn into mush. The avatar system therefore uses:
+`avatar.svg` is byte-identical to
+[`kit/logos/orbit-v2/suite/szl-avatar.svg`](../kit/logos/orbit-v2/suite/szl-avatar.svg).
+The approved suite derives it from the parent master with the exact letter outlines,
+authored −22° orbit and single coral node. Its full-bleed navy ground and content geometry
+are designed for the platform's round crop. Surface kind, slug, custom hero accent and
+operational state cannot recolor, rotate or redraw this identity.
 
-- a 1024×1024 source;
-- a large safe zone;
-- no wordmark or tiny copy;
-- thick geometry and a single focal node;
-- related but distinct organization and founder marks.
+Organization and profile outputs use the same approved parent avatar. The `profile=True`
+call remains compatible, but it does not invent an initials mark. Founder-specific identity
+requires a separately approved asset. Surface-specific names and copy remain in the hero
+and README contract.
 
-The repository stores vector masters. Platform uploads should use exported PNGs because GitHub and Hugging Face profile settings rasterize or crop uploaded images.
+For platform settings, use the suite's existing `png/szl-avatar-1024.png` or `-512.png`
+exports. For inline UI placements, follow the suite's dedicated icon size rules. Reserve
+both displayed dimensions and preserve the square aspect ratio. The
+[suite policy](../kit/logos/orbit-v2/suite/README.md) covers clear space, crop and placement.
+Generating files does not change account avatar settings.
+
+## Operational state in Space artwork
+
+Space artwork uses a neutral `SPACE` type with the supplied state in its first-screen
+label. The same value remains in the accessible description, runtime badge, README and
+generation receipt. The generator does not probe a Space or upgrade its state from its
+kind, URL, evidence label or successful asset generation.
+
+| Supplied `operational_state` | Artwork label |
+| --- | --- |
+| `OPERATIONAL` | OPERATIONAL SPACE |
+| `PARTIAL` | PARTIAL SPACE |
+| `DEGRADED` | DEGRADED SPACE |
+| `UNAVAILABLE` | UNAVAILABLE SPACE |
+| `HISTORICAL` | HISTORICAL SPACE |
+| `UNKNOWN` | UNKNOWN SPACE |
+| `DEPRECATED` | DEPRECATED SPACE |
+| `ROADMAP` | ROADMAP SPACE |
+
+Unknown, deprecated and planned states are preserved explicitly. Evidence labels remain
+independent: an `OPERATIONAL` contract may still carry `UNKNOWN` evidence, and a `MEASURED`
+artifact may have `UNAVAILABLE` runtime. Callers remain responsible for reviewed source,
+freshness and evidence; no input state is inferred automatically.
 
 ## Required card information by artifact type
 

@@ -1,10 +1,13 @@
 import json
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 import pytest
 
+import szl_brand.surface as surface_module
 from szl_brand.surface import (
     END_MARKER,
+    KINDS,
     LEGACY_END,
     LEGACY_START,
     RECEIPT_SCHEMA,
@@ -81,27 +84,67 @@ def test_user_copy_is_escaped_in_svg_and_markdown_attributes():
     assert "&quot;Proof&quot;" in block
 
 
-def test_avatar_has_complete_gradients_and_small_size_safe_geometry():
-    item = spec(kind="org", slug="szl-holdings", display_name="SZL Holdings")
-    avatar = render_avatar_svg(item)
+@pytest.mark.parametrize("kind", sorted(KINDS))
+def test_avatar_is_the_exact_approved_projection_for_every_surface_kind(kind):
+    root = Path(__file__).resolve().parents[1]
+    approved = (root / "kit/logos/orbit-v2/suite/szl-avatar.svg").read_bytes()
+    item = spec(kind=kind, slug=f"sample-{kind}", accent="#DF735F")
+    avatar = render_avatar_svg(item, profile=kind == "profile")
 
-    assert 'id="orbit"' in avatar
-    assert 'id="node"' in avatar
-    assert "url(#orbit)" in avatar
-    assert "url(#node)" in avatar
-    assert 'width="1024" height="1024"' in avatar
-    assert "SZL Holdings organization mark" in avatar
+    assert avatar.encode("utf-8") == approved
+    tree = ET.fromstring(avatar)
+    assert tree.attrib["viewBox"] == "0 0 600 600"
+    assert tree.attrib["role"] == "img"
+    assert tree.find("{http://www.w3.org/2000/svg}title").text == "SZL Holdings"
 
 
-def test_profile_avatar_is_distinct_from_org_avatar():
+def test_profile_flag_cannot_redraw_or_recolor_the_parent_mark():
     org = render_avatar_svg(spec(kind="org", slug="szl-holdings"))
     profile = render_avatar_svg(
         spec(kind="profile", slug="betterwithage", display_name="Stephen P. Lutar Jr."),
         profile=True,
     )
 
-    assert org != profile
-    assert "Founder profile mark" in profile
+    assert org == profile
+
+
+def test_avatar_refuses_unavailable_source_instead_of_drawing_a_fallback(monkeypatch):
+    def unavailable():
+        raise ValueError("simulated invalid packaged provenance")
+
+    monkeypatch.setattr(surface_module, "_source_bundle", unavailable)
+    with pytest.raises(SurfaceContractError, match="approved Orbit avatar source is unavailable"):
+        render_avatar_svg(spec())
+
+
+@pytest.mark.parametrize(
+    "state, label",
+    [
+        ("OPERATIONAL", "OPERATIONAL SPACE"),
+        ("PARTIAL", "PARTIAL SPACE"),
+        ("DEGRADED", "DEGRADED SPACE"),
+        ("UNAVAILABLE", "UNAVAILABLE SPACE"),
+        ("HISTORICAL", "HISTORICAL SPACE"),
+        ("UNKNOWN", "UNKNOWN SPACE"),
+        ("DEPRECATED", "DEPRECATED SPACE"),
+        ("ROADMAP", "ROADMAP SPACE"),
+    ],
+)
+def test_space_label_preserves_supplied_state_without_implying_liveness(state, label):
+    item = spec(kind="space", operational_state=state, evidence_label="UNKNOWN")
+    svg = render_surface_svg(item)
+    block = render_readme_block(item)
+    tree = ET.fromstring(svg)
+    title = tree.find("{http://www.w3.org/2000/svg}title").text
+    texts = [node.text for node in tree.iter("{http://www.w3.org/2000/svg}text")]
+
+    assert title == f"A11oy — {label.title()}"
+    assert any(text and f"SZL / {label} / " in text for text in texts)
+    assert "LIVE SURFACE" not in svg
+    assert f"`UNKNOWN` evidence · `{state}` runtime" in block
+    receipt = build_receipt(item, svg, block)
+    assert receipt.operational_state == state
+    assert receipt.evidence_label == "UNKNOWN"
 
 
 def test_readme_block_has_two_audiences_truth_and_limitations():

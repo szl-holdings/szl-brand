@@ -63,6 +63,8 @@ def test_manifest_pins_source_and_every_asset(tmp_path):
         "repository-hero-template.svg",
         "org-card-template.svg",
         "executive-brief-template.html",
+        "szl-orbit.svg",
+        "szl-avatar.svg",
     }
     assert verify_system(output) == []
 
@@ -116,7 +118,8 @@ def test_checkout_source_rejects_noncanonical_repository(tmp_path, monkeypatch):
         system_module._checkout_source(tmp_path)
 
 
-def test_packaged_source_requires_hash_bound_provenance(tmp_path, monkeypatch):
+@pytest.mark.parametrize("tampered_asset", ["system.css", "szl-avatar.svg"])
+def test_packaged_source_requires_hash_bound_provenance(tmp_path, monkeypatch, tampered_asset):
     package_root = tmp_path / "package"
     design_system = package_root / "design_system"
     design_system.mkdir(parents=True)
@@ -142,8 +145,8 @@ def test_packaged_source_requires_hash_bound_provenance(tmp_path, monkeypatch):
     assert revision == REVISION
     assert set(assets) == recorded.keys()
 
-    (design_system / "system.css").write_bytes(b"tampered")
-    with pytest.raises(ValueError, match="asset provenance mismatch: system.css"):
+    (design_system / tampered_asset).write_bytes(b"tampered")
+    with pytest.raises(ValueError, match=f"asset provenance mismatch: {tampered_asset}"):
         system_module._packaged_source()
 
 
