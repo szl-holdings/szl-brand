@@ -52,6 +52,13 @@ def test_native_package_closes_exact_asset_projection(native):
     assert len(receipt["files"]) == 20
     assert "UNSIGNED_LOCAL_PROJECTION_METADATA" == projection["classification"]
     assert module._native("icon") == (package / "native/szl-icon-32.svg").read_bytes()
+    assert 'for="factory-subject-a"' in module.draft_editor()
+    assert 'id="factory-review-text"' in module.review_editor()
+    assert '"factory-subject-a", "factory-subject-b", "factory-essay"' in module.input_values_js(
+        "drafts"
+    )
+    with pytest.raises(ValueError, match="unknown native workspace"):
+        module.input_values_js("arbitrary-selector")
 
 
 def test_native_read_rejects_tamper_symlinks_and_unknown_names(native, tmp_path):

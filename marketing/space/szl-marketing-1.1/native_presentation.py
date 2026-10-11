@@ -111,6 +111,50 @@ def native_head() -> str:
     )
 
 
+def draft_editor() -> str:
+    """Keep unsent author text in native controls, outside reactive output state."""
+    return """<div class="mf-editor">
+<div class="mf-subjects">
+  <label class="mf-field" for="factory-subject-a"><span>Subject line A</span>
+    <input id="factory-subject-a" type="text" value="Receipts, not vibes"></label>
+  <label class="mf-field" for="factory-subject-b"><span>Subject line B</span>
+    <input id="factory-subject-b" type="text" value="The honest label"></label>
+</div>
+<label class="mf-field" for="factory-essay"><span>Essay body</span>
+  <span class="mf-field-help" id="factory-essay-help">Your original wording, kept as plain text.</span>
+  <textarea id="factory-essay" rows="10" aria-describedby="factory-essay-help"
+    placeholder="What should the reader understand?"></textarea></label>
+</div>"""
+
+
+def review_editor() -> str:
+    return """<div class="mf-editor">
+<label class="mf-field" for="factory-review-text"><span>Draft to review</span>
+  <textarea id="factory-review-text" rows="12"></textarea></label>
+</div>"""
+
+
+def input_values_js(workspace: str) -> str:
+    """Read a fixed native form only when its existing action is invoked."""
+    fields = {
+        "drafts": ["factory-subject-a", "factory-subject-b", "factory-essay"],
+        "review": ["factory-review-text"],
+    }
+    if workspace not in fields:
+        raise ValueError("unknown native workspace")
+    return (
+        "() => "
+        + json.dumps(fields[workspace])
+        + """.map(id => {
+          const field = document.getElementById(id);
+          if (!(field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement)) {
+            throw new Error('The authoring workspace is unavailable.');
+          }
+          return field.value;
+        })"""
+    )
+
+
 def _text(value: object) -> str:
     shown = (
         str(value)

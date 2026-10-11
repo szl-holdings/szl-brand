@@ -170,7 +170,7 @@ try {
     window.__factoryFixtureInputs = [];
     document.addEventListener('click', event => {
       if (!(event.target instanceof Element) || !event.target.closest('#compose-drafts')) return;
-      window.__factoryFixtureInputs.push([...document.querySelectorAll('#factory-panel-drafts input, #factory-panel-drafts textarea')]
+      window.__factoryFixtureInputs.push([...document.querySelectorAll('#factory-panel-drafts .mf-editor input, #factory-panel-drafts .mf-editor textarea')]
         .filter(field => !field.disabled && !field.readOnly).map(field => field.value.slice(0, 4096)));
     }, true);
   });
@@ -285,7 +285,8 @@ try {
     assert.equal(factsCount(), 5); assert.equal(await page.locator('#substack-draft textarea').inputValue(), '');
   });
   await page.getByLabel('Subject line A', { exact: true }).fill('Source observations');
-  await page.getByLabel('Subject line B', { exact: true }).fill('The next draft');
+  await page.getByLabel('Subject line B', { exact: true }).fill('');
+  await page.getByLabel('Subject line B', { exact: true }).pressSequentially('The next draft');
   await page.getByRole('textbox', { name: /^Essay body/ }).fill('<img src="https://invalid.example/draft" onerror="window.injected=1">');
   await page.getByRole('tab', { name: 'Operating plan', exact: true }).click();
   await page.getByRole('tab', { name: 'Draft studio', exact: true }).click();
@@ -303,6 +304,13 @@ try {
     assert((await page.locator('#compose-verdict textarea').inputValue()).includes('house linter only'));
   });
   await measure(page, 'draft source and verdict');
+  await page.evaluate(() => scrollTo(0, 0));
+  await page.screenshot({ path: path.join(out, 'factory-drafts-1440.png'), fullPage: true });
+  await page.setViewportSize({ width: 320, height: 1000 });
+  await measure(page, 'mobile draft source and verdict');
+  await page.evaluate(() => scrollTo(0, 0));
+  await page.screenshot({ path: path.join(out, 'factory-drafts-320.png'), fullPage: true });
+  await page.setViewportSize({ width: 1440, height: 1000 });
   await page.getByRole('tab', { name: 'Copy review', exact: true }).click();
   await page.getByLabel('Draft to review', { exact: true }).fill('We guarantee it.');
   await page.locator('#review-copy').click();

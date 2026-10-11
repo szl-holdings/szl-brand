@@ -11,13 +11,16 @@ import json
 
 import gradio as gr
 from native_presentation import (
+    draft_editor,
     footer,
     header,
     initial_observation,
+    input_values_js,
     native_head,
     native_js,
     observation,
     provenance,
+    review_editor,
 )
 from szl_marketing import compose_all, factbase, lint, render_plan
 
@@ -144,8 +147,8 @@ with gr.Blocks(
     gr.HTML(header(), elem_id="factory-header", js_on_load=None, apply_default_css=False)
     with gr.Column(elem_id="factory-workspace", min_width=0):
         with gr.Tabs(elem_id="factory-tabs", overflow_behavior="wrap"):
-            # Keep each small workspace mounted: delayed tab initialization must
-            # not replace the author's first edits with constructor defaults.
+            # Keep the small workspaces mounted so unsent native authoring
+            # fields survive navigation without becoming reactive output state.
             with gr.Tab(
                 "Public facts", id="facts", elem_id="factory-panel-facts", render_children=True
             ):
@@ -192,14 +195,17 @@ with gr.Blocks(
                 )
                 with gr.Row(equal_height=False):
                     with gr.Column(scale=4, min_width=260):
-                        subject_a = gr.Textbox(label="Subject line A", value="Receipts, not vibes")
-                        subject_b = gr.Textbox(label="Subject line B", value="The honest label")
-                        body = gr.Textbox(
-                            label="Essay body",
-                            info="Your original wording, kept as plain text.",
-                            placeholder="What should the reader understand?",
-                            lines=10,
+                        gr.HTML(
+                            draft_editor(),
+                            elem_id="factory-draft-form",
+                            js_on_load=None,
+                            apply_default_css=False,
                         )
+                        # These existing Textbox transport types receive only
+                        # the native form values at an explicit button click.
+                        subject_a = gr.Textbox(visible=False)
+                        subject_b = gr.Textbox(visible=False)
+                        body = gr.Textbox(visible=False)
                         compose_btn = gr.Button(
                             "Compose from fresh public facts",
                             variant="primary",
@@ -236,6 +242,7 @@ with gr.Blocks(
                     inputs=[subject_a, subject_b, body],
                     outputs=[substack_out, x_out, verdict_out],
                     api_name=False,
+                    js=input_values_js("drafts"),
                 )
             with gr.Tab(
                 "Copy review", id="review", elem_id="factory-panel-review", render_children=True
@@ -248,7 +255,13 @@ with gr.Blocks(
                 )
                 with gr.Row(equal_height=False):
                     with gr.Column(min_width=260):
-                        copy_in = gr.Textbox(label="Draft to review", lines=12)
+                        gr.HTML(
+                            review_editor(),
+                            elem_id="factory-review-form",
+                            js_on_load=None,
+                            apply_default_css=False,
+                        )
+                        copy_in = gr.Textbox(visible=False)
                         lint_btn = gr.Button(
                             "Review house guardrails", variant="primary", elem_id="review-copy"
                         )
@@ -260,7 +273,13 @@ with gr.Blocks(
                             interactive=False,
                             elem_id="lint-findings",
                         )
-                lint_btn.click(lint_copy, inputs=copy_in, outputs=lint_out, api_name=False)
+                lint_btn.click(
+                    lint_copy,
+                    inputs=copy_in,
+                    outputs=lint_out,
+                    api_name=False,
+                    js=input_values_js("review"),
+                )
             with gr.Tab(
                 "Operating plan", id="plan", elem_id="factory-panel-plan", render_children=True
             ):

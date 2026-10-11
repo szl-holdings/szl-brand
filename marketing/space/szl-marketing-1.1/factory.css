@@ -48,6 +48,16 @@ body, .gradio-container { font-family: var(--font-body); }
 #factory-tabs .factory-intro p { color: var(--text-sub); line-height: 1.7; }
 #factory-tabs :is(input, textarea) { color: var(--text); font-size: 16px; line-height: 1.55; background: var(--surface); }
 #factory-tabs textarea { scrollbar-width: thin; }
+#factory-draft-form, #factory-review-form { border: 0; padding: 0; background: transparent; }
+#factory-draft-form .html-container, #factory-review-form .html-container { padding: 0; }
+.mf-editor, .mf-editor * { box-sizing: border-box; min-width: 0; }
+.mf-editor { display: grid; gap: 24px; }
+.mf-subjects { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.mf-field { display: grid; gap: 10px; color: var(--text); font: 500 14px/1.5 var(--font-body); }
+.mf-field-help { color: var(--text-sub); font-size: 13px; font-weight: 400; }
+.mf-field :is(input, textarea) { display: block; width: 100%; min-height: 48px; margin: 0; border: 1px solid var(--control-edge); border-radius: 8px; padding: 12px; font: 400 16px/1.55 var(--font-body); }
+.mf-field textarea { resize: vertical; min-height: 240px; }
+.mf-field :is(input, textarea)::placeholder { color: var(--text-ghost); opacity: 1; }
 #factory-tabs button.icon-button { width: 44px; min-width: 44px; height: 44px; min-height: 44px; padding: 12px; }
 #factory-tabs .factory-code textarea { font: 13px/1.6 var(--font-mono); overflow-wrap: anywhere; }
 #factory-tabs :is(#measure-facts, #compose-drafts, #review-copy) { min-height: 48px; align-self: start; width: auto; min-width: 180px; padding: 12px 24px; font-weight: 600; background: var(--action-bg); color: var(--action-ink); transition: none !important; }
@@ -129,6 +139,7 @@ body, .gradio-container { font-family: var(--font-body); }
   #factory-tabs .tab-container[role='tablist'] > button { padding-inline: 12px; }
   #factory-tabs > .tabitem { padding: 24px 16px; }
   #factory-tabs .row { gap: 24px; }
+  .mf-subjects { grid-template-columns: minmax(0, 1fr); }
   #factory-tabs .column { min-width: 0 !important; flex-basis: 100% !important; }
   #factory-tabs :is(#measure-facts, #compose-drafts, #review-copy) { width: 100%; white-space: normal; min-width: 0; }
   .mf-empty { padding: 24px 20px; }
