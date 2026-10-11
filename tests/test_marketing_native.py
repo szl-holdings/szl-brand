@@ -201,6 +201,9 @@ def test_actual_gradio_callbacks_are_passive_and_keep_literal_draft_text(native,
     monkeypatch.setattr(app, "factbase", unavailable)
     assert type(app.demo).__name__ == "Blocks"
     assert type(app.native_theme()).__name__ == "Base"
+    workspaces = [block for block in app.demo.blocks.values() if isinstance(block, app.gr.Tab)]
+    assert len(workspaces) == 5
+    assert all(block.render_children for block in workspaces)
     assert "BLOCKED" in app.lint_copy("We guarantee it.")
     assert calls == []
     assert app.compose("same", "same", "body")[:2] == ("", "")

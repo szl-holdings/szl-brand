@@ -287,6 +287,14 @@ try {
   await page.getByLabel('Subject line A', { exact: true }).fill('Source observations');
   await page.getByLabel('Subject line B', { exact: true }).fill('The next draft');
   await page.getByRole('textbox', { name: /^Essay body/ }).fill('<img src="https://invalid.example/draft" onerror="window.injected=1">');
+  await page.getByRole('tab', { name: 'Operating plan', exact: true }).click();
+  await page.getByRole('tab', { name: 'Draft studio', exact: true }).click();
+  await record('Unsubmitted edits survive workspace navigation without a fact read', async () => {
+    assert.equal(await page.getByLabel('Subject line A', { exact: true }).inputValue(), 'Source observations');
+    assert.equal(await page.getByLabel('Subject line B', { exact: true }).inputValue(), 'The next draft');
+    assert.equal(await page.getByRole('textbox', { name: /^Essay body/ }).inputValue(), '<img src="https://invalid.example/draft" onerror="window.injected=1">');
+    assert.equal(factsCount(), 5);
+  });
   await page.locator('#compose-drafts').click();
   await record('Draft output retains literal source without rendering author markup', async () => {
     await page.waitForFunction(() => document.querySelector('#substack-draft textarea')?.value.includes('invalid.example/draft'));

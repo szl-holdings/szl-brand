@@ -144,7 +144,11 @@ with gr.Blocks(
     gr.HTML(header(), elem_id="factory-header", js_on_load=None, apply_default_css=False)
     with gr.Column(elem_id="factory-workspace", min_width=0):
         with gr.Tabs(elem_id="factory-tabs", overflow_behavior="wrap"):
-            with gr.Tab("Public facts", id="facts", elem_id="factory-panel-facts"):
+            # Keep each small workspace mounted: delayed tab initialization must
+            # not replace the author's first edits with constructor defaults.
+            with gr.Tab(
+                "Public facts", id="facts", elem_id="factory-panel-facts", render_children=True
+            ):
                 gr.Markdown(
                     "## Start with an observation\n\n"
                     "Read the public GitHub and Hugging Face sources through the existing fact "
@@ -175,7 +179,9 @@ with gr.Blocks(
                         elem_classes="factory-code",
                     )
                 measure_btn.click(measure, outputs=[facts_html, facts_json], api_name=False)
-            with gr.Tab("Draft studio", id="drafts", elem_id="factory-panel-drafts"):
+            with gr.Tab(
+                "Draft studio", id="drafts", elem_id="factory-panel-drafts", render_children=True
+            ):
                 gr.Markdown(
                     "## Your voice, with labeled facts\n\n"
                     "Write two distinct subject lines and the essay body. Compose requests a new "
@@ -231,7 +237,9 @@ with gr.Blocks(
                     outputs=[substack_out, x_out, verdict_out],
                     api_name=False,
                 )
-            with gr.Tab("Copy review", id="review", elem_id="factory-panel-review"):
+            with gr.Tab(
+                "Copy review", id="review", elem_id="factory-panel-review", render_children=True
+            ):
                 gr.Markdown(
                     "## Check the words before they travel\n\n"
                     "This local house-rule check flags restricted claims and wording. It does "
@@ -253,9 +261,16 @@ with gr.Blocks(
                             elem_id="lint-findings",
                         )
                 lint_btn.click(lint_copy, inputs=copy_in, outputs=lint_out, api_name=False)
-            with gr.Tab("Operating plan", id="plan", elem_id="factory-panel-plan"):
+            with gr.Tab(
+                "Operating plan", id="plan", elem_id="factory-panel-plan", render_children=True
+            ):
                 gr.Markdown(render_plan(), elem_id="factory-plan")
-            with gr.Tab("Source & package", id="source", elem_id="factory-panel-source"):
+            with gr.Tab(
+                "Source & package",
+                id="source",
+                elem_id="factory-panel-source",
+                render_children=True,
+            ):
                 gr.HTML(
                     about(), elem_id="factory-provenance", js_on_load=None, apply_default_css=False
                 )
