@@ -4,7 +4,6 @@ from pathlib import Path
 
 import pytest
 
-import szl_brand.surface as surface_module
 from szl_brand.surface import (
     END_MARKER,
     KINDS,
@@ -112,7 +111,7 @@ def test_avatar_refuses_unavailable_source_instead_of_drawing_a_fallback(monkeyp
     def unavailable():
         raise ValueError("simulated invalid packaged provenance")
 
-    monkeypatch.setattr(surface_module, "_source_bundle", unavailable)
+    monkeypatch.setattr("szl_brand.surface._source_bundle", unavailable)
     with pytest.raises(SurfaceContractError, match="approved Orbit avatar source is unavailable"):
         render_avatar_svg(spec())
 
