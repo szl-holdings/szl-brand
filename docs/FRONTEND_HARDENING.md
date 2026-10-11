@@ -108,6 +108,31 @@ A front-end pull request is not ready until its description records:
 No pull request may introduce an unmeasured metric, silently relabel a modeled result, disable zoom,
 hide focus, or use a successful network response as proof of capability.
 
+### Local component verification
+
+The native specimen at `kit/examples/html/components.html` consumes the canonical stylesheets,
+including nested polarities, long receipt labels, code, action states and console fields. With
+Node and Playwright already installed, run:
+
+```bash
+node tools/verify_components.mjs --out ./dist/component-check
+```
+
+Use `--module /absolute/path/to/playwright/index.mjs` for an existing external Playwright install,
+and `--browser /absolute/path/to/chromium` for an installed Chromium executable. The checker never
+installs a dependency or starts a production request. It writes screenshots and `report.json`,
+including the Git revision, whether the checkout was dirty, source hashes, browser version,
+individual outcomes and explicit limits. Any failed assertion produces a nonzero exit status.
+
+The checker covers the six required widths in both polarities, nested ink, primary link and
+button states, terminal and receipt contrast, local keyboard activation, visible and unobscured
+focus, clipboard success/error presentation, forced colors, reduced motion and coarse targets.
+Zoom evidence is limited to 200%/400% reflow equivalents and text enlargement; still perform the
+native browser zoom and manual assistive-technology checks for the receiving product. Clipboard
+cases use controlled test doubles. This is local observation metadata, not a signed product receipt,
+a complete WCAG conformance assessment, or production Core Web Vitals evidence. Field data remains
+unavailable for this specimen.
+
 ## Primary sources
 
 - [W3C Web Content Accessibility Guidelines 2.2](https://www.w3.org/TR/WCAG22/)

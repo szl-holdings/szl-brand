@@ -4,8 +4,9 @@
 # KANCHAY vendor bundle 1.3.0
 
 This folder is the ready-to-vendor bundle of KANCHAY v1.3.0, the founder-approved SZL Holdings
-design system. The source of truth is `kit/`. Every file here is a byte-for-byte copy of a kit file,
-pinned by sha256 in `SOURCE.json`. Nothing in this folder is generated or edited.
+design system. The source of truth is `kit/`. Stylesheets and logos are byte-for-byte copies of
+their kit sources; the tokens-only CSS and manifest are derived by the canonical builder.
+`SOURCE.json` pins every payload by sha256. Do not hand-edit a payload in this folder.
 
 | File | What it is | Kit source |
 |---|---|---|
@@ -45,6 +46,37 @@ pinned by sha256 in `SOURCE.json`. Nothing in this folder is generated or edited
    ```bash
    cd assets/szl && python -c "import hashlib,json,pathlib;m=json.load(open('SOURCE.json'))['sha256'];bad=[p for p,h in m.items() if pathlib.Path(p).exists() and hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()!=h];print('modified: '+', '.join(bad) if bad else 'ok')"
    ```
+
+### Component refinements on 1.3.0
+
+Replace all three CSS exports and `SOURCE.json` together, using the exact reviewed source revision.
+The primitive palette, Orbit identity and versioned component class names are preserved.
+
+- Primary controls now use `--action-bg`, `--action-hover-bg`, `--action-press-bg` and `--action-ink`.
+  These roles meet the small-text contrast floor in both polarities. Existing decorative `--accent`
+  roles stay unchanged. Custom primary components should adopt the action roles for all states.
+- Receipt marks, console dots, meter fills and sparklines use the nearest surface's status inks.
+  Always pair them with a visible status word, label or equivalent data description.
+- `.code` paints a graphite terminal on either page polarity. The exported `--code-*` roles cover
+  its ground, text, syntax, control edge and focus. Give a scrolling code region `tabindex="0"` and
+  an accessible label; use `.code--copyable` when it contains `.code__copy` so the control has space.
+- `.nav` wraps its links and moves into normal document flow at 640 CSS pixels and below, including
+  narrow zoomed views. Links remain present without a JavaScript menu. Buttons and receipts wrap
+  long text; nested grids can shrink to the space actually available inside a panel.
+- `.surface-holo` is an opt-in silver/teal foil edge for `.card` and `.evidence-card`. Its reading
+  ground stays opaque. It adds no coral, animation or required JavaScript, and has a solid boundary
+  in forced colors. The `--holo-edge` gradient re-resolves at every polarity root. Use material as
+  a quiet framing device, never as a claim of interaction or verification.
+- Card elevation uses polarity-local `--shadow-card` and `--shadow-card-hover`, keeping editorial
+  shadows light while retaining the existing graphite depth.
+- `.hero` uses a polarity-local `--hero-atmosphere`: a navy wash in dark and a quiet silver wash
+  in light. Headings balance lines while long identifiers can break inside their bounds.
+
+Open [`kit/examples/html/components.html`](../kit/examples/html/components.html) for the native
+component specimen. It loads canonical CSS directly, includes light→dark→light and
+dark→light→dark panels, and labels every illustrative command or evidence state as a sample.
+The page has no production connection. Its preview button only changes local text; its copy
+button copies a sample command and never executes it.
 
 ### Upgrading from 1.2.0
 
@@ -108,18 +140,17 @@ mapping on `[data-surface]` as well, or the nested panel inherits the page's res
 
 ## Color, in short
 
-- **One coral moment per view.** `--accent` marks one thing only: the single primary action
-  (`.btn-primary`), the one hero node, or the active-nav marker. Its hover is `--accent-hover`, its
-  press state `--accent-press`, and text on it `--accent-ink`. Coral is never a background, a large
-  fill, a heading color, a card border or decoration.
+- **One coral moment per view.** Reserve coral for the single primary action (`.btn-primary`),
+  the one hero node, or the active-nav marker. Buttons use the `--action-*` roles; decorative
+  accents use `--accent`. Coral is never a page background, a heading color or a card border.
 - **Gold is premium only.** `--premium`, `.btn-premium`, `.badge-premium` and
   `--shadow-glow-hatun` mark premium or investor emphasis, or the one important number.
 - **Teal is links and focus**: `--link`, `--link-hover`, `--focus` and `--shadow-focus`.
 - **Focus is a solid ring.** From 1.1.1 the base `:focus-visible` rule draws a 2px solid
   `--focus` outline, offset 2px, around the `--shadow-focus` halo. In 1.3.0 the outline measures
   6.97:1 on dark `--bg` and 5.18:1 on light `--bg`. In 1.1.1 the 55% halo alone measured 2.81:1
-  and 2.32:1, below the 3:1 floor for non-text contrast. Do not remove the outline in surface CSS unless a solid
-  `--focus` edge replaces it, as the console layer's `.input` and `.select` border does.
+  and 2.32:1, below the 3:1 floor for non-text contrast. Keep the solid outline in surface CSS.
+  Console `.input` and `.select` controls retain both the outline and a solid focused border.
 - **Red is errors and destructive actions only.** Use `--color-error`, and `--ink-bad` from the
   console layer for red text.
 - **Silver linework** (`--hairline`, `--color-silver-*`) draws the orbit, `.orbit-rule` dividers
@@ -136,8 +167,12 @@ These pairs were measured with the WCAG 2 formula on the token values. They fall
 for normal text, so put small text where it passes rather than patching the vendored file:
 
 - Light surface, `--accent` as text on `--bg`: 4.04:1. Do not set coral text on light.
-- Light surface, white on `.btn-primary`: 4.48:1. On its hover: 3.11:1.
 - Dark surface, `--color-error` as text on `--bg`: 3.62:1. Use `--ink-bad` (9.82:1).
+
+Earlier primary buttons used white directly on coral-500 (4.48:1) and coral-400 on hover
+(3.11:1). The action roles correct those states without changing either primitive. Regression
+tests check every action state, terminal ink and console signal against its actual token ground;
+rendered component checks are still required when a consumer adds its own CSS.
 
 ## Where the rules live
 
@@ -152,10 +187,10 @@ for normal text, so put small text where it passes rather than patching the vend
 
 ## Maintain it
 
-Edit the kit source, never this folder, then rebuild and commit both:
+Edit and commit the kit source, then rebuild and commit the generated payload:
 
 ```bash
-python -m szl_brand kanchay-build --source-commit <szl-brand main SHA you built on>
+python -m szl_brand kanchay-build --source-commit <exact commit containing the kit source>
 python -m szl_brand kanchay-build --check   # fails if kanchay/ differs from kit/
 ```
 
@@ -166,14 +201,17 @@ python -m szl_brand kanchay-build --check   # fails if kanchay/ differs from kit
 - a webfont or the withdrawn gold token appears in the bundle;
 - a `var(--…)` without a fallback is undefined in the two stylesheets.
 
-`source_commit` is the szl-brand main commit the bundle was cut from. For 1.3.0 that is
-`48344c2`; the neutral-value change to both kit stylesheets was made in the change that cut 1.3.0.
-For 1.2.0 it was `20b551b`; the nested-surface change to both kit stylesheets was made in the change that cut 1.2.0,
-on top of that commit, and the logos already had these bytes there. For 1.1.1 it was
-`a0a27f0`. The focus-outline change to `kit/tokens/szl-design-system.css` was made in the change
-that cut 1.1.1, on top of that commit; `szl-console.css` and the logos already had these bytes
-there. For 1.1.0 it was `168c53a`, and `szl-console.css` 1.0.0 was added to `kit/tokens/` in the
-change that created the bundle.
+For a reviewed change, `source_commit` should identify the immutable commit that actually contains
+the copied kit bytes; commit the source first and the generated bundle second. A pull-request
+bundle is a review candidate until the normal protected release path accepts it. A released
+bundle must trace to accepted source on `szl-brand` main. The builder checks byte equality against
+the working tree and records hashes; it does not independently compare that tree with the supplied
+Git commit. Verify the pinned source bytes before downstream promotion.
+
+Historical bundles through the initial 1.3.0 cut recorded the base main revision the change was
+built on. Their per-file hashes identify the payload, but that base revision alone does not prove
+that the subsequent CSS changes were already present there. Do not infer source equality from
+the revision label alone.
 
 ## Licenses
 

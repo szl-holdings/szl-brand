@@ -72,6 +72,10 @@ load no webfonts. [`kanchay/README.md`](./kanchay/README.md) has the steps, the 
 light marketing surfaces, and the one-coral-moment rule. The art direction is
 [`docs/DESIGN_DIRECTION.md`](./docs/DESIGN_DIRECTION.md).
 
+The [native component specimen](./kit/examples/html/components.html) demonstrates both
+polarities, nested panels, readable action states, the silver/teal material edge, explicit sample
+evidence, and a graphite terminal. It uses the canonical CSS and existing Orbit SVG directly.
+
 ```bash
 python -m szl_brand kanchay-build --check  # fail if kanchay/ differs from kit/
 ```
