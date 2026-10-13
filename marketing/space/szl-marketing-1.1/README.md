@@ -16,7 +16,9 @@ tags:
 - szl-holdings
 ---
 
-<p><a href="https://huggingface.co/spaces/SZLHOLDINGS/szl-command-lab"><img src="https://raw.githubusercontent.com/szl-holdings/.github/main/profile/assets/szl/logos/szl_mark_holographic.svg" alt="SZL Holdings" width="112" /></a></p>
+<p><a href="https://huggingface.co/spaces/SZLHOLDINGS/szl-command-lab"><img src="https://raw.githubusercontent.com/szl-holdings/szl-brand/fd62fe5856ed8e5f660eaae5a9c52957cd71b0a7/kit/logos/orbit-v2/suite/szl-icon-32.svg" alt="SZL Holdings" width="40" height="40" /></a></p>
+
+[Orbit v2 artwork](https://github.com/szl-holdings/szl-brand/tree/fd62fe5856ed8e5f660eaae5a9c52957cd71b0a7/kit/logos/orbit-v2): © 2026 Lutar, Stephen P. · SZL Holdings · [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) · [Trademark notice](https://github.com/szl-holdings/szl-brand/blob/fd62fe5856ed8e5f660eaae5a9c52957cd71b0a7/NOTICE).
 
 # SZL Marketing · Governed Fact Factory
 
