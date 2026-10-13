@@ -47,3 +47,52 @@ jobs:
             "$GITHUB_WORKSPACE/wheel-test-venv/bin/python" -c \
               'from pathlib import Path; from szl_brand.system import verify_system; assert verify_system(Path("kanchay")) == []'
           )
+
+  marketing-factory:
+    name: Qualify marketing factory frontend
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    env:
+      SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      GRADIO_ANALYTICS_ENABLED: "False"
+      HF_HUB_OFFLINE: "1"
+      HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+      - name: Install the pinned Space runtime and qualification tools
+        run: |
+          python -m pip install --disable-pip-version-check -e ".[dev,space]"
+          npm install --prefix "$RUNNER_TEMP/factory-browser" --ignore-scripts --save-exact playwright@1.62.0
+          node "$RUNNER_TEMP/factory-browser/node_modules/playwright/cli.js" install --with-deps chromium
+      - name: Qualify presentation, native projection and preserved source
+        run: |
+          python -m pytest tests/test_marketing_native.py -q
+          ruff check marketing/space/szl-marketing-1.1/app.py marketing/space/szl-marketing-1.1/native_presentation.py tools/marketing_factory_fixture.py
+          ruff format --check marketing/space/szl-marketing-1.1/app.py marketing/space/szl-marketing-1.1/native_presentation.py tools/marketing_factory_fixture.py
+      - name: Exercise the actual staged Gradio app with local synthetic facts
+        run: |
+          node tools/verify_marketing_factory.mjs \
+            --out "$RUNNER_TEMP/factory-observations" \
+            --module "$RUNNER_TEMP/factory-browser/node_modules/playwright/index.mjs"
+      - name: Retain unsigned local frontend observations
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: marketing-factory-frontend-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            ${{ runner.temp }}/factory-observations/factory-native-*/results.json
+            ${{ runner.temp }}/factory-observations/factory-native-*/fixture.log
+            ${{ runner.temp }}/factory-observations/factory-native-*/*.png
+          retention-days: 14
+          if-no-files-found: warn

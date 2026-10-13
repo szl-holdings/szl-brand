@@ -1,76 +1,68 @@
-"""SZL-MARKETING-1.1 — governed marketing fact factory (Hugging Face Space).
+"""Source-owned Gradio presentation for the governed marketing fact factory.
 
-This file is an exact projection of szl-holdings/szl-brand ``marketing/space/szl-marketing-1.1``
-plus a byte-for-byte vendored copy of ``szl_brand.marketing`` (``szl_marketing/``). The source
-revision and per-file hashes are in ``PUBLICATION_RECEIPT.json``. Edit the GitHub source, not
-this Space.
+The package writer supplies the byte-exact vendored engine and native assets.
+Provider reads occur only in the two explicit fact/compose callbacks. This app
+does not publish drafts or reinterpret the engine's evidence labels.
 """
 
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 import gradio as gr
-
-from szl_marketing import (
-    UNAVAILABLE,
-    compose_all,
-    fact,
-    factbase,
-    lint,
-    render_plan,
+from native_presentation import (
+    draft_editor,
+    footer,
+    header,
+    initial_observation,
+    input_values_js,
+    native_head,
+    native_js,
+    observation,
+    provenance,
+    review_editor,
 )
-
-RECEIPT = Path(__file__).with_name("PUBLICATION_RECEIPT.json")
-
-
-def _receipt() -> dict:
-    try:
-        return json.loads(RECEIPT.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return {}
+from szl_marketing import compose_all, factbase, lint, render_plan
 
 
 def measure() -> tuple[str, str]:
-    facts = factbase()
-    rows = [
-        ("GitHub public repositories", fact(facts, "github.repos"), fact(facts, "github.label")),
-        ("GitHub archived (honestly)", fact(facts, "github.archived"), fact(facts, "github.label")),
-        ("HF models", fact(facts, "hf.models"), fact(facts, "hf.label")),
-        ("HF datasets", fact(facts, "hf.datasets"), fact(facts, "hf.label")),
-        ("HF Spaces", fact(facts, "hf.spaces"), fact(facts, "hf.label")),
-        ("Crown artifact (models+datasets sweep)", fact(facts, "hf.crown.id"), fact(facts, "hf.label")),
-        ("Crown downloads", fact(facts, "hf.crown.downloads"), fact(facts, "hf.label")),
-        ("Estate downloads", fact(facts, "hf.downloads.total"), fact(facts, "hf.label")),
-        ("Locked formulas (honesty manifest)", fact(facts, "product.locked_formula_count"), fact(facts, "product.label")),
-        ("Λ status", fact(facts, "product.lambda"), fact(facts, "product.label")),
-        ("Verify door a-11-oy.com/verify", fact(facts, "surfaces.verify_cta"), fact(facts, "surfaces.label")),
-        ("Proof registry a11oy.net", fact(facts, "surfaces.proof_cta"), fact(facts, "surfaces.label")),
-    ]
-    md = [f"## The estate, measured at {facts['generated_at']}", "", "| Metric | Value | Label |", "|---|---|---|"]
-    for name, value, label in rows:
-        shown = f"{value:,}" if isinstance(value, int) else str(value)
-        md.append(f"| {name} | {shown} | {label} |")
-    md.append("")
-    md.append("Anonymous pulls: these are the numbers a stranger sees. UNAVAILABLE means the source did not answer; nothing is estimated.")
-    return "\n".join(md), json.dumps(facts, indent=2, sort_keys=True)
+    """Return an escaped presentation and the original engine JSON."""
+    try:
+        facts = factbase()
+        if not isinstance(facts, dict):
+            raise ValueError("factbase must be an object")
+        raw = json.dumps(facts, indent=2, sort_keys=True, allow_nan=False)
+    except (OSError, TypeError, ValueError, TimeoutError):
+        return observation({}), json.dumps(
+            {"label": "UNAVAILABLE", "reason": "fact collection failed"}
+        )
+    return observation(facts), raw
 
 
 def compose(subject_a: str, subject_b: str, body: str) -> tuple[str, str, str]:
     if not subject_a.strip() or not subject_b.strip() or subject_a.strip() == subject_b.strip():
         return "", "", "BLOCKED - give two distinct subject lines for the A/B test."
-    facts = factbase()
     try:
+        facts = factbase()
+        if not isinstance(facts, dict):
+            raise ValueError("fact collection unavailable")
         drafts = compose_all(facts, body or "", (subject_a, subject_b))
-    except ValueError as exc:
-        return "", "", f"BLOCKED - {exc}"
+    except (OSError, TypeError, ValueError, TimeoutError):
+        return (
+            "",
+            "",
+            (
+                "BLOCKED - the current factbase or channel draft could not be assembled. "
+                "Read public facts to inspect source availability; check the channel length limits. "
+                "No previous draft is retained in these outputs."
+            ),
+        )
     verdict = []
     for name, draft in drafts.items():
         if draft.shippable:
-            verdict.append(f"- {name}: SHIPPABLE")
+            verdict.append(f"{name}: SHIPPABLE — passes the house linter only")
         else:
-            verdict.append(f"- {name}: BLOCKED")
+            verdict.append(f"{name}: BLOCKED")
             verdict.extend(f"  - {v}" for v in draft.violations)
     return drafts["substack"].text, drafts["x"].text, "\n".join(verdict)
 
@@ -78,52 +70,242 @@ def compose(subject_a: str, subject_b: str, body: str) -> tuple[str, str, str]:
 def lint_copy(text: str) -> str:
     violations = lint(text or "")
     if not violations:
-        return "CLEAN - this copy passes the guardrails."
-    return "BLOCKED - fix these before it ships:\n\n" + "\n".join(f"- {v}" for v in violations)
+        return "CLEAN - this copy passes the house guardrails. This is not publication approval."
+    return "BLOCKED - resolve the following house-rule findings:\n\n" + "\n".join(
+        f"- {v}" for v in violations
+    )
 
 
 def about() -> str:
-    receipt = _receipt()
-    sha = receipt.get("source", {}).get("sha", UNAVAILABLE)
-    root = receipt.get("root_sha256", UNAVAILABLE)
-    return (
-        "## Provenance\n\n"
-        f"- Source: https://github.com/szl-holdings/szl-brand @ `{sha}`\n"
-        f"- Package root SHA-256: `{root}`\n"
-        "- Discipline: labels stay; trust ceiling 0.97, never 1.0; Λ stays Conjecture 1, "
-        "advisory; a draft with one linter violation does not ship.\n"
+    return provenance()
+
+
+def native_theme() -> gr.themes.Base:
+    """Use local font stacks and bind both Gradio polarities to KANCHAY roles."""
+    theme = gr.themes.Base(
+        font=["system-ui", "-apple-system", "Segoe UI", "sans-serif"],
+        font_mono=["ui-monospace", "SFMono-Regular", "Consolas", "monospace"],
+    )
+    roles = {
+        "body_background_fill": "var(--bg)",
+        "body_text_color": "var(--text)",
+        "body_text_color_subdued": "var(--text-sub)",
+        "background_fill_primary": "var(--surface)",
+        "background_fill_secondary": "var(--surface-alt)",
+        "border_color_primary": "var(--border)",
+        "border_color_accent": "var(--focus)",
+        "border_color_accent_subdued": "var(--control-edge)",
+        "link_text_color": "var(--link)",
+        "link_text_color_hover": "var(--link-hover)",
+        "link_text_color_active": "var(--link-hover)",
+        "link_text_color_visited": "var(--link)",
+        "block_background_fill": "var(--surface)",
+        "block_border_color": "var(--border)",
+        "block_info_text_color": "var(--text-sub)",
+        "block_label_background_fill": "var(--surface)",
+        "block_label_text_color": "var(--text)",
+        "block_title_text_color": "var(--text)",
+        "input_background_fill": "var(--surface)",
+        "input_background_fill_focus": "var(--surface)",
+        "input_border_color": "var(--control-edge)",
+        "input_border_color_focus": "var(--focus)",
+        "input_placeholder_color": "var(--text-ghost)",
+        "button_primary_background_fill": "var(--action-bg)",
+        "button_primary_background_fill_hover": "var(--action-hover-bg)",
+        "button_primary_text_color": "var(--action-ink)",
+        "button_primary_text_color_hover": "var(--action-ink)",
+        "button_secondary_background_fill": "var(--surface)",
+        "button_secondary_background_fill_hover": "var(--surface-alt)",
+        "button_secondary_text_color": "var(--text)",
+        "button_secondary_text_color_hover": "var(--text)",
+        "button_secondary_border_color": "var(--control-edge)",
+        "accordion_text_color": "var(--text)",
+        "table_text_color": "var(--text)",
+        "panel_background_fill": "var(--surface)",
+        "panel_border_color": "var(--border)",
+    }
+    return theme.set(
+        **roles,
+        **{f"{name}_dark": value for name, value in roles.items()},
+        color_accent="var(--focus)",
+        body_text_size="16px",
+        prose_text_size="16px",
+        button_large_text_size="16px",
+        block_label_text_size="14px",
+        block_info_text_size="14px",
+        block_radius="12px",
+        block_padding="20px",
+        input_radius="8px",
+        button_large_radius="8px",
+        layout_gap="24px",
     )
 
 
-with gr.Blocks(title="SZL-MARKETING-1.1 — Governed Fact Factory") as demo:
-    gr.Markdown(
-        "# SZL-MARKETING-1.1\n"
-        "**A marketing pipeline that cannot type a number.** Facts are pulled live and labeled; "
-        "a machine linter enforces the house guardrails before any draft exists.\n"
+with gr.Blocks(
+    title="SZL Marketing — Governed Fact Factory", analytics_enabled=False, fill_width=True
+) as demo:
+    gr.HTML(header(), elem_id="factory-header", js_on_load=None, apply_default_css=False)
+    with gr.Column(elem_id="factory-workspace", min_width=0):
+        with gr.Tabs(elem_id="factory-tabs", overflow_behavior="wrap"):
+            # Keep the small workspaces mounted so unsent native authoring
+            # fields survive navigation without becoming reactive output state.
+            with gr.Tab(
+                "Public facts", id="facts", elem_id="factory-panel-facts", render_children=True
+            ):
+                gr.Markdown(
+                    "## Start with an observation\n\n"
+                    "Read the public GitHub and Hugging Face sources through the existing fact "
+                    "engine. Values keep their source labels and timestamp. This view covers "
+                    "public repositories, models, datasets and Spaces; private assets, native "
+                    "kernels, collections and buckets are outside this engine's census.",
+                    elem_classes="factory-intro",
+                )
+                measure_btn = gr.Button(
+                    "Read public facts", variant="primary", elem_id="measure-facts"
+                )
+                facts_html = gr.HTML(
+                    initial_observation(),
+                    elem_id="fact-observation",
+                    js_on_load=None,
+                    apply_default_css=False,
+                )
+                with gr.Accordion(
+                    "Inspect the raw factbase JSON", open=False, elem_id="raw-factbase"
+                ):
+                    facts_json = gr.Textbox(
+                        label="Exact engine output",
+                        info="Read-only JSON from this request.",
+                        lines=12,
+                        max_lines=22,
+                        interactive=False,
+                        buttons=["copy"],
+                        elem_classes="factory-code",
+                    )
+                measure_btn.click(measure, outputs=[facts_html, facts_json], api_name=False)
+            with gr.Tab(
+                "Draft studio", id="drafts", elem_id="factory-panel-drafts", render_children=True
+            ):
+                gr.Markdown(
+                    "## Your voice, with labeled facts\n\n"
+                    "Write two distinct subject lines and the essay body. Compose requests a new "
+                    "public factbase, runs the existing channel composers and reports each house "
+                    "linter result. A SHIPPABLE result means the house rules passed; it is not "
+                    "independent fact verification or permission to publish.",
+                    elem_classes="factory-intro",
+                )
+                with gr.Row(equal_height=False):
+                    with gr.Column(scale=4, min_width=260):
+                        gr.HTML(
+                            draft_editor(),
+                            elem_id="factory-draft-form",
+                            js_on_load=None,
+                            apply_default_css=False,
+                        )
+                        # These existing Textbox transport types receive only
+                        # the native form values at an explicit button click.
+                        subject_a = gr.Textbox(visible=False)
+                        subject_b = gr.Textbox(visible=False)
+                        body = gr.Textbox(visible=False)
+                        compose_btn = gr.Button(
+                            "Compose from fresh public facts",
+                            variant="primary",
+                            elem_id="compose-drafts",
+                        )
+                        verdict_out = gr.Textbox(
+                            label="House linter verdict",
+                            lines=6,
+                            max_lines=14,
+                            interactive=False,
+                            elem_id="compose-verdict",
+                        )
+                    with gr.Column(scale=5, min_width=260):
+                        substack_out = gr.Textbox(
+                            label="Substack draft · source text",
+                            lines=14,
+                            max_lines=24,
+                            interactive=False,
+                            buttons=["copy"],
+                            elem_id="substack-draft",
+                            elem_classes="factory-code",
+                        )
+                        x_out = gr.Textbox(
+                            label="X thread · source text",
+                            lines=10,
+                            max_lines=18,
+                            interactive=False,
+                            buttons=["copy"],
+                            elem_id="x-draft",
+                            elem_classes="factory-code",
+                        )
+                compose_btn.click(
+                    compose,
+                    inputs=[subject_a, subject_b, body],
+                    outputs=[substack_out, x_out, verdict_out],
+                    api_name=False,
+                    js=input_values_js("drafts"),
+                )
+            with gr.Tab(
+                "Copy review", id="review", elem_id="factory-panel-review", render_children=True
+            ):
+                gr.Markdown(
+                    "## Check the words before they travel\n\n"
+                    "This local house-rule check flags restricted claims and wording. It does "
+                    "not contact the public fact APIs or verify every statement in your copy.",
+                    elem_classes="factory-intro",
+                )
+                with gr.Row(equal_height=False):
+                    with gr.Column(min_width=260):
+                        gr.HTML(
+                            review_editor(),
+                            elem_id="factory-review-form",
+                            js_on_load=None,
+                            apply_default_css=False,
+                        )
+                        copy_in = gr.Textbox(visible=False)
+                        lint_btn = gr.Button(
+                            "Review house guardrails", variant="primary", elem_id="review-copy"
+                        )
+                    with gr.Column(min_width=260):
+                        lint_out = gr.Textbox(
+                            label="House-rule findings",
+                            lines=12,
+                            max_lines=22,
+                            interactive=False,
+                            elem_id="lint-findings",
+                        )
+                lint_btn.click(
+                    lint_copy,
+                    inputs=copy_in,
+                    outputs=lint_out,
+                    api_name=False,
+                    js=input_values_js("review"),
+                )
+            with gr.Tab(
+                "Operating plan", id="plan", elem_id="factory-panel-plan", render_children=True
+            ):
+                gr.Markdown(render_plan(), elem_id="factory-plan")
+            with gr.Tab(
+                "Source & package",
+                id="source",
+                elem_id="factory-panel-source",
+                render_children=True,
+            ):
+                gr.HTML(
+                    about(), elem_id="factory-provenance", js_on_load=None, apply_default_css=False
+                )
+    gr.HTML(footer(), elem_id="factory-footer", js_on_load=None, apply_default_css=False)
+
+
+def launch(**kwargs):
+    """The owned page head preserves root tokens before Gradio scopes component CSS."""
+    return demo.launch(
+        theme=native_theme(),
+        js=native_js(),
+        head=native_head(),
+        footer_links=[],
+        **kwargs,
     )
-    with gr.Tab("Live facts"):
-        measure_btn = gr.Button("Measure the estate (live, anonymous API pull)")
-        facts_md = gr.Markdown()
-        facts_json = gr.Code(language="json", label="factbase.json")
-        measure_btn.click(measure, outputs=[facts_md, facts_json])
-    with gr.Tab("Compose + lint"):
-        subject_a = gr.Textbox(label="Subject line A", value="Receipts, not vibes")
-        subject_b = gr.Textbox(label="Subject line B", value="The honest label")
-        body = gr.Textbox(label="Essay body (the team's voice)", lines=8)
-        compose_btn = gr.Button("Compose every channel from live facts")
-        substack_out = gr.Markdown(label="Substack draft")
-        x_out = gr.Markdown(label="X thread")
-        verdict_out = gr.Markdown(label="Linter verdict")
-        compose_btn.click(compose, inputs=[subject_a, subject_b, body], outputs=[substack_out, x_out, verdict_out])
-    with gr.Tab("Lint your own copy"):
-        copy_in = gr.Textbox(label="Paste a draft", lines=10)
-        lint_btn = gr.Button("Run guardrails")
-        lint_out = gr.Markdown()
-        lint_btn.click(lint_copy, inputs=copy_in, outputs=lint_out)
-    with gr.Tab("Operating plan"):
-        gr.Markdown(render_plan())
-    with gr.Tab("Provenance"):
-        gr.Markdown(about())
+
 
 if __name__ == "__main__":
-    demo.launch()
+    launch()
