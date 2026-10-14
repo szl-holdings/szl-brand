@@ -127,7 +127,7 @@ jobs:
         run: python -m pip wheel --disable-pip-version-check --wheel-dir dist/publisher-wheels ".[publish]"
 
       - name: Transfer exact packages and offline wheels
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: marketing-spaces-package-${{ env.PUBLISH_SHA }}
           path: |
@@ -138,7 +138,7 @@ jobs:
 
       - name: Upload build receipts
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: marketing-spaces-build-receipts-${{ env.PUBLISH_SHA }}
           path: reports/spaces/
@@ -226,7 +226,7 @@ jobs:
 
       - name: Upload secret-free per-target receipts
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: marketing-space-${{ matrix.target }}-receipts-${{ env.PUBLISH_SHA }}
           path: reports/spaces/
