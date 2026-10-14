@@ -63,9 +63,13 @@ def main(argv: list[str]) -> int:
     code = subprocess.call([sys.executable, "-m", "pytest", *args])
     status, exit_code = classify(code)
     if status == "NOT_RUN":
-        print("::error title=Fuzz NOT_RUN::pytest exit 5: no property tests collected; nothing was fuzzed.")
+        print(
+            "::error title=Fuzz NOT_RUN::pytest exit 5: no property tests collected; nothing was fuzzed."
+        )
     elif status == "FAIL":
-        print(f"::error title=Fuzz FAIL::pytest exit {code}: {_LABELS.get(code, 'unexpected exit')}")
+        print(
+            f"::error title=Fuzz FAIL::pytest exit {code}: {_LABELS.get(code, 'unexpected exit')}"
+        )
     print(f"fuzz_gate: status={status} pytest_exit={code} job_exit={exit_code}")
     _summary(status, code, args)
     return exit_code

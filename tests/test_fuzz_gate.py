@@ -48,7 +48,14 @@ def _run(tmp_path: Path, files: dict[str, str]) -> subprocess.CompletedProcess[s
 
 @pytest.mark.parametrize(
     ("code", "status", "job_exit"),
-    [(0, "PASS", 0), (1, "FAIL", 1), (2, "FAIL", 2), (3, "FAIL", 3), (4, "FAIL", 4), (5, "NOT_RUN", 1)],
+    [
+        (0, "PASS", 0),
+        (1, "FAIL", 1),
+        (2, "FAIL", 2),
+        (3, "FAIL", 3),
+        (4, "FAIL", 4),
+        (5, "NOT_RUN", 1),
+    ],
 )
 def test_classify(code: int, status: str, job_exit: int) -> None:
     assert _load_gate().classify(code) == (status, job_exit)
