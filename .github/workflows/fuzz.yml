@@ -20,5 +20,9 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.12'
-      - run: pip install hypothesis pytest
-      - run: pytest --hypothesis-seed=0 -x || echo "No fuzz tests found yet (Phase 2)"
+      - name: Install project, pytest and Hypothesis
+        run: python -m pip install --disable-pip-version-check -e ".[dev]" hypothesis pytest
+      # Real failures keep their pytest exit code. Only exit 5 (no property
+      # tests collected) is reported as NOT_RUN, and NOT_RUN is red too.
+      - name: Run Hypothesis property tests
+        run: python tools/fuzz_gate.py -m hypothesis --hypothesis-seed=0 -x tests
