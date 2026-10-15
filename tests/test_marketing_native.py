@@ -188,8 +188,8 @@ def test_preserved_card_body_and_pinned_runtime(native):
         hashlib.sha256(body).hexdigest()
         == "f66bb6fa76c6cc1cee38f7eecb123049692c5226ebdc14382739ea0a0b1dcd99"
     )
-    assert b"sdk_version: 6.29.0" in readme
-    assert (package / "requirements.txt").read_text().strip() == "gradio==6.29.0"
+    assert b"sdk_version: 6.30.0" in readme
+    assert (package / "requirements.txt").read_text().strip() == "gradio==6.30.0"
 
 
 def test_actual_gradio_callbacks_are_passive_and_keep_literal_draft_text(native, monkeypatch):

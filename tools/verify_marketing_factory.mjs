@@ -137,7 +137,7 @@ try {
     await new Promise(resolve => setTimeout(resolve, 100));
   }
   assert(ready, `Fixture startup failed: ${errors.slice(-5000)}`);
-  assert.equal(ready.source, source); assert.equal(ready.gradio, '6.29.0');
+  assert.equal(ready.source, source); assert.equal(ready.gradio, '6.30.0');
   const receipt = JSON.parse(await readFile(path.join(out, 'package/PUBLICATION_RECEIPT.json'), 'utf8'));
   const projection = JSON.parse(await readFile(path.join(out, 'package/native/PROJECTION.json'), 'utf8'));
   for (const [name, expected] of Object.entries(receipt.files)) {
