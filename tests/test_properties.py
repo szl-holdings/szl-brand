@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import tempfile
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -167,6 +168,9 @@ def test_preview_is_byte_deterministic_and_has_canonical_dimensions(seed: str) -
         first = generate_preview(spec, root / "a.png")
         second = generate_preview(spec, root / "b.png")
         assert first.read_bytes() == second.read_bytes()
+        # Repo identity must affect geometry/texture even with identical visible copy.
+        alternate = generate_preview(replace(spec, repo=seed + "-distinct"), root / "c.png")
+        assert first.read_bytes() != alternate.read_bytes()
         with Image.open(first) as image:
             assert image.size == (1280, 640)
             assert image.format == "PNG"

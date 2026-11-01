@@ -3,7 +3,9 @@
 The old fuzz workflow ran ``pytest ... || echo "No fuzz tests found yet"``,
 which turned every failure, collection error and usage error green.  This
 gate passes real failures through unchanged and reports only pytest exit
-code 5 ("no tests collected") as an explicit NOT_RUN.
+code 5 ("no tests collected") as an explicit NOT_RUN. A successful pytest
+exit also needs at least one completed, passing test case; collect-only,
+all-skipped and all-xfailed suites are NOT_RUN.
 
 NOT_RUN fails the job too: a green "Fuzz" check must never mean "nothing was
 fuzzed".  Usage: ``python tools/fuzz_gate.py [pytest args...]``.
@@ -14,6 +16,9 @@ from __future__ import annotations
 import os
 import subprocess
 import sys
+import tempfile
+import xml.etree.ElementTree as ET
+from pathlib import Path
 
 # pytest.ExitCode values, kept literal so this module imports without pytest.
 OK, TESTS_FAILED, INTERRUPTED, INTERNAL_ERROR, USAGE_ERROR, NO_TESTS_COLLECTED = range(6)
@@ -37,7 +42,19 @@ def classify(code: int) -> tuple[str, int]:
     return "FAIL", code if code > 0 else 1
 
 
-def _summary(status: str, code: int, args: list[str]) -> None:
+def _passing_cases(report_path: Path) -> int:
+    """Count completed cases, excluding skipped/xfail, failure and error reports."""
+    root = ET.parse(report_path).getroot()
+    if root.tag not in {"testsuite", "testsuites"}:
+        raise ValueError("unexpected pytest report root")
+    return sum(
+        1
+        for case in root.iter("testcase")
+        if not any(case.find(tag) is not None for tag in ("skipped", "failure", "error"))
+    )
+
+
+def _summary(status: str, code: int, args: list[str], passed: int | None, reason: str) -> None:
     path = os.environ.get("GITHUB_STEP_SUMMARY")
     if not path:
         return
@@ -48,11 +65,13 @@ def _summary(status: str, code: int, args: list[str]) -> None:
         f"- status: **{status}**",
         f"- pytest exit code: `{code}` ({label})",
         f"- command: `python -m pytest {' '.join(args)}`",
+        f"- completed passing cases: `{passed if passed is not None else 'unavailable'}`",
+        f"- detail: {reason}",
     ]
     if status == "NOT_RUN":
         lines.append(
-            "- No property tests were collected, so nothing was fuzzed. "
-            "This job stays red until a Hypothesis suite exists."
+            "- No completed passing property test was observed. "
+            "This job stays red until the selected suite actually runs."
         )
     with open(path, "a", encoding="utf-8") as fh:
         fh.write("\n".join(lines) + "\n")
@@ -60,18 +79,32 @@ def _summary(status: str, code: int, args: list[str]) -> None:
 
 def main(argv: list[str]) -> int:
     args = argv or ["-m", "hypothesis", "tests"]
-    code = subprocess.call([sys.executable, "-m", "pytest", *args])
-    status, exit_code = classify(code)
+    passed = None
+    reason = "pytest did not complete successfully"
+    with tempfile.TemporaryDirectory(prefix="szl-fuzz-report-") as directory:
+        report_path = Path(directory) / "pytest.xml"
+        # Append the gate-owned report option so an earlier caller option cannot
+        # replace the execution evidence used for this decision.
+        code = subprocess.call([sys.executable, "-m", "pytest", *args, f"--junitxml={report_path}"])
+        status, exit_code = classify(code)
+        if code == OK:
+            try:
+                passed = _passing_cases(report_path)
+            except (OSError, ET.ParseError, ValueError):
+                status, exit_code = "FAIL", 1
+                reason = "pytest execution report missing or unreadable"
+            else:
+                reason = f"{passed} completed passing test cases"
+                if passed == 0:
+                    status, exit_code = "NOT_RUN", 1
     if status == "NOT_RUN":
         print(
-            "::error title=Fuzz NOT_RUN::pytest exit 5: no property tests collected; nothing was fuzzed."
+            f"::error title=Fuzz NOT_RUN::pytest exit {code}: no completed passing property tests."
         )
     elif status == "FAIL":
-        print(
-            f"::error title=Fuzz FAIL::pytest exit {code}: {_LABELS.get(code, 'unexpected exit')}"
-        )
+        print(f"::error title=Fuzz FAIL::pytest exit {code}: {reason}")
     print(f"fuzz_gate: status={status} pytest_exit={code} job_exit={exit_code}")
-    _summary(status, code, args)
+    _summary(status, code, args, passed, reason)
     return exit_code
 
 

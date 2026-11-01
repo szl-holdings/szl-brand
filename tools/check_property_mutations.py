@@ -96,6 +96,13 @@ MUTATIONS = [
         'img.putpixel((0, 0), (ord(output.stem[0]), 0, 0))\n    img.save(output, "PNG", optimize=True)',
         "preview_is_byte",
     ),
+    (
+        "preview_ignores_repository",
+        "preview.py",
+        "palette = ProcPalette(spec.repo)",
+        'palette = ProcPalette("constant")',
+        "preview_is_byte",
+    ),
 ]
 
 
