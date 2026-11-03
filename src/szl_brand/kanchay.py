@@ -94,14 +94,15 @@ def _top_level_blocks(css: str) -> list[tuple[str, str]]:
             end = css.find("*/", i + 2)
             if end < 0:
                 raise ValueError("unterminated CSS comment")
-            if depth == 0:
-                prelude_start = end + 2
             i = end + 2
             continue
         char = css[i]
         if char == "{":
             if depth == 0:
-                prelude, start = css[prelude_start:i].strip(), i + 1
+                # Drop comments anywhere in the prelude, not only before it: a comment
+                # between the selector and "{" must not erase the selector.
+                prelude = re.sub(r"/\*.*?\*/", "", css[prelude_start:i], flags=re.S).strip()
+                start = i + 1
             depth += 1
         elif char == "}":
             depth -= 1

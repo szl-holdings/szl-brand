@@ -1,5 +1,7 @@
 """Tests for szl_brand palette module."""
 
+import pytest
+
 from szl_brand.palette import (
     ACCENT,
     ACCENT_BRIGHT,
@@ -24,6 +26,12 @@ class TestColor:
         c = Color.from_hex("#FF000080")
         assert c.r == 255
         assert c.a == 128
+
+    @pytest.mark.parametrize("text", ["#-10000", "#00000 ", "#١١١١١١", "##000000", "# 00000"])
+    def test_from_hex_rejects_signs_spaces_non_ascii_digits_and_extra_hashes(self, text):
+        # Regression: int(pair, 16) parsed "#-10000" to r=-1 and "#00000 " to black.
+        with pytest.raises(ValueError, match="Invalid hex color"):
+            Color.from_hex(text)
 
     def test_hex_property(self):
         c = Color(128, 90, 213)
@@ -81,6 +89,17 @@ class TestColor:
         c = Color(200, 200, 200)
         darker = c.darken(0.2)
         assert darker.relative_luminance < c.relative_luminance
+
+    def test_lighten_rounds_instead_of_truncating(self):
+        # Regression: int() truncation turned (0, 1, 1) into (0, 0, 1) and lowered b to 254.
+        assert Color(0, 1, 1).lighten(0.0) == Color(0, 1, 1)
+        assert Color(0, 0, 255).lighten(0.001).b == 255
+
+    def test_darken_clamps_at_black(self):
+        # Regression: lightness was clamped only at 1.0, so this returned (-2, -2, -2).
+        assert Color(0, 0, 0).darken(0.01) == Color(0, 0, 0)
+        assert Color(10, 20, 30, 40).darken(2.0) == Color(0, 0, 0, 40)
+        assert Color(10, 20, 30).lighten(2.0) == Color(255, 255, 255)
 
 
 class TestProcPalette:
