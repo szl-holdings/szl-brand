@@ -17,6 +17,7 @@ from szl_brand.surface import (
     build_receipt,
     generate_surfaces,
     load_manifest,
+    main,
     render_avatar_svg,
     render_readme_block,
     render_surface_svg,
@@ -192,6 +193,17 @@ def test_v3_replacement_is_idempotent():
     assert first.count(END_MARKER) == 1
 
 
+@pytest.mark.parametrize("eol", ["\n", "\r\n"])
+def test_empty_front_matter_is_closed_for_lf_and_crlf(eol):
+    # Regression: "---\n---\n" was refused as unclosed front matter while CRLF passed.
+    front = f"---{eol}---{eol}"
+    block = render_readme_block(spec())
+
+    result = replace_managed_block(front + "# Title\n", block)
+
+    assert result == "---" + eol + "---\n\n" + block.strip() + "\n\n# Title\n"
+
+
 def test_unclosed_managed_block_fails_closed():
     with pytest.raises(SurfaceContractError, match="exactly once"):
         replace_managed_block(START_MARKER + "\nbroken", render_readme_block(spec()))
@@ -256,3 +268,62 @@ def test_receipt_changes_when_reviewed_copy_changes():
 def test_invalid_contracts_fail_closed(changes, message):
     with pytest.raises(SurfaceContractError, match=message):
         spec(**changes)
+
+
+@pytest.mark.parametrize(
+    "field, value",
+    [
+        ("display_name", "\x00"),
+        ("one_liner", "Governed\x1bexecution."),
+        ("limitations", "Bounded\uffff"),
+        ("primary_url", "https://a-11-oy.com/\x00"),
+    ],
+)
+def test_control_characters_fail_closed(field, value):
+    # Regression: display_name="\x00" passed validation and rendered malformed SVG XML.
+    with pytest.raises(SurfaceContractError, match=f"{field} must not contain control characters"):
+        spec(**{field: value})
+
+
+def _write_manifest(path: Path, rows: list[dict]) -> Path:
+    path.write_text(json.dumps({"schema": SCHEMA, "surfaces": rows}), encoding="utf-8")
+    return path
+
+
+@pytest.mark.parametrize("slugs", [("a-b", "a/b"), ("0/", "0-"), ("a11oy", "A11oy")])
+def test_manifest_refuses_slugs_that_share_an_output_directory(tmp_path: Path, slugs):
+    # Regression: "a-b" and "a/b" both wrote to out/a-b, so one surface overwrote the other.
+    rows = [{**spec().__dict__, "slug": slug} for slug in slugs]
+    manifest = _write_manifest(tmp_path / "surfaces.json", rows)
+
+    with pytest.raises(SurfaceContractError, match="duplicate surface slug: .* share output"):
+        load_manifest(manifest)
+
+
+def test_generation_refuses_colliding_surfaces_before_writing(tmp_path: Path):
+    output = tmp_path / "out"
+
+    with pytest.raises(SurfaceContractError, match="share output directory 'a-b'"):
+        generate_surfaces([spec(slug="a-b"), spec(slug="a/b")], output)
+    assert not output.exists()
+
+
+def test_generation_writes_every_surface_to_its_own_directory(tmp_path: Path):
+    paths = generate_surfaces([spec(slug="a-b"), spec(slug="killinchu")], tmp_path / "out")
+
+    assert len(paths) == len(set(paths)) == 10
+    assert {path.parent.name for path in paths} == {"a-b", "killinchu"}
+
+
+@pytest.mark.parametrize("field, value", [("display_name", 7), ("slug", None), ("accent", 1)])
+def test_non_string_fields_raise_the_contract_error(field, value):
+    with pytest.raises(SurfaceContractError, match=f"surface fields must be strings: {field}"):
+        SurfaceSpec.from_mapping({**spec().__dict__, field: value})
+
+
+def test_cli_exits_2_on_a_non_string_field(tmp_path: Path, capsys):
+    # Regression: from_mapping raised AttributeError, so the CLI crashed instead of exiting 2.
+    manifest = _write_manifest(tmp_path / "surfaces.json", [{**spec().__dict__, "slug": 7}])
+
+    assert main([str(manifest), "--output", str(tmp_path / "out")]) == 2
+    assert "surface fields must be strings: slug" in capsys.readouterr().out

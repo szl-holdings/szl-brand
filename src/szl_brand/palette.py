@@ -10,8 +10,13 @@ from __future__ import annotations
 import colorsys
 import hashlib
 import math
+import re
 from collections.abc import Iterator
 from dataclasses import dataclass
+
+# Six (RGB) or eight (RGBA) ASCII hex digits. int(pair, 16) alone also accepts a sign,
+# surrounding whitespace and non-ASCII digits ("#-10000" would parse to r=-1).
+_HEX_DIGITS_RE = re.compile(r"[0-9A-Fa-f]{6}(?:[0-9A-Fa-f]{2})?")
 
 
 @dataclass(frozen=True, slots=True)
@@ -25,12 +30,13 @@ class Color:
 
     @classmethod
     def from_hex(cls, hex_str: str) -> Color:
-        h = hex_str.lstrip("#")
+        """Parse ``RRGGBB`` or ``RRGGBBAA`` hex digits after one optional ``#``."""
+        h = hex_str.removeprefix("#")
+        if not _HEX_DIGITS_RE.fullmatch(h):
+            raise ValueError(f"Invalid hex color: {hex_str}")
         if len(h) == 6:
             return cls(int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16))
-        elif len(h) == 8:
-            return cls(int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16), int(h[6:8], 16))
-        raise ValueError(f"Invalid hex color: {hex_str}")
+        return cls(int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16), int(h[6:8], 16))
 
     @property
     def hex(self) -> str:
@@ -89,12 +95,14 @@ class Color:
         return Color(self.r, self.g, self.b, alpha)
 
     def lighten(self, amount: float) -> Color:
+        """Raise HLS lightness by ``amount``, clamped to [0, 1], rounding to byte channels."""
         hue, lightness, sat = colorsys.rgb_to_hls(self.r / 255, self.g / 255, self.b / 255)
-        lightness = min(1.0, lightness + amount)
+        lightness = max(0.0, min(1.0, lightness + amount))
         r, g, b = colorsys.hls_to_rgb(hue, lightness, sat)
-        return Color(int(r * 255), int(g * 255), int(b * 255), self.a)
+        return Color(round(r * 255), round(g * 255), round(b * 255), self.a)
 
     def darken(self, amount: float) -> Color:
+        """Lower HLS lightness by ``amount``, clamped at black (see :meth:`lighten`)."""
         return self.lighten(-amount)
 
 

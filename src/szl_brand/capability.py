@@ -21,7 +21,13 @@ from pathlib import Path
 from typing import Any, Final
 from urllib.parse import urlsplit
 
-from szl_brand.surface import EVIDENCE_LABELS, KINDS, OPERATIONAL_STATES
+from szl_brand.surface import (
+    EVIDENCE_LABELS,
+    KINDS,
+    OPERATIONAL_STATES,
+    SLUG_RE,
+    safe_output_name,
+)
 
 SCHEMA: Final = "szl.capability-foundry/v1"
 CAPABILITY_SCHEMA: Final = "szl.capabilities/v1"
@@ -200,8 +206,8 @@ def validate_surface(surface: CapabilitySurface) -> None:
     """Validate the public identity, proof boundary, and unique operation names."""
 
     errors: list[str] = []
-    if not surface.slug or len(surface.slug) > 96:
-        errors.append("slug must be 1-96 characters")
+    if not SLUG_RE.fullmatch(surface.slug):
+        errors.append("slug must be 1-96 safe path characters")
     if not surface.display_name.strip() or len(surface.display_name.strip()) > 72:
         errors.append("display_name must be 1-72 characters")
     if surface.kind not in KINDS:
@@ -370,21 +376,30 @@ def load_manifest(path: Path) -> list[CapabilitySurface]:
     if not isinstance(rows, list) or not rows:
         raise CapabilityContractError("manifest surfaces must be a non-empty array")
     surfaces: list[CapabilitySurface] = []
-    seen: set[str] = set()
     for index, row in enumerate(rows):
         if not isinstance(row, dict):
             raise CapabilityContractError(f"surface {index} must be an object")
-        surface = CapabilitySurface.from_mapping(row)
-        folded = surface.slug.casefold()
-        if folded in seen:
-            raise CapabilityContractError(f"duplicate surface slug: {surface.slug}")
-        seen.add(folded)
-        surfaces.append(surface)
+        surfaces.append(CapabilitySurface.from_mapping(row))
+    _output_directories(surfaces)
     return surfaces
 
 
-def _safe_output_name(slug: str) -> str:
-    return re.sub(r"[^A-Za-z0-9._-]+", "-", slug).strip(".-").lower()
+def _output_directories(
+    surfaces: Iterable[CapabilitySurface],
+) -> dict[str, CapabilitySurface]:
+    """Map each surface to its own output directory, refusing unsafe or shared ones."""
+
+    directories: dict[str, CapabilitySurface] = {}
+    for surface in surfaces:
+        validate_surface(surface)
+        name = safe_output_name(surface.slug)
+        if name in directories:
+            raise CapabilityContractError(
+                f"duplicate surface slug: {surface.slug!r} and {directories[name].slug!r} "
+                f"share output directory {name!r}"
+            )
+        directories[name] = surface
+    return directories
 
 
 def generate_capabilities(
@@ -394,9 +409,10 @@ def generate_capabilities(
     """Generate agent-readable assets locally without provider mutation."""
 
     created: list[Path] = []
+    directories = _output_directories(surfaces)
     output.mkdir(parents=True, exist_ok=True)
-    for surface in surfaces:
-        directory = output / _safe_output_name(surface.slug)
+    for folder, surface in directories.items():
+        directory = output / folder
         directory.mkdir(parents=True, exist_ok=True)
         capabilities_json = render_capabilities_json(surface)
         agents_md = render_agents_md(surface)

@@ -167,3 +167,12 @@ def test_tokens_file_is_every_design_system_token_and_nothing_else():
 def test_extract_tokens_rejects_a_token_block_with_a_style_declaration():
     with pytest.raises(ValueError, match="non-token declaration"):
         kanchay.extract_tokens(":root { --a: 1px; color: red; }")
+
+
+def test_comment_between_selector_and_brace_keeps_the_token_block():
+    # Regression: a top-level comment reset the prelude, so this token block was dropped.
+    css = ":root /* c */ {--a: 1}"
+
+    assert kanchay._top_level_blocks(css) == [(":root", "--a: 1")]
+    assert kanchay.extract_tokens(css) == kanchay.extract_tokens(":root {--a: 1}")
+    assert kanchay.extract_tokens(css).endswith(":root {--a: 1}\n")

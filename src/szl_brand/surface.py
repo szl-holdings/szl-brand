@@ -77,6 +77,21 @@ OPERATIONAL_STATES: Final = frozenset(
 )
 SLUG_RE: Final = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._/-]{0,95}$")
 HEX_RE: Final = re.compile(r"^#[0-9A-Fa-f]{6}$")
+# C0/C1 control characters, lone surrogates and U+FFFE/U+FFFF. html.escape keeps them, XML 1.0
+# cannot carry most of them, and none belongs in single-line copy or a URL.
+CONTROL_RE: Final = re.compile(r"[\x00-\x1f\x7f-\x9f\ud800-\udfff\ufffe\uffff]")
+# Free-text fields rendered into the SVG or the README block.
+TEXT_FIELDS: Final = (
+    "display_name",
+    "one_liner",
+    "decision_path",
+    "builder_path",
+    "limitations",
+    "primary_url",
+    "source_url",
+    "evidence_url",
+    "image_url",
+)
 BANNED_COPY: Final = (
     "best in the world",
     "world-class",
@@ -161,6 +176,13 @@ class SurfaceSpec:
             raise SurfaceContractError("surface contains unknown fields: " + ", ".join(unknown))
         if missing:
             raise SurfaceContractError("surface is missing fields: " + ", ".join(missing))
+        not_text = sorted(
+            name
+            for name, field in value.items()
+            if not isinstance(field, str) and not (name == "accent" and field is None)
+        )
+        if not_text:
+            raise SurfaceContractError("surface fields must be strings: " + ", ".join(not_text))
         spec = cls(**value)
         validate_surface(spec)
         return spec
@@ -237,6 +259,9 @@ def validate_surface(spec: SurfaceSpec) -> None:
         errors.append("operational_state must be one of: " + ", ".join(sorted(OPERATIONAL_STATES)))
     if spec.accent is not None and not HEX_RE.fullmatch(spec.accent):
         errors.append("accent must be a six-digit hexadecimal color")
+    for name in TEXT_FIELDS:
+        if CONTROL_RE.search(getattr(spec, name)):
+            errors.append(f"{name} must not contain control characters")
 
     copy = " ".join(
         [
@@ -547,10 +572,12 @@ def _managed_range(text: str, start: str, end: str) -> tuple[int, int] | None:
 def _front_matter_end(text: str) -> int:
     if not text.startswith("---\n") and not text.startswith("---\r\n"):
         return 0
-    match = re.search(r"\r?\n---\r?\n", text[4:])
+    # Search from the opener's own line break so empty front matter ("---\n---\n")
+    # closes for LF exactly as it already did for CRLF.
+    match = re.search(r"\r?\n---\r?\n", text[3:])
     if match is None:
         raise SurfaceContractError("README starts YAML front matter but never closes it")
-    return 4 + match.end()
+    return 3 + match.end()
 
 
 def replace_managed_block(readme: str, block: str) -> str:
@@ -615,16 +642,11 @@ def load_manifest(path: Path) -> list[SurfaceSpec]:
     if not isinstance(rows, list) or not rows:
         raise SurfaceContractError("manifest surfaces must be a non-empty array")
     specs: list[SurfaceSpec] = []
-    seen: set[str] = set()
     for index, row in enumerate(rows):
         if not isinstance(row, dict):
             raise SurfaceContractError(f"surface {index} must be an object")
-        spec = SurfaceSpec.from_mapping(row)
-        folded = spec.slug.casefold()
-        if folded in seen:
-            raise SurfaceContractError(f"duplicate surface slug: {spec.slug}")
-        seen.add(folded)
-        specs.append(spec)
+        specs.append(SurfaceSpec.from_mapping(row))
+    _output_directories(specs)
     return specs
 
 
@@ -632,13 +654,35 @@ def safe_output_name(slug: str) -> str:
     return re.sub(r"[^A-Za-z0-9._-]+", "-", slug).strip(".-").lower()
 
 
+def _output_directories(specs: Iterable[SurfaceSpec]) -> dict[str, SurfaceSpec]:
+    """Map each valid surface to its own output directory, refusing two that share one.
+
+    ``safe_output_name`` folds case, separators and trailing dots ("a-b", "a/b" and
+    "A-B" all become "a-b"), so distinct slugs can collide; a collision would make
+    one surface silently overwrite another's artifacts.
+    """
+
+    directories: dict[str, SurfaceSpec] = {}
+    for spec in specs:
+        validate_surface(spec)
+        name = safe_output_name(spec.slug)
+        if name in directories:
+            raise SurfaceContractError(
+                f"duplicate surface slug: {spec.slug!r} and {directories[name].slug!r} "
+                f"share output directory {name!r}"
+            )
+        directories[name] = spec
+    return directories
+
+
 def generate_surfaces(specs: Iterable[SurfaceSpec], output: Path) -> list[Path]:
     """Generate reviewed assets without touching any remote provider."""
 
     created: list[Path] = []
+    directories = _output_directories(specs)
     output.mkdir(parents=True, exist_ok=True)
-    for spec in specs:
-        directory = output / safe_output_name(spec.slug)
+    for folder, spec in directories.items():
+        directory = output / folder
         directory.mkdir(parents=True, exist_ok=True)
         svg = render_surface_svg(spec)
         avatar = render_avatar_svg(spec, profile=spec.kind == "profile")

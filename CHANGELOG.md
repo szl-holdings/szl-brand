@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Input hardening found by a new Hypothesis property suite (`tests/test_*_properties.py`, which
+  the weekly Fuzz job now runs):
+  - `Color.from_hex` accepts only ASCII hex digits after one optional `#`. Signs, spaces,
+    non-ASCII digits and repeated `#` now raise `ValueError` (`#-10000` parsed to `r=-1`).
+  - `Color.lighten`/`darken` clamp lightness to [0, 1] and round channels, so `darken` never
+    returns negative channels and `lighten(0)` is the identity.
+  - The `szl-tokens.css` extractor keeps a token block whose selector is followed by a comment.
+  - `replace_managed_block` accepts empty LF front matter (`---\n---\n`), as it did for CRLF.
+  - Surface and capability manifests refuse slugs that share an output directory (`a-b`, `a/b`
+    or `A-B`) instead of overwriting one surface with another. Capability slugs follow the
+    Surface Foundry slug rule, so `..` can no longer write into the output root.
+  - Surface copy and URLs refuse control characters, which made the SVG hero malformed XML.
+  - A non-string surface field raises `SurfaceContractError` (CLI exit 2), not a traceback.
+
 - KANCHAY bundle: add the derived `kanchay/szl-tokens.css`. It holds every custom property of
   `szl-design-system.css` (palette, both polarities with nested `data-surface` support, type,
   spacing, radius, shadow, motion, z) and no element or class rules.

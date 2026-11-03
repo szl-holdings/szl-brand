@@ -203,3 +203,27 @@ def test_receipt_changes_when_authority_contract_changes():
     assert observed_receipt.contract_sha256 != proposed_receipt.contract_sha256
     assert observed_receipt.capabilities_sha256 != proposed_receipt.capabilities_sha256
     assert observed_receipt.agents_md_sha256 != proposed_receipt.agents_md_sha256
+
+
+@pytest.mark.parametrize("slug", ["..", ".", "/", "-", "a b", "日本"])
+def test_slug_must_be_a_safe_path_component(slug):
+    # Regression: only the length was checked, so ".." wrote into the output root itself.
+    with pytest.raises(CapabilityContractError, match="slug must be 1-96 safe path characters"):
+        surface(slug=slug)
+
+
+def test_manifest_refuses_slugs_that_share_an_output_directory(tmp_path: Path):
+    rows = [{**mutable_surface(), "slug": "a-b"}, {**mutable_surface(), "slug": "a/b"}]
+    manifest = tmp_path / "capabilities.json"
+    manifest.write_text(json.dumps({"schema": SCHEMA, "surfaces": rows}), encoding="utf-8")
+
+    with pytest.raises(CapabilityContractError, match="duplicate surface slug: .* share output"):
+        load_manifest(manifest)
+
+
+def test_generation_refuses_colliding_surfaces_before_writing(tmp_path: Path):
+    output = tmp_path / "out"
+
+    with pytest.raises(CapabilityContractError, match="share output directory 'a-b'"):
+        generate_capabilities([surface(slug="a-b"), surface(slug="a/b")], output)
+    assert not output.exists()
