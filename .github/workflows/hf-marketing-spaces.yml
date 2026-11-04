@@ -31,6 +31,33 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Fail closed when main Tests failed — do not soft-skip the marketing Spaces badge.
+  # Real breakage stays in Tests (e.g. Gradio pin drift); this job only makes the
+  # follow-on workflow honest instead of conclusion=skipped.
+  upstream-tests-failed:
+    name: Upstream Tests blocked marketing Spaces
+    if: >-
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      github.event.workflow_run.conclusion != 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Fail closed — marketing Spaces not projected after Tests failure
+        env:
+          UPSTREAM_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          UPSTREAM_RUN_ID: ${{ github.event.workflow_run.id }}
+          UPSTREAM_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          echo "::error title=UPSTREAM_TESTS_FAILED::Tests concluded ${UPSTREAM_CONCLUSION} for main@${UPSTREAM_SHA}; hf-marketing-spaces will not soft-skip. See https://github.com/${GITHUB_REPOSITORY}/actions/runs/${UPSTREAM_RUN_ID}"
+          echo "OWNER/product: fix Tests on main (e.g. Space Gradio pin must match pyproject) before marketing Spaces project; do not soft-green this workflow."
+          exit 1
+
   build:
     name: hf-marketing-spaces/build-exact
     if: >-
