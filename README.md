@@ -11,6 +11,8 @@
 [Product](https://a-11-oy.com) · [Proof](https://a11oy.net) · [GitHub organization](https://github.com/szl-holdings)
 <!-- /szl:header -->
 
+[![CI](https://github.com/szl-holdings/szl-brand/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/szl-holdings/szl-brand/actions/workflows/ci.yml) [![License: CC-BY-4.0](https://img.shields.io/badge/License-CC--BY--4.0-blue.svg)](LICENSE)
+
 <div align="center">
 
 <img src="./kit/logos/orbit-v2/szl-orbit.svg" alt="SZL Holdings" width="96" height="96" />
