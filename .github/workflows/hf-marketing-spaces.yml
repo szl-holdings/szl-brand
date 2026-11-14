@@ -121,7 +121,7 @@ jobs:
           case "${TARGET}" in
             all)
               targets="szl-marketing-1-1 szl-brand-campaign"
-              targets_json='["szl-marketing-1.1","szl-brand-campaign"]'
+              targets_json='["szl-marketing-1-1","szl-brand-campaign"]'
               ;;
             szl-marketing-1-1|szl-brand-campaign)
               targets="${TARGET}"
