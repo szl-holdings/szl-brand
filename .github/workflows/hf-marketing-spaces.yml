@@ -21,7 +21,7 @@ on:
         required: true
         type: choice
         default: all
-        options: [all, szl-marketing-1.1, szl-brand-campaign]
+        options: [all, szl-marketing-1-1, szl-brand-campaign]
 
 permissions:
   contents: read
@@ -120,10 +120,10 @@ jobs:
           mkdir -p dist/spaces reports/spaces
           case "${TARGET}" in
             all)
-              targets="szl-marketing-1.1 szl-brand-campaign"
-              targets_json='["szl-marketing-1.1","szl-brand-campaign"]'
+              targets="szl-marketing-1-1 szl-brand-campaign"
+              targets_json='["szl-marketing-1-1","szl-brand-campaign"]'
               ;;
-            szl-marketing-1.1|szl-brand-campaign)
+            szl-marketing-1-1|szl-brand-campaign)
               targets="${TARGET}"
               targets_json='["'"${TARGET}"'"]'
               ;;

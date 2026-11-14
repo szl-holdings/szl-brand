@@ -44,11 +44,11 @@
     },
     {
       "kind": "spaces",
-      "repo_id": "SZLHOLDINGS/szl-marketing-1.1",
+      "repo_id": "SZLHOLDINGS/szl-marketing-1-1",
       "source_repository": "szl-holdings/szl-brand",
       "source_revision_before_presentation": "f3517b371fd9119b3ed8db107f25794abdba296b",
-      "source_path": "marketing/space/szl-marketing-1.1/README.md",
-      "source_url": "https://github.com/szl-holdings/szl-brand/blob/f3517b371fd9119b3ed8db107f25794abdba296b/marketing/space/szl-marketing-1.1/README.md",
+      "source_path": "marketing/space/szl-marketing-1-1/README.md",
+      "source_url": "https://github.com/szl-holdings/szl-brand/blob/f3517b371fd9119b3ed8db107f25794abdba296b/marketing/space/szl-marketing-1-1/README.md",
       "presentation": {
         "title": "SZL Marketing · Governed Fact Factory",
         "summary": "Collect public estate facts, compose drafts and check copy against the SZL house guardrails. The active application uses its vendored source engine and labels unavailable observations.",

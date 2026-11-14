@@ -361,8 +361,8 @@ def test_marketing_space_preserves_historical_hub_files(tmp_path):
         "factbase.json": "0af2335e28eff80bc8f1be1433f90ebe7eb835e129ddfdefb540d907a7966914",
         "factbase_pipeline.py": "b49cb92586ceff800667f5d68157104e983493d7dd3cb37bca3d26180c74fef9",
     }
-    out = tmp_path / "szl-marketing-1.1"
-    receipt = build_package("szl-marketing-1.1", REPO_ROOT, SHA, out)
+    out = tmp_path / "szl-marketing-1-1"
+    receipt = build_package("szl-marketing-1-1", REPO_ROOT, SHA, out)
     for name, digest in expected.items():
         assert hashlib.sha256((out / name).read_bytes()).hexdigest() == digest
         assert receipt["files"][name] == digest
@@ -396,7 +396,7 @@ def test_space_package_builds_with_receipt(tmp_path, target):
 
 def test_space_package_rejects_bad_sha_and_unknown_target(tmp_path):
     with pytest.raises(ValueError):
-        build_package("szl-marketing-1.1", REPO_ROOT, "main", tmp_path / "x")
+        build_package("szl-marketing-1-1", REPO_ROOT, "main", tmp_path / "x")
     with pytest.raises(ValueError):
         build_package("nope", REPO_ROOT, SHA, tmp_path / "y")
 
@@ -476,7 +476,7 @@ def test_oidc_fails_closed_without_job_identity_even_with_ambient_pat(tmp_path, 
     assert "TOKEN-CANARY" not in report_path.read_text(encoding="utf-8")
 
 
-@pytest.mark.parametrize("resource", ["", "spaces/SZLHOLDINGS/szl-marketing-1.1"])
+@pytest.mark.parametrize("resource", ["", "spaces/SZLHOLDINGS/szl-marketing-1-1"])
 def test_oidc_wrong_resource_blocks_before_exchange(tmp_path, monkeypatch, resource):
     package = tmp_path / "pkg"
     build_package("szl-brand-campaign", REPO_ROOT, SHA, package)
@@ -925,7 +925,7 @@ def test_token_identity_failure_records_only_allowlisted_binding_and_shape(
 def test_vendored_space_app_imports_without_network(tmp_path):
     gradio = pytest.importorskip("gradio")
     package = tmp_path / "pkg"
-    build_package("szl-marketing-1.1", REPO_ROOT, SHA, package)
+    build_package("szl-marketing-1-1", REPO_ROOT, SHA, package)
     code = (
         "import importlib.util, sys; sys.path.insert(0, sys.argv[1]); "
         "spec = importlib.util.spec_from_file_location('space_app', sys.argv[1] + '/app.py'); "

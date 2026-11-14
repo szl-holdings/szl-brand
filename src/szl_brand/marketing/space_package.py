@@ -37,9 +37,9 @@ _VENDOR_NAME: Final = "szl_marketing"
 _VENDORED_FILES: Final = ("__init__.py", "facts.py", "lint.py", "compose.py", "plan.py")
 
 TARGETS: Final[dict[str, dict[str, Any]]] = {
-    "szl-marketing-1.1": {
-        "repo_id": "SZLHOLDINGS/szl-marketing-1.1",
-        "source_dir": "marketing/space/szl-marketing-1.1",
+    "szl-marketing-1-1": {
+        "repo_id": "SZLHOLDINGS/szl-marketing-1-1",
+        "source_dir": "marketing/space/szl-marketing-1-1",
         "vendor_module": True,
         "extra_files": {
             "kanchay/szl-tokens.css": "native/szl-tokens.css",
