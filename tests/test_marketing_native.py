@@ -20,7 +20,7 @@ SHA = "a" * 40
 @pytest.fixture
 def native(tmp_path, monkeypatch):
     package = tmp_path / "package"
-    build_package("szl-marketing-1.1", ROOT, SHA, package)
+    build_package("szl-marketing-1-1", ROOT, SHA, package)
     monkeypatch.syspath_prepend(str(package))
     for name in list(sys.modules):
         if name == "szl_marketing" or name.startswith("szl_marketing."):
@@ -38,7 +38,7 @@ def test_native_package_closes_exact_asset_projection(native):
     module, package = native
     receipt = json.loads((package / "PUBLICATION_RECEIPT.json").read_text())
     projection = json.loads((package / "native/PROJECTION.json").read_text())
-    installed = TARGETS["szl-marketing-1.1"]["extra_files"]
+    installed = TARGETS["szl-marketing-1-1"]["extra_files"]
     assert {row["source_path"]: row["installed_path"] for row in projection["assets"]} == installed
     for row in projection["assets"]:
         actual = (package / row["installed_path"]).read_bytes()
@@ -143,7 +143,7 @@ def test_observation_escapes_provider_markup_and_does_not_reuse_timestamp(native
         {
             "source": {
                 "repository": "elsewhere",
-                "directory": "marketing/space/szl-marketing-1.1",
+                "directory": "marketing/space/szl-marketing-1-1",
                 "sha": SHA,
             }
         },

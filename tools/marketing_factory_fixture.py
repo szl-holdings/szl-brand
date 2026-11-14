@@ -32,7 +32,7 @@ def main() -> None:
     package = args.out / "package"
     if package.exists() or package.is_symlink():
         raise ValueError("fixture package path already exists")
-    receipt = build_package("szl-marketing-1.1", ROOT, source, package)
+    receipt = build_package("szl-marketing-1-1", ROOT, source, package)
     original_connect = socket.socket.connect
     original_connect_ex = socket.socket.connect_ex
     original_dns = socket.getaddrinfo

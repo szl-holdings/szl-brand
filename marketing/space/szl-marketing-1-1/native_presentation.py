@@ -292,10 +292,10 @@ def provenance() -> str:
     target = target if isinstance(target, dict) else {}
     valid = (
         receipt.get("schema") == "szl.marketing-space-publication/v1"
-        and target.get("repository") == "SZLHOLDINGS/szl-marketing-1.1"
+        and target.get("repository") == "SZLHOLDINGS/szl-marketing-1-1"
         and target.get("repo_type") == "space"
         and source.get("repository") == "szl-holdings/szl-brand"
-        and source.get("directory") == "marketing/space/szl-marketing-1.1"
+        and source.get("directory") == "marketing/space/szl-marketing-1-1"
     )
     sha = source.get("sha") if valid else None
     sha = sha if isinstance(sha, str) and re.fullmatch(r"[0-9a-f]{40}", sha) else UNAVAILABLE
@@ -325,6 +325,6 @@ that local metadata; it does not independently verify a signature, current deplo
 
 def footer() -> str:
     return """<footer class="mf-footer"><p>SZL Holdings · Governed marketing tools</p>
-<nav aria-label="Factory sources"><a href="https://github.com/szl-holdings/szl-brand/tree/main/marketing/space/szl-marketing-1.1">Source</a>
+<nav aria-label="Factory sources"><a href="https://github.com/szl-holdings/szl-brand/tree/main/marketing/space/szl-marketing-1-1">Source</a>
 <a href="https://github.com/szl-holdings/szl-brand/actions/workflows/hf-marketing-spaces.yml">Publication workflow</a>
 <a href="https://github.com/szl-holdings/szl-brand/blob/main/NOTICE">Trademark notice</a></nav></footer>"""
