@@ -78,8 +78,8 @@ jobs:
       - name: Qualify presentation, native projection and preserved source
         run: |
           python -m pytest tests/test_marketing_native.py -q
-          ruff check marketing/space/szl-marketing-1.1/app.py marketing/space/szl-marketing-1.1/native_presentation.py tools/marketing_factory_fixture.py
-          ruff format --check marketing/space/szl-marketing-1.1/app.py marketing/space/szl-marketing-1.1/native_presentation.py tools/marketing_factory_fixture.py
+          ruff check marketing/space/szl-marketing-1-1/app.py marketing/space/szl-marketing-1-1/native_presentation.py tools/marketing_factory_fixture.py
+          ruff format --check marketing/space/szl-marketing-1-1/app.py marketing/space/szl-marketing-1-1/native_presentation.py tools/marketing_factory_fixture.py
       - name: Exercise the actual staged Gradio app with local synthetic facts
         run: |
           node tools/verify_marketing_factory.mjs \
