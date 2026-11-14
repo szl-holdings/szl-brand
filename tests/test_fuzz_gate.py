@@ -31,13 +31,15 @@ def _load_gate():
     return module
 
 
-def _run(tmp_path: Path, files: dict[str, str]) -> subprocess.CompletedProcess[str]:
+def _run(
+    tmp_path: Path, files: dict[str, str], extra_args: tuple[str, ...] = ()
+) -> subprocess.CompletedProcess[str]:
     (tmp_path / "pytest.ini").write_text(_INI, encoding="utf-8")
     for name, body in files.items():
         (tmp_path / name).write_text(body, encoding="utf-8")
     summary = tmp_path / "summary.md"
     return subprocess.run(
-        [sys.executable, str(GATE), "-p", "no:cacheprovider", "-m", "hypothesis", "."],
+        [sys.executable, str(GATE), "-p", "no:cacheprovider", "-m", "hypothesis", ".", *extra_args],
         cwd=tmp_path,
         capture_output=True,
         text=True,
@@ -86,3 +88,41 @@ def test_empty_suite_is_reported_not_run(tmp_path: Path) -> None:
     assert "status=NOT_RUN pytest_exit=5" in result.stdout
     summary = (tmp_path / "summary.md").read_text(encoding="utf-8")
     assert "**NOT_RUN**" in summary
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        "import pytest\n@pytest.mark.hypothesis\n@pytest.mark.skip(reason='unavailable')\ndef test_prop():\n    assert True\n",
+        "import pytest\n@pytest.mark.hypothesis\n@pytest.mark.xfail(reason='known failure')\ndef test_prop():\n    assert False\n",
+        "import pytest\n@pytest.mark.hypothesis\ndef test_prop():\n    pytest.skip('runtime unavailable')\n",
+    ],
+)
+def test_only_skipped_or_xfailed_cases_are_not_run(tmp_path: Path, body: str) -> None:
+    result = _run(tmp_path, {"test_skip.py": body})
+    assert result.returncode == 1, result.stdout + result.stderr
+    assert "status=NOT_RUN pytest_exit=0 job_exit=1" in result.stdout
+    summary = (tmp_path / "summary.md").read_text(encoding="utf-8")
+    assert "**NOT_RUN**" in summary
+    assert "completed passing cases: `0`" in summary
+
+
+def test_collect_only_is_not_run(tmp_path: Path) -> None:
+    result = _run(tmp_path, {"test_ok.py": _PASSING}, ("--collect-only",))
+    assert result.returncode == 1, result.stdout + result.stderr
+    assert "status=NOT_RUN pytest_exit=0 job_exit=1" in result.stdout
+
+
+def test_passing_case_alongside_skip_is_green(tmp_path: Path) -> None:
+    skipped = "import pytest\n@pytest.mark.hypothesis\n@pytest.mark.skip(reason='optional')\ndef test_skip():\n    pass\n"
+    result = _run(tmp_path, {"test_ok.py": _PASSING + skipped})
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "status=PASS pytest_exit=0" in result.stdout
+
+
+def test_missing_execution_report_is_fail_closed(tmp_path: Path, monkeypatch) -> None:
+    gate = _load_gate()
+    monkeypatch.setattr(gate.subprocess, "call", lambda *args, **kwargs: 0)
+    monkeypatch.setenv("GITHUB_STEP_SUMMARY", str(tmp_path / "summary.md"))
+    assert gate.main([]) == 1
+    assert "**FAIL**" in (tmp_path / "summary.md").read_text(encoding="utf-8")

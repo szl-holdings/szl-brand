@@ -85,4 +85,5 @@ warn_unused_configs = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = ["hypothesis: generated-input SDK contract tests"]
 addopts = "-v --tb=short"
