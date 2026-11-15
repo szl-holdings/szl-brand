@@ -39,7 +39,7 @@ W, H = 1280, 640
 #
 # VERIFIED 2026-05-11:
 #  - ouroboros-thesis: 11 papers v1-v11 (NOT 13). Latest is v11 (Applied Lambda).
-#    Concept DOI 10.5281/zenodo.19944926. v11 per-version DOI 20119582.
+#    Concept DOI 10.5281/zenodo.24239896. v11 per-version DOI 20119582.
 #  - ouroboros (runtime): 28 ouroboros packages, 62 guardrails tests,
 #    Lambda overhead <=0.59ms p99. v11 paper ran 24,800 calls.
 #  - a11oy: platform surface count is SEVEN (consolidated under A11oy).
