@@ -1,4 +1,6 @@
 cff-version: 1.2.0
+# Zenodo (InvenioRDM) DOI - always resolves to the latest version of this archive
+doi: 10.5281/zenodo.24240113
 message: "If you use these brand assets, please cite as follows."
 title: "szl-brand — Brand assets, logos, social-preview templates and visual doctrine for SZL Holdings"
 version: "0.1.0"
