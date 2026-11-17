@@ -80,6 +80,8 @@ jobs:
           python -m pytest tests/test_marketing_native.py -q
           ruff check marketing/space/szl-marketing-1-1/app.py marketing/space/szl-marketing-1-1/native_presentation.py tools/marketing_factory_fixture.py
           ruff format --check marketing/space/szl-marketing-1-1/app.py marketing/space/szl-marketing-1-1/native_presentation.py tools/marketing_factory_fixture.py
+      - name: Verify Gradio pin source-binding and negative controls
+        run: node --test tests/test_gradio_pin_contract.mjs
       - name: Exercise the actual staged Gradio app with local synthetic facts
         run: |
           node tools/verify_marketing_factory.mjs \
