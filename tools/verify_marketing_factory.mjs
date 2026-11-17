@@ -6,6 +6,7 @@ import { execFileSync, spawn } from 'node:child_process';
 import { lstat, mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:net';
 import path from 'node:path';
+import { pinnedGradioVersion } from './gradio_pin_contract.mjs';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -137,7 +138,8 @@ try {
     await new Promise(resolve => setTimeout(resolve, 100));
   }
   assert(ready, `Fixture startup failed: ${errors.slice(-5000)}`);
-  assert.equal(ready.source, source); assert.equal(ready.gradio, '6.31.0');
+  const gradioPin = pinnedGradioVersion(await readFile(path.join(root, 'pyproject.toml'), 'utf8'));
+  assert.equal(ready.source, source); assert.equal(ready.gradio, gradioPin);
   const receipt = JSON.parse(await readFile(path.join(out, 'package/PUBLICATION_RECEIPT.json'), 'utf8'));
   const projection = JSON.parse(await readFile(path.join(out, 'package/native/PROJECTION.json'), 'utf8'));
   for (const [name, expected] of Object.entries(receipt.files)) {
